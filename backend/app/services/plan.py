@@ -25,6 +25,7 @@ from app.schemas.workflow import (
 )
 from app.services import catalog as catalog_service
 from app.services.llm import generate_structured
+from app.services.planner.checks import MODEL_ID_RE as _MODEL_ID_RE
 from app.services.planner.scoring import shortlist_and_score
 from app.taxonomy import get_jobs_for_domain, get_valid_jobs, is_valid_job
 
@@ -99,9 +100,6 @@ class LLMWorkflowSynthesis(BaseModel):
         max_length=6,
         description="The detailed synthesized steps with tool assignments and paste-ready prompts",
     )
-
-
-_MODEL_ID_RE = re.compile(r"\bmuse-[A-Za-z0-9_.-]+|\bsam-[A-Za-z0-9_.-]+")
 
 
 def _candidate_summary(t: Tool) -> dict:

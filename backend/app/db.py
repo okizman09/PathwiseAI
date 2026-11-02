@@ -14,6 +14,10 @@ engine = create_engine(
     settings.DATABASE_URL,
     connect_args=connect_args,
     echo=False,
+    # Supabase closes idle connections while long LLM calls run; verify
+    # pooled connections on checkout so the next query reconnects instead
+    # of failing with OperationalError (T7 smoke finding).
+    pool_pre_ping=True,
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

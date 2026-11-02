@@ -17,6 +17,10 @@ export interface ToolShortCard {
   go_path: string;
   category: string;
   domain?: string | null;
+  ecosystem?: string | null;
+  kind?: string | null;
+  model_id?: string | null;
+  api_snippet?: string | null;
   jobs: string[];
   input_types: string[];
   output_types: string[];
@@ -320,6 +324,12 @@ export class NotInBetaError extends Error {
   }
 }
 
+export interface ToolListFilter {
+  category?: string;
+  domain?: string;
+  ecosystem?: string;
+}
+
 export const getApiBaseUrl = (): string => {
   const envUrl = (import.meta as any).env?.VITE_API_URL;
   if (envUrl && typeof envUrl === "string" && envUrl.trim().length > 0) {
@@ -443,7 +453,7 @@ export const api = {
   /**
    * Public tools directory (verified only)
    */
-  async getTools(filter?: { category?: string; domain?: string } | string): Promise<ToolResponse[]> {
+  async getTools(filter?: ToolListFilter | string): Promise<ToolResponse[]> {
     if (typeof filter === "string") {
       const query = filter && filter !== "all" ? `?category=${encodeURIComponent(filter)}` : "";
       return apiFetch<ToolResponse[]>(`/tools${query}`);
@@ -451,6 +461,7 @@ export const api = {
     const params = new URLSearchParams();
     if (filter?.category && filter.category !== "all") params.append("category", filter.category);
     if (filter?.domain && filter.domain !== "all") params.append("domain", filter.domain);
+    if (filter?.ecosystem && filter.ecosystem !== "all") params.append("ecosystem", filter.ecosystem);
     const qs = params.toString() ? `?${params.toString()}` : "";
     return apiFetch<ToolResponse[]>(`/tools${qs}`);
   },

@@ -134,12 +134,38 @@ function formatPricingLabel(model?: string): { label: string; className: string 
   }
 }
 
+function formatKindLabel(kind?: string | null): string | null {
+  switch ((kind || "").toLowerCase()) {
+    case "runnable":
+      return "Runnable";
+    case "open_weight":
+      return "Open-weight";
+    case "developer_tool":
+      return "Developer tool";
+    case "platform":
+      return "Platform";
+    default:
+      return kind ? kind.replace(/_/g, " ") : null;
+  }
+}
+
+function formatShortDate(iso?: string | null): string | null {
+  if (!iso) return null;
+  const d = new Date(iso);
+  if (isNaN(d.getTime())) return null;
+  return d.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+}
+
 function ToolLogo({
   logoUrl,
   name,
   className,
 }: {
-  logoUrl?: string | null;
+  logoUrl?: string | null | undefined;
   name: string;
   className?: string;
 }) {
@@ -193,6 +219,7 @@ function ToolsPage() {
   const [onlyHasFreeTier, setOnlyHasFreeTier] = useState(false);
   const [onlyNoCreditCard, setOnlyNoCreditCard] = useState(false);
   const [onlyCommercialFree, setOnlyCommercialFree] = useState(false);
+  const [onlyMeta, setOnlyMeta] = useState(false);
 
   // Selected tool modal
   const [activeModalTool, setActiveModalTool] = useState<ToolResponse | null>(null);
@@ -224,8 +251,8 @@ function ToolsPage() {
     isError,
     refetch,
   } = useQuery({
-    queryKey: ["public-tools"],
-    queryFn: () => api.getTools(),
+    queryKey: ["public-tools", onlyMeta ? "meta" : "all"],
+    queryFn: () => api.getTools(onlyMeta ? { ecosystem: "meta" } : undefined),
   });
 
   // Domains list for tabs
@@ -265,6 +292,7 @@ function ToolsPage() {
     setOnlyHasFreeTier(false);
     setOnlyNoCreditCard(false);
     setOnlyCommercialFree(false);
+    setOnlyMeta(false);
   };
 
   const hasActiveFilters =
@@ -274,7 +302,8 @@ function ToolsPage() {
     selectedPricing !== "all" ||
     onlyHasFreeTier ||
     onlyNoCreditCard ||
-    onlyCommercialFree;
+    onlyCommercialFree ||
+    onlyMeta;
 
   // Filtered & Sorted Tools
   const filteredTools = useMemo(() => {
@@ -508,6 +537,19 @@ function ToolsPage() {
 
           {/* Quick Toggles */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-border/60">
+            <button
+              type="button"
+              onClick={() => setOnlyMeta(!onlyMeta)}
+              aria-pressed={onlyMeta}
+              className={cn(
+                "text-xs px-3 py-1.5 rounded-full transition-colors border",
+                onlyMeta
+                  ? "bg-primary text-primary-foreground border-primary font-semibold"
+                  : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground",
+              )}
+            >
+              Meta only
+            </button>
             <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-foreground select-none">
               <Switch
                 checked={onlyHasFreeTier}
@@ -669,7 +711,7 @@ function ToolCatalogCard({
   onOpenDetails,
 }: {
   tool: ToolResponse;
-  jobLabels?: Record<string, string>;
+  jobLabels?: Record<string, string> | undefined;
   onOpenDetails: () => void;
 }) {
   const pricingInfo = formatPricingLabel(tool.pricing_model);
@@ -703,6 +745,19 @@ function ToolCatalogCard({
                 className="text-[10px] font-medium text-primary border-primary/30 bg-primary/5 gap-1 py-0.5"
               >
                 <span>Used in {tool.used_in_workflows_count} workflows</span>
+              </Badge>
+            )}
+            {tool.ecosystem === "meta" && (
+              <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] font-semibold py-0.5">
+                <span>Meta</span>
+              </Badge>
+            )}
+            {tool.ecosystem === "meta" && formatKindLabel(tool.kind) && (
+              <Badge
+                variant="outline"
+                className="text-[10px] font-medium text-muted-foreground border-border gap-1 py-0.5"
+              >
+                <span>{formatKindLabel(tool.kind)}</span>
               </Badge>
             )}
           </div>
@@ -871,11 +926,12 @@ function ToolDetailsDialog({
   onOpenChange,
 }: {
   tool: ToolResponse;
-  jobLabels?: Record<string, string>;
+  jobLabels?: Record<string, string> | undefined;
   open: boolean;
   onOpenChange: (open: boolean) => void;
 }) {
   const [copied, setCopied] = useState(false);
+  const [copiedSnippet, setCopiedSnippet] = useState(false);
   const pricingInfo = formatPricingLabel(tool.pricing_model);
   const verifiedBadgeText = tool.verified_badge || formatVerifiedBadge(tool.verified_at);
 
@@ -884,6 +940,13 @@ function ToolDetailsDialog({
     navigator.clipboard.writeText(tool.prompt_style.example);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
+  };
+
+  const copySnippet = () => {
+    if (!tool.api_snippet) return;
+    navigator.clipboard.writeText(tool.api_snippet);
+    setCopiedSnippet(true);
+    setTimeout(() => setCopiedSnippet(false), 2000);
   };
 
   const formattedPricingChecked = tool.pricing_checked_at
@@ -925,6 +988,19 @@ function ToolDetailsDialog({
                     >
                       <ShieldCheck className="size-3 text-emerald-500" />
                       <span>{verifiedBadgeText}</span>
+                    </Badge>
+                  )}
+                  {tool.ecosystem === "meta" && (
+                    <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] font-semibold">
+                      <span>Meta</span>
+                    </Badge>
+                  )}
+                  {tool.ecosystem === "meta" && formatKindLabel(tool.kind) && (
+                    <Badge
+                      variant="outline"
+                      className="text-[10px] font-medium text-muted-foreground border-border gap-1"
+                    >
+                      <span>{formatKindLabel(tool.kind)}</span>
                     </Badge>
                   )}
                   {tool.used_in_workflows_count != null && tool.used_in_workflows_count >= 10 && (
@@ -987,6 +1063,127 @@ function ToolDetailsDialog({
                   </h4>
                   <p className="text-xs text-foreground/90 leading-relaxed">{tool.how_it_helps}</p>
                 </div>
+              )}
+            </div>
+          )}
+
+          {/* Meta model details */}
+          {tool.ecosystem === "meta" && (
+            <div className="rounded-2xl border border-sky-500/25 bg-sky-500/5 p-5 space-y-4">
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div className="flex items-center gap-2 text-sky-700 dark:text-sky-300 font-bold text-sm">
+                  <Code2 className="size-4" />
+                  <span>Meta model</span>
+                </div>
+                {tool.model_id && (
+                  <code className="text-xs font-mono bg-background border border-border rounded-md px-2 py-1">
+                    {tool.model_id}
+                  </code>
+                )}
+              </div>
+
+              {(Boolean(tool.jobs?.length) ||
+                Boolean(tool.input_types?.length) ||
+                Boolean(tool.output_types?.length)) && (
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1.5">
+                    Capabilities
+                  </span>
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    {tool.jobs?.map((jobSlug) => {
+                      const label =
+                        jobLabels?.[jobSlug] || jobSlug.replace(/_/g, " ");
+                      return (
+                        <Badge
+                          key={jobSlug}
+                          variant="outline"
+                          className="text-[10px] text-muted-foreground font-normal bg-background border-border"
+                        >
+                          {label}
+                        </Badge>
+                      );
+                    })}
+                    {tool.input_types && tool.input_types.length > 0 && (
+                      <span className="text-[11px] text-muted-foreground">
+                        <strong>In:</strong> {tool.input_types.join(", ")}
+                      </span>
+                    )}
+                    {tool.output_types && tool.output_types.length > 0 && (
+                      <span className="text-[11px] text-muted-foreground">
+                        <strong>Out:</strong> {tool.output_types.join(", ")}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {tool.api_snippet && (
+                <div>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <span className="text-[10px] uppercase font-bold text-muted-foreground">
+                      API snippet
+                    </span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={copySnippet}
+                      className="h-7 text-xs gap-1 text-sky-700 dark:text-sky-300 hover:text-sky-700 hover:dark:text-sky-300 hover:bg-sky-500/10"
+                    >
+                      {copiedSnippet ? (
+                        <>
+                          <Check className="size-3" />
+                          <span>Copied</span>
+                        </>
+                      ) : (
+                        <>
+                          <Copy className="size-3" />
+                          <span>Copy snippet</span>
+                        </>
+                      )}
+                    </Button>
+                  </div>
+                  <pre className="rounded-xl bg-background border border-border p-3.5 text-xs font-mono text-foreground overflow-x-auto whitespace-pre-wrap leading-relaxed max-h-48 overflow-y-auto">
+                    {tool.api_snippet}
+                  </pre>
+                </div>
+              )}
+
+              {tool.sources && tool.sources.length > 0 && (
+                <div>
+                  <span className="text-[10px] uppercase font-bold text-muted-foreground block mb-1.5">
+                    Sources
+                  </span>
+                  <ul className="text-xs space-y-1">
+                    {tool.sources.map((src, idx) => (
+                      <li key={idx}>
+                        <a
+                          href={src.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-primary hover:underline inline-flex items-center gap-1 break-all"
+                        >
+                          <span>{src.url}</span>
+                          <ExternalLink className="size-3 shrink-0" />
+                        </a>
+                        {formatShortDate(src.fetched_at) && (
+                          <span className="text-muted-foreground ml-1.5 text-[11px]">
+                            ({formatShortDate(src.fetched_at)})
+                          </span>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
+              {(formatShortDate(tool.verified_at) || tool.verified_by) && (
+                <p className="text-[11px] text-muted-foreground pt-1 border-t border-border/50">
+                  Verified
+                  {formatShortDate(tool.verified_at) && (
+                    <> on {formatShortDate(tool.verified_at)}</>
+                  )}
+                  {tool.verified_by && <> by {tool.verified_by}</>}
+                </p>
               )}
             </div>
           )}

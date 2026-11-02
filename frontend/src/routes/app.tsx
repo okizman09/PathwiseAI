@@ -6,6 +6,7 @@ import {
   Check,
   CheckCircle2,
   ChevronRight,
+  Code2,
   Compass,
   Copy,
   DollarSign,
@@ -26,6 +27,11 @@ import { toast } from "sonner";
 import { AppHeader } from "@/components/AppHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import {
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -645,6 +651,16 @@ function StepCard({
           <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground font-medium capitalize">
             {step.primary_tool.pricing_model || step.primary_tool.pricing}
           </span>
+          {step.primary_tool.ecosystem === "meta" && (
+            <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] py-0.5">
+              <span>Meta</span>
+            </Badge>
+          )}
+          {step.primary_tool.model_id && (
+            <span className="text-[11px] font-mono rounded bg-muted px-2 py-0.5 text-muted-foreground">
+              {step.primary_tool.model_id}
+            </span>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -717,6 +733,36 @@ function StepCard({
             {step.prompt}
           </pre>
         </div>
+      ) : null}
+
+      {/* META API SNIPPET */}
+      {step.primary_tool.api_snippet ? (
+        <Collapsible className="mt-4 rounded-xl border border-border bg-background">
+          <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 p-4 text-xs font-semibold text-primary uppercase tracking-wider">
+            <span className="flex items-center gap-1.5">
+              <Code2 className="size-3.5" /> API snippet
+            </span>
+            <ChevronRight className="size-3.5 transition-transform group-data-[state=open]:rotate-90" />
+          </CollapsibleTrigger>
+          <CollapsibleContent className="px-4 pb-4">
+            <pre className="whitespace-pre-wrap font-mono text-xs leading-relaxed text-foreground/90 bg-muted/20 p-3 rounded-lg border border-border/50 overflow-x-auto max-h-48 overflow-y-auto">
+              {step.primary_tool.api_snippet}
+            </pre>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="mt-2 h-7 px-2.5 text-xs gap-1.5 font-medium"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  step.primary_tool?.api_snippet || "",
+                );
+                toast.success("Snippet copied to clipboard!");
+              }}
+            >
+              <Copy className="size-3.5" /> Copy snippet
+            </Button>
+          </CollapsibleContent>
+        </Collapsible>
       ) : null}
 
       {/* EXPECTED OUTPUT & HANDOFF */}
