@@ -1,6 +1,6 @@
 [
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "api"
     ],
@@ -9,8 +9,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+        "quote": "Use our models with pay-as-you-go billing on Meta Model API",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Spark",
     "domain": "software",
@@ -26,17 +32,17 @@
       "plan_app"
     ],
     "tagline": "Meta's general multimodal model on the Meta Model API.",
-    "summary": "Muse Spark is Meta's general-purpose model on the Meta Model API. Meta's models page lists muse-spark-1.3 as the version to use for new work.",
+    "summary": "Meta's general model for new projects on the Model API (muse-spark-1.3), with Standard and Contributor tiers. Trained for agentic, long-horizon work with tool calling; perceives video, images and documents.",
     "how_it_helps": "Use it to read documents and images, draft and summarise text, extract structured data, or plan a build, by calling the API with the OpenAI SDK.",
     "pros": [
-      "Listed by Meta as the model to start with for new projects.",
+      "Meta's general model for new projects, with Standard and pay-less Contributor tiers.",
       "Works with the OpenAI Python SDK by changing the base URL and key.",
-      "The API supports structured JSON output and tool calling, which Meta's workshop code uses with this model."
+      "Supports structured JSON output and tool calling."
     ],
     "cons": [
-      "Audio understanding is not fully supported on this version; use Muse Voice Transcribe or Spark 1.2 for audio.",
-      "Pricing and rate limits depend on your account tier and are not recorded here yet.",
-      "Access depends on your Meta account and region; confirm with a test call."
+      "For speech transcription use Muse Voice Transcribe, not this model.",
+      "Reasoning tokens count against max_output_tokens, so set generous budgets.",
+      "Confirm regional availability for your account with a test call."
     ],
     "prompt_style": {
       "technique": "State the task, give the input, and say the exact output format you want.",
@@ -51,7 +57,8 @@
     "input_types": [
       "text",
       "image",
-      "pdf"
+      "pdf",
+      "video"
     ],
     "output_types": [
       "text",
@@ -60,14 +67,14 @@
     "best_for": "Builders who need reading, writing, extraction or planning inside their own app.",
     "not_for": "Audio transcription (use Muse Voice Transcribe) or image generation (use Muse Image).",
     "unknowns": [
-      "Exact supported input types (check video and PDF support on the model page).",
-      "Pricing and rate limits.",
-      "Context window and output limits."
+      "Rate limits for your account tier."
     ],
-    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)"
+    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)",
+    "pricing_notes": "Standard: $1.25/M input, $0.15/M cached, $4.25/M output. Contributor: $0.10/$0.002/$0.20 (Meta uses data to improve products). Per-token, no minimums.",
+    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "api"
     ],
@@ -76,8 +83,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+        "quote": "Use our models with pay-as-you-go billing on Meta Model API",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Wonder",
     "domain": "software",
@@ -92,17 +105,17 @@
       "review_code"
     ],
     "tagline": "Meta's most capable model on the API, in preview.",
-    "summary": "Muse Wonder is a preview model on the Meta Model API that Meta's models page presents as its most capable option, with adjustable reasoning effort.",
+    "summary": "Meta's frontier API model (muse-wonder-1.0) for coding, long-running agents and computer use, with 1M context. Wonder Full, the stronger variant, is Muse Code subscription-only.",
     "how_it_helps": "Use it for harder planning and coding tasks where a stronger model is worth the extra cost, once you have confirmed access.",
     "pros": [
-      "Presented by Meta as its most capable model on the API.",
-      "Reasoning effort can be adjusted per request.",
+      "Meta's frontier API model for coding, long-running agents and computer use.",
+      "Plans long tasks, delegates to sub-agents and recovers from errors.",
       "Called through the same API and SDK as Muse Spark."
     ],
     "cons": [
-      "Preview status: behaviour and availability may change.",
-      "Meta's models page lists it for the Standard tier only; confirm your access.",
-      "Pricing and rate limits are not recorded here yet."
+      "Most expensive API model at $4 input / $20 output per 1M tokens.",
+      "Wonder Full, the stronger variant, needs a Muse Code subscription.",
+      "Confirm regional availability for your account."
     ],
     "prompt_style": {
       "technique": "Give the goal, the constraints and the definition of done.",
@@ -125,14 +138,14 @@
     "best_for": "Complex planning and coding tasks in a project you are building.",
     "not_for": "Simple extraction or drafting, where Muse Spark is the better starting point.",
     "unknowns": [
-      "Exact input types supported.",
-      "Pricing and rate limits.",
-      "Preview end date or stability guarantees."
+      "Rate limits for your account tier."
     ],
-    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-wonder-1.0\", input=\"Your prompt here\")\nprint(response.output_text)"
+    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-wonder-1.0\", input=\"Your prompt here\")\nprint(response.output_text)",
+    "pricing_notes": "$4/M input, $0.20/M cached, $20/M output. Wonder Full is subscription-only, not on the API.",
+    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "api"
     ],
@@ -141,8 +154,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/models/muse-voice-transcribe",
+        "quote": "Build with a single model at $0.18/hour.",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Voice Transcribe",
     "domain": "audio",
@@ -154,27 +173,27 @@
       "transcribe_audio"
     ],
     "tagline": "Speech-to-text model on the Meta Model API.",
-    "summary": "Muse Voice Transcribe turns speech into text. Meta's materials describe uploading a whole recording in one request, and live transcription over a WebSocket.",
+    "summary": "Speech-to-text on the Model API (muse-voice-transcribe-1.0): multipart REST upload for recordings, WebSocket for live transcription. 25 languages, speaker labels, turn-level timestamps.",
     "how_it_helps": "Use it to turn voice notes, interviews or calls into text before another model extracts or summarises the content.",
     "pros": [
-      "Transcribes a whole recording with a single HTTP request.",
-      "Also supports live transcription over a WebSocket, per Meta's cookbook.",
-      "Meta points to it for audio instead of Muse Spark 1.3."
+      "Transcribe a whole recording with one multipart REST request.",
+      "Live transcription over WebSocket with partial transcripts.",
+      "Speaker attribution for 20+ speakers with turn-level timestamps."
     ],
     "cons": [
-      "Language coverage, including Nigerian Pidgin and Yoruba, is not confirmed here; test with your own audio.",
-      "Output details such as timestamps and speaker labels need checking on the docs page.",
-      "Pricing and limits are not recorded here yet."
+      "25 supported languages; Yoruba and Nigerian Pidgin are not among them.",
+      "Turn-level timestamps only - no word-level timestamps or confidence scores.",
+      "Realtime and file transcription share one budget: 256 concurrent streams, 16,000 per hour."
     ],
     "prompt_style": {
       "technique": "No text prompt: send the audio file.",
       "format": "Audio file in, transcript text out.",
       "rules": [
-        "Use clear recordings with little background noise.",
-        "Send one speaker's note per file when you can.",
-        "Check the transcript before using it downstream."
+        "Send WAV audio for file transcription.",
+        "Pick a mode: PUSH_TO_TALK, ENDPOINTING or DIARIZATION.",
+        "Treat speaker labels as session-scoped, not identities."
       ],
-      "example": "Transcribe the attached voice note."
+      "example": "Transcribe meeting_audio.wav with speaker labels."
     },
     "input_types": [
       "audio"
@@ -185,14 +204,14 @@
     "best_for": "Turning voice notes, interviews and calls into text for later processing.",
     "not_for": "Understanding or summarising audio directly; transcribe first, then use a text model.",
     "unknowns": [
-      "Exact endpoint and request format: copy the official example into api_snippet.",
-      "Supported languages.",
-      "Pricing, file size and length limits."
+      "Maximum file size and recording length."
     ],
-    "api_snippet": null
+    "api_snippet": "curl --fail-with-body 'https://api.meta.ai/v1/asr/transcribe' -H \"Authorization: Bearer $MODEL_API_KEY\" '-F 'request={\"mode\":\"DIARIZATION\",\"model\":\"muse-voice-transcribe-1.0\",\"audioEncoding\":\"WAV\"};type=application/json' '-F 'audio=@meeting_audio.wav'",
+    "pricing_notes": "$0.18 per audio hour ($3.00 per 1,000 min). No minimums.",
+    "pricing_url": "https://dev.meta.ai/models/muse-voice-transcribe"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "api"
     ],
@@ -201,8 +220,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+        "quote": "Segment Anything Model (SAM) per image or video frame segmented, with no minimums or upfront commitment",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "SAM 3.1",
     "domain": "design",
@@ -214,27 +239,27 @@
       "edit_image"
     ],
     "tagline": "Meta's segmentation model, available on the Meta Model API.",
-    "summary": "SAM 3.1 finds and outlines objects in images. Meta's workshop code calls it through the Model API and gets box outputs back.",
+    "summary": "Segments images and video on the Model API (sam-3.1) via streaming Responses calls: name an object, get a box plus pixel-precise mask per match, with tracking across frames. Nothing to host.",
     "how_it_helps": "Use it to locate objects or regions in a picture, for example to count items, crop them, or highlight them for review.",
     "pros": [
-      "Available through the same API and key as the Muse models.",
-      "Used in Meta's workshop code to locate regions in documents.",
-      "Listed in the hackathon guide as a model to build with."
+      "Detection, segmentation and tracking in one zero-shot call.",
+      "Same API key, billing and SDK as the Muse models.",
+      "Pairs with Muse Spark: Spark interprets the scene, SAM cuts the masks."
     ],
     "cons": [
       "Pathwise's taxonomy has no segmentation job, so this card is mapped to edit_image.",
-      "Output format and prompt options need checking on the docs page.",
-      "Your key must have sam-3.1 enabled."
+      "Output is geometry (boxes and masks), not captions or text answers.",
+      "Video requests are billed for at least 50 frames."
     ],
     "prompt_style": {
-      "technique": "Describe what to find in the image.",
-      "format": "Image plus a short text description of the object or region.",
+      "technique": "Name one concrete object with a short noun phrase.",
+      "format": "Image plus a short noun phrase; box and mask per match.",
       "rules": [
-        "Name the object plainly.",
-        "Use clear images.",
-        "Check the returned regions before relying on them."
+        "One object type per request; send several requests for several types.",
+        "Use box or point prompts when you know the location.",
+        "Check masks before relying on them."
       ],
-      "example": "Find every product label in the attached photo."
+      "example": "Send the photo with the text \"product label\"."
     },
     "input_types": [
       "image",
@@ -246,13 +271,14 @@
     "best_for": "Locating and outlining objects in images inside your own app.",
     "not_for": "Generating new images or describing a scene in prose.",
     "unknowns": [
-      "Exact request and response format: copy the official example into api_snippet.",
-      "Pricing and limits."
+      "Maximum image and video sizes."
     ],
-    "api_snippet": null
+    "api_snippet": "import os\nfrom openai import OpenAI\n\nclient = OpenAI(base_url=\"https://api.meta.ai/v1\", api_key=os.environ[\"MODEL_API_KEY\"])\nwith client.responses.stream(\n    model=\"sam-3.1\",\n    input=[{\n        \"type\": \"message\", \"role\": \"user\",\n        \"content\": [\n            {\"type\": \"input_text\", \"text\": \"glasses\"},\n            {\"type\": \"input_image\", \"image_url\": \"https://example.com/photo.png\"},\n        ],\n    }],\n) as stream:\n    for event in stream:\n        print(event.type)",
+    "pricing_notes": "$2.50 per 1,000 images; $0.20 per 1,000 video frames (min 50 frames per request).",
+    "pricing_url": "https://dev.meta.ai/models/sam-3-1"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "api"
     ],
@@ -261,8 +287,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/models/muse-image",
+        "quote": "Agentic image generation, grounded by search and priced for production volumes at $0.01/image.",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Image",
     "domain": "design",
@@ -276,17 +308,17 @@
       "make_social_graphics"
     ],
     "tagline": "Meta's image generation model on the Meta Model API.",
-    "summary": "Muse Image generates images from text through the Meta Model API. Check the docs for editing options and output format.",
+    "summary": "Agentic image generation and editing on the Model API (muse-image-1.0) via the Responses API: it reasons, grounds with built-in search, then renders. $0.01 per image.",
     "how_it_helps": "Use it to produce illustrations, product visuals or social graphics from a written description, inside your own app.",
     "pros": [
-      "Image generation through the same API key as the Muse models.",
-      "Listed by Meta among the models for this hackathon.",
-      "Model ID is published on Meta's models page."
+      "Generation, editing and multi-turn refinement in one model.",
+      "Built-in search grounding at no extra charge.",
+      "Called as muse-image-1.0 through the same API and SDK."
     ],
     "cons": [
-      "Output format and editing options are not recorded here; check the docs.",
-      "Region restrictions may apply; check Meta's Geographic Use Policy.",
-      "Pricing and limits are not recorded here yet."
+      "Responses API returns a reasoning summary too; images endpoints return only the image.",
+      "Passing a web_search tool errors - search is built in and on by default.",
+      "Confirm regional availability for your account."
     ],
     "prompt_style": {
       "technique": "Describe subject, style and framing.",
@@ -306,16 +338,16 @@
       "image"
     ],
     "best_for": "Generating visuals from text inside a product you are building.",
-    "not_for": "Precise logos or text-heavy graphics that need exact lettering.",
+    "not_for": "Workflows needing visibility into intermediate steps (lookups are not surfaced).",
     "unknowns": [
-      "Exact request and response format: copy the official example into api_snippet.",
-      "Editing support.",
-      "Pricing and limits."
+      "Rate limits for your account tier."
     ],
-    "api_snippet": null
+    "api_snippet": "import os\nfrom openai import OpenAI\n\nclient = OpenAI(base_url=\"https://api.meta.ai/v1\", api_key=os.environ[\"MODEL_API_KEY\"])\nresponse = client.responses.create(\n    model=\"muse-image-1.0\",\n    input=\"a red fox trotting through fresh snow, golden hour\",\n)",
+    "pricing_notes": "$0.01 per image, search grounding included.",
+    "pricing_url": "https://dev.meta.ai/models/muse-image"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "cli"
     ],
@@ -324,8 +356,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/docs/muse-code/subscriptions",
+        "quote": "you pay a flat monthly rate for usage of Muse Code",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Code",
     "domain": "software",
@@ -339,17 +377,17 @@
       "write_tests"
     ],
     "tagline": "Meta's terminal coding agent.",
-    "summary": "Muse Code is Meta's coding agent that you run from a terminal inside a project folder. Meta's workshop used it to build an agent loop.",
+    "summary": "Meta's terminal coding agent with multi-agent coding. Flat-rate subscriptions (4 plans) or pay-as-you-go API billing; subscribing needs a Meta Account and age 18+.",
     "how_it_helps": "Use it to plan and make code changes, run tests and report what changed, working inside the project folder you start it from.",
     "pros": [
-      "Meta's own coding agent, used in the hackathon workshop.",
-      "Signs in with a Meta Model API key.",
-      "Meta's cookbook lists bundled skills such as /plan and /taste."
+      "Flat-rate subscription option instead of per-token billing.",
+      "CLI onboarding auto-connects a Muse Code API key.",
+      "Docs include a cookbook, workflow guides and configuration reference."
     ],
     "cons": [
-      "Needs macOS or Linux; Windows users need WSL.",
-      "Install steps are on Meta's docs page and must be followed exactly.",
-      "Cost of usage through an API key is not recorded here yet."
+      "Subscription benefits and availability vary by region.",
+      "You must be 18 or older to subscribe.",
+      "API keys created outside the CLI are billed pay-as-you-go."
     ],
     "prompt_style": {
       "technique": "Set ground rules first, then give one small task at a time.",
@@ -372,13 +410,15 @@
     "best_for": "Developers who want an agent that edits a local project from the terminal.",
     "not_for": "Non-technical users who want a no-code builder.",
     "unknowns": [
-      "Pricing for API-key usage.",
-      "Supported models inside the tool."
+      "Supported models inside the tool.",
+      "Windows support details."
     ],
-    "api_snippet": null
+    "api_snippet": null,
+    "pricing_notes": "Flat monthly subscription (4 plans) or pay-as-you-go API billing; benefits vary by region.",
+    "pricing_url": "https://dev.meta.ai/docs/muse-code/subscriptions"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "paid",
     "platforms": [
       "api"
     ],
@@ -387,8 +427,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+        "quote": "Use our models with pay-as-you-go billing on Meta Model API",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Meta Model API",
     "domain": "software",
@@ -400,17 +446,17 @@
       "automate_workflow"
     ],
     "tagline": "The API that serves Meta's Muse models and SAM.",
-    "summary": "The Meta Model API serves Muse Spark, Muse Wonder, Muse Image, Muse Voice Transcribe and SAM 3.1. Its quickstart shows it working with the OpenAI and Anthropic SDKs.",
+    "summary": "The Meta Model API serves Muse Spark, Muse Wonder, Muse Image, Muse Voice Transcribe and SAM 3.1 with pay-as-you-go billing and no minimums. Works with the OpenAI SDK.",
     "how_it_helps": "Use it as the backend for AI features in your own app, calling Meta's models with an SDK you may already use.",
     "pros": [
-      "Compatible with the OpenAI and Anthropic SDKs by changing the base URL.",
+      "Works with the OpenAI SDK by changing the base URL and key.",
       "Supports Responses, Chat Completions and Messages style calls.",
-      "Lists structured output and tool calling among its features."
+      "Structured output and tool calling across text models."
     ],
     "cons": [
-      "Availability depends on your account and region.",
+      "Contributor-tier discounts let Meta train on your prompts.",
       "Model IDs and features change; check the models page before relying on a name.",
-      "Pricing and rate limits are not recorded here yet."
+      "Confirm regional availability for your account."
     ],
     "prompt_style": {
       "technique": "Not applicable: this is a platform, not a prompt-driven tool.",
@@ -435,13 +481,14 @@
     "best_for": "Developers adding Meta models to an app.",
     "not_for": "People who want a finished app builder with no code.",
     "unknowns": [
-      "Pricing and rate limits.",
       "Full list of regions where it is available."
     ],
-    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)"
+    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)",
+    "pricing_notes": "Pay-as-you-go, no minimums or upfront commitment. See per-model rates.",
+    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "open_source",
     "platforms": [
       "api"
     ],
@@ -450,8 +497,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/models/muse-spark-open",
+        "quote": "Muse Spark Open is the most capable open-weight model from a US lab",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Spark Open",
     "domain": "software",
@@ -464,17 +517,17 @@
       "summarize_documents"
     ],
     "tagline": "Open-weight Muse Spark model you can run or access through partners.",
-    "summary": "Muse Spark Open is an open-weight model from Meta. The hackathon guide says Baseten hosts it for participants under the name meta-models/muse-spark-open-1026.",
+    "summary": "Most capable open-weight model from a US lab (816B-A42B MoE). Download the weights or use partners (Baseten, Modal, Fireworks, Groq, Hugging Face, Azure). Not served on the Model API.",
     "how_it_helps": "Use it when you want to run or host a model yourself, or use a partner endpoint, instead of the Meta Model API.",
     "pros": [
-      "Open weights, so you can run it yourself.",
-      "Baseten and Modal list support for Meta's open models in the hackathon guide.",
-      "Meta publishes an open-model cookbook for it."
+      "Open weights you can download and run yourself.",
+      "Day-one partner support: Baseten, Modal, Fireworks, Groq, Hugging Face, Azure.",
+      "Docs cover local runs, deployment and post-training."
     ],
     "cons": [
-      "Capabilities and licence terms are not recorded here; read the model page.",
-      "You host it or use a partner; it is not served by the Meta Model API by default.",
-      "The hackathon model name differs from the name in Baseten's own docs."
+      "Licence terms need checking on the download page.",
+      "You host it or pay a partner; Meta does not serve it on the Model API.",
+      "816B parameters need serious hardware - read the hardware guide first."
     ],
     "prompt_style": {
       "technique": "Same task-and-format style as Muse Spark; check the model page for details.",
@@ -487,7 +540,8 @@
       "example": "Summarise the text below in five bullet points for a busy customer."
     },
     "input_types": [
-      "text"
+      "text",
+      "image"
     ],
     "output_types": [
       "text"
@@ -495,14 +549,15 @@
     "best_for": "Builders who want to self-host or use a partner endpoint.",
     "not_for": "People who want the simplest hosted API path.",
     "unknowns": [
-      "Input types.",
       "Licence terms.",
-      "Hardware needed to self-host."
+      "Hardware requirements for self-hosting."
     ],
-    "api_snippet": null
+    "api_snippet": null,
+    "pricing_notes": "Weights free to download; partner hosting costs vary.",
+    "pricing_url": "https://dev.meta.ai/models/muse-spark-open"
   },
   {
-    "pricing_model": "unknown",
+    "pricing_model": "open_source",
     "platforms": [
       "api"
     ],
@@ -511,8 +566,14 @@
       "dev.meta.ai",
       "meta.ai"
     ],
-    "checked_on": null,
-    "evidence": {},
+    "checked_on": "2026-11-02",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://dev.meta.ai/models/muse-glimmer",
+        "quote": "licensed under Apache 2.0 and runs on a single GPU",
+        "checked": null
+      }
+    },
     "ecosystem": "meta",
     "name": "Muse Glimmer",
     "domain": "software",
@@ -521,20 +582,21 @@
     "official_url": "https://dev.meta.ai/models/muse-glimmer",
     "docs_url": "https://dev.meta.ai/models/muse-glimmer",
     "jobs": [
-      "draft_content"
+      "draft_content",
+      "write_code"
     ],
     "tagline": "Open-weight Meta model listed for the hackathon.",
-    "summary": "Muse Glimmer is an open-weight model from Meta that the hackathon guide lists alongside Muse Spark Open. Most details still need to be checked on its model page.",
+    "summary": "30B-parameter open model (Apache 2.0) for always-on local agents: tool use, long tasks, failure recovery. Runs on a single GPU or Mac.",
     "how_it_helps": "Use it if you want to run an open Meta model yourself. Read its model page first to confirm what it is good at.",
     "pros": [
-      "Open weights per the hackathon guide.",
-      "Listed by Meta among the models to build with.",
-      "Covered by Meta's open-model cookbook materials."
+      "Apache 2.0 licence.",
+      "Runs on a single consumer GPU or Mac.",
+      "Tuned for tool calling, persistent state and self-managed memory."
     ],
     "cons": [
-      "What it is best at is not recorded here.",
-      "You host it yourself or use a partner.",
-      "Licence terms and hardware needs are not recorded here."
+      "30B parameters - smaller than frontier API models.",
+      "You host and operate it yourself.",
+      "Meta's usage policy applies to access and use."
     ],
     "prompt_style": {
       "technique": "Check the model page for the recommended prompting style.",
@@ -547,19 +609,17 @@
       "example": "Rewrite this paragraph in a friendly, simple tone."
     },
     "input_types": [
-      "text"
+      "text",
+      "image"
     ],
     "output_types": [
       "text"
     ],
-    "best_for": "Experimenters who want an open Meta model.",
-    "not_for": "Anyone who needs documented, verified capabilities today.",
-    "unknowns": [
-      "Capabilities and best uses.",
-      "Input types.",
-      "Licence terms.",
-      "Hardware needed."
-    ],
-    "api_snippet": null
+    "best_for": "Always-on local agents and local coding on your own GPU.",
+    "not_for": "Anyone who wants a hosted API with no setup.",
+    "unknowns": [],
+    "api_snippet": null,
+    "pricing_notes": "Weights free to download (Apache 2.0); you provide the hardware.",
+    "pricing_url": "https://dev.meta.ai/models/muse-glimmer"
   }
 ]

@@ -9,6 +9,7 @@ event" was built during the hackathon window.
 - T2: Meta LLM module (`generate_structured`/`generate_text`) next to Gemini code + `MODEL_API_KEY`/`META_*` settings + Meta models check + 7 mocked tests; suite 141 green (commit pending)
 - T3: Migrated all call sites (interview, plan, prompts, both extractors) to Meta; deleted Gemini code, settings, dependency; suite 141 green (commit pending)
 - T4: Catalog Meta fields (ecosystem/kind/model_id/api_snippet) + migration + importer mappings + ecosystem filter; suite 144 green (commit pending)
+- T5: Imported 9 Meta cards (IDs 115-123); facts/snippets/pricing verified against dev.meta.ai, all 9 VERIFIED via app rules; logos + og previews resolved (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI
