@@ -156,3 +156,17 @@ def test_check_extras():
                           require_transcribe_step=True, require_meta_card=True)
     assert any("transcribe_audio" in f for f in failures)
     assert any("Meta card" in f for f in failures)
+
+
+def test_check_steps_content():
+    good = _step(1, "deploy_backend", _card(1, "a"), prompt="")
+    good.content_type = "steps"
+    good.action_steps = ["Run npm run deploy."]
+    assert check_plan(_response([good]), known_model_ids=set(),
+                      known_tool_ids={1}) == []
+
+    bad = _step(1, "deploy_backend", _card(1, "a"), prompt="")
+    bad.content_type = "steps"
+    bad.action_steps = []
+    failures = check_plan(_response([bad]), known_model_ids=set(), known_tool_ids={1})
+    assert any("action_steps" in f for f in failures)

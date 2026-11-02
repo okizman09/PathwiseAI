@@ -80,6 +80,8 @@ def hydrate_db_step(db: Session, s: DBWorkflowStep, brief: ProductBrief | None =
         primary_tool=primary_tool,
         alternatives=alts,
         prompt=s.prompt,
+        content_type=s.content_type or "prompt",
+        action_steps=s.action_steps or [],
         technique=s.technique,
         output_expected=s.output_expected,
         why_tool=s.why_tool,
@@ -95,6 +97,8 @@ def persist_step(db: Session, db_step: DBWorkflowStep, schema_step: WorkflowStep
     db_step.primary_tool_id = schema_step.primary_tool.id if schema_step.primary_tool else None
     db_step.alternative_tool_ids = [alt.id for alt in schema_step.alternatives]
     db_step.prompt = schema_step.prompt
+    db_step.content_type = schema_step.content_type
+    db_step.action_steps = schema_step.action_steps
     db_step.technique = schema_step.technique
     db_step.status = schema_step.status
     db_step.handoff_note = schema_step.handoff_note
@@ -456,6 +460,8 @@ async def step_finish(
 
         if next_step_schema and next_db_step:
             next_db_step.prompt = next_step_schema.prompt
+            next_db_step.content_type = next_step_schema.content_type
+            next_db_step.action_steps = next_step_schema.action_steps
             next_db_step.technique = next_step_schema.technique
             next_db_step.prompt_version += 1
 

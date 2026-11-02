@@ -65,6 +65,8 @@ export const Route = createFileRoute("/tools")({
 
 const FALLBACK_DOMAINS = [
   { slug: "all", label: "All Domains" },
+  { slug: "models", label: "Models" },
+  { slug: "meta", label: "Meta" },
   { slug: "software", label: "Software engineering" },
   { slug: "builders", label: "No-code & app builders" },
   { slug: "design", label: "Design & visual arts" },
@@ -84,19 +86,6 @@ const PRICING_OPTIONS = [
   { value: "paid", label: "Paid" },
   { value: "open_source", label: "Open source" },
 ];
-
-function formatVerifiedBadge(dateStr?: string | null): string | null {
-  if (!dateStr) return null;
-  try {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return null;
-    const month = d.toLocaleString("en-US", { month: "short" });
-    const year = d.getFullYear();
-    return `Verified ${month} ${year}`;
-  } catch {
-    return null;
-  }
-}
 
 function formatPricingLabel(model?: string): { label: string; className: string } {
   const m = (model || "").toLowerCase();
@@ -219,7 +208,7 @@ function ToolsPage() {
   const [onlyHasFreeTier, setOnlyHasFreeTier] = useState(false);
   const [onlyNoCreditCard, setOnlyNoCreditCard] = useState(false);
   const [onlyCommercialFree, setOnlyCommercialFree] = useState(false);
-  const [onlyMeta, setOnlyMeta] = useState(false);
+  const onlyMeta = selectedDomain === "meta";
 
   // Selected tool modal
   const [activeModalTool, setActiveModalTool] = useState<ToolResponse | null>(null);
@@ -260,6 +249,8 @@ function ToolsPage() {
     if (taxonomy?.domains?.length) {
       return [
         { slug: "all", label: "All Domains" },
+        { slug: "models", label: "Models" },
+        { slug: "meta", label: "Meta" },
         ...taxonomy.domains.map((d) => ({ slug: d.slug, label: d.label })),
       ];
     }
@@ -268,7 +259,13 @@ function ToolsPage() {
 
   // Jobs available for current selected domain
   const availableJobsForDomain = useMemo(() => {
-    if (selectedDomain === "all" || !taxonomy?.domains) return [];
+    if (
+      selectedDomain === "all" ||
+      selectedDomain === "models" ||
+      selectedDomain === "meta" ||
+      !taxonomy?.domains
+    )
+      return [];
     const domainDef = taxonomy.domains.find((d) => d.slug === selectedDomain);
     if (!domainDef || !domainDef.jobs) return [];
     return domainDef.jobs.map((jobSlug) => ({
@@ -292,7 +289,6 @@ function ToolsPage() {
     setOnlyHasFreeTier(false);
     setOnlyNoCreditCard(false);
     setOnlyCommercialFree(false);
-    setOnlyMeta(false);
   };
 
   const hasActiveFilters =
@@ -302,8 +298,7 @@ function ToolsPage() {
     selectedPricing !== "all" ||
     onlyHasFreeTier ||
     onlyNoCreditCard ||
-    onlyCommercialFree ||
-    onlyMeta;
+    onlyCommercialFree;
 
   // Filtered & Sorted Tools
   const filteredTools = useMemo(() => {
@@ -312,8 +307,12 @@ function ToolsPage() {
     const q = searchQuery.trim().toLowerCase();
 
     const filtered = tools.filter((tool) => {
-      // Domain filter
-      if (selectedDomain !== "all") {
+      // Domain / collection filter
+      if (selectedDomain === "models") {
+        if (!tool.kind) return false;
+      } else if (selectedDomain === "meta") {
+        if (tool.ecosystem !== "meta") return false;
+      } else if (selectedDomain !== "all") {
         const toolDomain = tool.domain?.toLowerCase();
         if (toolDomain !== selectedDomain.toLowerCase()) return false;
       }
@@ -410,10 +409,6 @@ function ToolsPage() {
         {/* Header Title Section */}
         <div className="mb-8 flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 border-b border-border/50 pb-8">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-xs font-medium mb-3">
-              <Sparkles className="size-3.5" />
-              <span>Catalog v3 · Verified Tools</span>
-            </div>
             <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground">
               AI Tools Directory
             </h1>
@@ -539,7 +534,7 @@ function ToolsPage() {
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-border/60">
             <button
               type="button"
-              onClick={() => setOnlyMeta(!onlyMeta)}
+              onClick={() => handleDomainSelect(onlyMeta ? "all" : "meta")}
               aria-pressed={onlyMeta}
               className={cn(
                 "text-xs px-3 py-1.5 rounded-full transition-colors border",
@@ -715,7 +710,8 @@ function ToolCatalogCard({
   onOpenDetails: () => void;
 }) {
   const pricingInfo = formatPricingLabel(tool.pricing_model);
-  const verifiedBadgeText = tool.verified_badge || formatVerifiedBadge(tool.verified_at);
+  const verifiedBadgeText =
+    tool.verified_badge || tool.verified_at ? "Verified" : null;
   const description = getToolDescription(tool, jobLabels);
 
   return (
@@ -885,9 +881,6 @@ function ToolCatalogCard({
           </div>
         </div>
 
-        <p className="text-center text-[10px] text-muted-foreground/75">
-          May include an affiliate link
-        </p>
       </CardFooter>
     </Card>
   );
@@ -933,7 +926,8 @@ function ToolDetailsDialog({
   const [copied, setCopied] = useState(false);
   const [copiedSnippet, setCopiedSnippet] = useState(false);
   const pricingInfo = formatPricingLabel(tool.pricing_model);
-  const verifiedBadgeText = tool.verified_badge || formatVerifiedBadge(tool.verified_at);
+  const verifiedBadgeText =
+    tool.verified_badge || tool.verified_at ? "Verified" : null;
 
   const copyExamplePrompt = () => {
     if (!tool.prompt_style?.example) return;
@@ -1176,13 +1170,9 @@ function ToolDetailsDialog({
                 </div>
               )}
 
-              {(formatShortDate(tool.verified_at) || tool.verified_by) && (
+              {tool.verified_by && (
                 <p className="text-[11px] text-muted-foreground pt-1 border-t border-border/50">
-                  Verified
-                  {formatShortDate(tool.verified_at) && (
-                    <> on {formatShortDate(tool.verified_at)}</>
-                  )}
-                  {tool.verified_by && <> by {tool.verified_by}</>}
+                  Verified by {tool.verified_by}
                 </p>
               )}
             </div>
@@ -1525,12 +1515,6 @@ function ToolDetailsDialog({
             </div>
           )}
 
-          {/* Affiliate Disclosure */}
-          <div className="pt-2 text-center border-t border-border/40">
-            <p className="text-[11px] text-muted-foreground">
-              May include an affiliate link. Recommendations remain fully editorial and verified.
-            </p>
-          </div>
         </div>
       </DialogContent>
     </Dialog>

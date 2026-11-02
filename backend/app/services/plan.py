@@ -82,7 +82,15 @@ class LLMStepSynthesis(BaseModel):
     )
     prompt: str = Field(
         default="",
-        description="A complete, paste-ready prompt written strictly following the primary tool's prompt_style. Empty if no candidates."
+        description="A complete, paste-ready prompt written strictly following the primary tool's prompt_style. Empty if no candidates or when content_type is steps."
+    )
+    content_type: Literal["prompt", "steps"] = Field(
+        default="prompt",
+        description="prompt for creative jobs (paste-ready text), steps for setup/deployment/config jobs (ordered actions)",
+    )
+    action_steps: list[str] = Field(
+        default_factory=list,
+        description="Ordered setup actions when content_type is steps, else empty. Empty if no candidates.",
     )
     technique: str = Field(
         default="",
@@ -380,7 +388,8 @@ async def generate_workflow_plan(
         "4. HANDOFF CONTINUITY: If Step 2 follows Step 1, ensure the prompt explicitly takes the output of Step 1.\n"
         "5. DO NOT PAD OR DROP: Return exactly the steps provided in the input list, even if candidates are empty.\n"
         "6. MODEL IDS: Use only model IDs that appear in the tool context. Never invent a model ID.\n"
-        "7. META MODEL STEPS: For a Meta model step, write the prompt to be sent to that model, with the expected output format."
+        "7. META MODEL STEPS: For a Meta model step, write the prompt to be sent to that model, with the expected output format.\n"
+        "8. CONTENT FORMAT: For each step, choose the format that fits the job. Setup, deployment, database, hosting, domain, auth and other configuration jobs use content_type \"steps\" with 2-8 ordered action_steps, each one concrete action with the exact command, URL, setting or click path. Creative, writing, coding, design, research, media and analysis jobs use content_type \"prompt\" with a paste-ready prompt. Populate only the matching field and leave the other empty."
     )
 
     steps_input_payload = []
@@ -396,7 +405,7 @@ async def generate_workflow_plan(
     synthesis_prompt = (
         f"Product Brief:\n{brief.model_dump_json(indent=2)}\n\n"
         f"Workflow Steps with Shortlisted Tools:\n{json.dumps(steps_input_payload, indent=2)}\n\n"
-        "Assign the best primary tool and alternatives from each step's shortlist and write paste-ready prompts. Create a concise workflow title."
+        "Assign the best primary tool and alternatives from each step's shortlist and, for each step, either write a paste-ready prompt or ordered setup steps per rule 8. Create a concise workflow title."
     )
 
     workflow_synthesis = await generate_structured(
@@ -418,6 +427,12 @@ async def generate_workflow_plan(
             cleaned, removed = _strip_unknown_model_ids(getattr(step_syn, field) or "", known_model_ids)
             setattr(step_syn, field, cleaned)
             stripped.extend(removed)
+        cleaned_steps: list[str] = []
+        for item in step_syn.action_steps or []:
+            cleaned_item, removed = _strip_unknown_model_ids(item, known_model_ids)
+            cleaned_steps.append(cleaned_item)
+            stripped.extend(removed)
+        step_syn.action_steps = cleaned_steps
         invented_warnings.append(
             [f"Removed unrecognized model reference(s): {', '.join(sorted(set(stripped)))}"]
             if stripped
@@ -511,6 +526,8 @@ async def generate_workflow_plan(
             primary_tool=primary_short_card,
             alternatives=alternatives,
             prompt=step_syn.prompt,
+            content_type=step_syn.content_type,
+            action_steps=step_syn.action_steps,
             technique=step_syn.technique,
             output_expected=step_syn.output_expected,
             why_tool=step_syn.why_tool,
@@ -529,6 +546,8 @@ async def generate_workflow_plan(
             primary_tool_id=primary_tool.id,
             alternative_tool_ids=[alt.id for alt in alternatives],
             prompt=step_syn.prompt,
+            content_type=step_syn.content_type,
+            action_steps=step_syn.action_steps,
             technique=step_syn.technique,
             output_expected=step_syn.output_expected,
             why_tool=step_syn.why_tool,

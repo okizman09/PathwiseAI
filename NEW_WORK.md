@@ -13,6 +13,15 @@ event" was built during the hackathon window.
 - T6: Meta-aware planner (tool context fields, prompt rules, invented-ID post-check) + is_pick on Spark/Voice/Image; suite 147 green (commit pending)
 - T7: Smoke harness (scripts/smoke_plan.py + shared planner/checks.py + offline pytest); live 8/8 green + pool_pre_ping fix (commit pending)
 - T8: Frontend Meta surfaces (filter chip, badges, model detail section, step snippet); tsc + build green (commit pending)
+- Batch follow-up 1: dynamic step content (content_type/action_steps, rule 8, migration e5f6a7b8c9d0); suite 156 green, tsc + build green (commit pending)
+- Batch follow-up 2: Models/Meta browse views (directory tabs + modal tabs, collection filters, modal logo thumbnails + Meta badge); tsc + build green (commit pending)
+- Batch follow-up 3: landing demo-goal example (voice notes to structured orders, 4 stages incl. Meta models + Supabase setup steps) + light polish; tsc + build green (commit pending)
+- Batch follow-up 4: catalog audit module + CLI (19 issue codes, 9 tests) + logo/og backfill CLI; live audit 123 tools; suite 165 green (commit pending)
+- Batch follow-up 5: catalog cleanup (affiliate notes, Catalog v3 pill, verified-month badges -> plain Verified, workspace goal guidance); tsc + build green (commit pending)
+- Batch follow-up 6: marked 6 model-like tools with kind (Jukebox/AudioCraft/CodeT5 open_weight, DALL-E/WaveNet runnable, Hugging Face platform); Models view now 15 cards (commit pending: data-only, no code change)
+- Batch follow-up 7: fixed Hugging Face (domain research, job research_topic, model-hub tagline/best_for); tagline script gained --exclude-ids; ruff clean (commit pending)
+- Batch follow-up 8: researched + imported Manus (ID 124, builders, freemium $20+, official help-center evidence x3 matched, logo+og, VERIFIED); backfill 114 ok / 0 failed; catalog now 124 tools (commit pending)
+- Batch follow-up 9: landing beautification (hairline grid, animated route + waypoint SVG, entrance motion, section anchors); same theme, single accent color; tsc + build green (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

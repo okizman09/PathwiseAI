@@ -65,6 +65,8 @@ class WorkflowStep(BaseModel):
         description="1-2 alternative verified tools suitable for this step",
     )
     prompt: str | None = Field(default=None, description="Paste-ready prompt customised for the tool's prompt_style")
+    content_type: Literal["prompt", "steps"] = Field(default="prompt", description="prompt for creative jobs, steps for setup/deployment/config jobs")
+    action_steps: list[str] = Field(default_factory=list, description="Ordered setup actions when content_type is steps")
     technique: str | None = Field(default=None, description="One-line summary of the prompting technique used")
     output_expected: str | None = Field(default=None, description="What tangible asset or result this step outputs")
     why_tool: str | None = Field(default=None, description="Why this tool was chosen (max 2 sentences)")

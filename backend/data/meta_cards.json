@@ -71,7 +71,8 @@
     ],
     "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)",
     "pricing_notes": "Standard: $1.25/M input, $0.15/M cached, $4.25/M output. Contributor: $0.10/$0.002/$0.20 (Meta uses data to improve products). Per-token, no minimums.",
-    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits"
+    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+    "has_free_tier": false
   },
   {
     "pricing_model": "paid",
@@ -142,7 +143,8 @@
     ],
     "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-wonder-1.0\", input=\"Your prompt here\")\nprint(response.output_text)",
     "pricing_notes": "$4/M input, $0.20/M cached, $20/M output. Wonder Full is subscription-only, not on the API.",
-    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits"
+    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+    "has_free_tier": false
   },
   {
     "pricing_model": "paid",
@@ -208,7 +210,8 @@
     ],
     "api_snippet": "curl --fail-with-body 'https://api.meta.ai/v1/asr/transcribe' -H \"Authorization: Bearer $MODEL_API_KEY\" '-F 'request={\"mode\":\"DIARIZATION\",\"model\":\"muse-voice-transcribe-1.0\",\"audioEncoding\":\"WAV\"};type=application/json' '-F 'audio=@meeting_audio.wav'",
     "pricing_notes": "$0.18 per audio hour ($3.00 per 1,000 min). No minimums.",
-    "pricing_url": "https://dev.meta.ai/models/muse-voice-transcribe"
+    "pricing_url": "https://dev.meta.ai/models/muse-voice-transcribe",
+    "has_free_tier": false
   },
   {
     "pricing_model": "paid",
@@ -275,7 +278,8 @@
     ],
     "api_snippet": "import os\nfrom openai import OpenAI\n\nclient = OpenAI(base_url=\"https://api.meta.ai/v1\", api_key=os.environ[\"MODEL_API_KEY\"])\nwith client.responses.stream(\n    model=\"sam-3.1\",\n    input=[{\n        \"type\": \"message\", \"role\": \"user\",\n        \"content\": [\n            {\"type\": \"input_text\", \"text\": \"glasses\"},\n            {\"type\": \"input_image\", \"image_url\": \"https://example.com/photo.png\"},\n        ],\n    }],\n) as stream:\n    for event in stream:\n        print(event.type)",
     "pricing_notes": "$2.50 per 1,000 images; $0.20 per 1,000 video frames (min 50 frames per request).",
-    "pricing_url": "https://dev.meta.ai/models/sam-3-1"
+    "pricing_url": "https://dev.meta.ai/models/sam-3-1",
+    "has_free_tier": false
   },
   {
     "pricing_model": "paid",
@@ -344,7 +348,8 @@
     ],
     "api_snippet": "import os\nfrom openai import OpenAI\n\nclient = OpenAI(base_url=\"https://api.meta.ai/v1\", api_key=os.environ[\"MODEL_API_KEY\"])\nresponse = client.responses.create(\n    model=\"muse-image-1.0\",\n    input=\"a red fox trotting through fresh snow, golden hour\",\n)",
     "pricing_notes": "$0.01 per image, search grounding included.",
-    "pricing_url": "https://dev.meta.ai/models/muse-image"
+    "pricing_url": "https://dev.meta.ai/models/muse-image",
+    "has_free_tier": false
   },
   {
     "pricing_model": "paid",
@@ -413,9 +418,10 @@
       "Supported models inside the tool.",
       "Windows support details."
     ],
-    "api_snippet": null,
+    "api_snippet": "# Install Muse Code (puts the `muse` binary on your path)\ncurl -fsSL https://dev.meta.ai/install.sh | sh\n# Windows PowerShell:\n# irm https://dev.meta.ai/install.ps1 | iex\n\n# Start an interactive session in any project directory\ncd my-project && muse",
     "pricing_notes": "Flat monthly subscription (4 plans) or pay-as-you-go API billing; benefits vary by region.",
-    "pricing_url": "https://dev.meta.ai/docs/muse-code/subscriptions"
+    "pricing_url": "https://dev.meta.ai/docs/muse-code/subscriptions",
+    "has_free_tier": false
   },
   {
     "pricing_model": "paid",
@@ -485,7 +491,8 @@
     ],
     "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)",
     "pricing_notes": "Pay-as-you-go, no minimums or upfront commitment. See per-model rates.",
-    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits"
+    "pricing_url": "https://dev.meta.ai/docs/pricing-rate-limits",
+    "has_free_tier": false
   },
   {
     "pricing_model": "open_source",
@@ -552,9 +559,11 @@
       "Licence terms.",
       "Hardware requirements for self-hosting."
     ],
-    "api_snippet": null,
+    "api_snippet": "# Serve with vLLM (downloads weights from Hugging Face)\nvllm serve meta-models/Muse-Spark-Open-816B-A42B-NVFP4\n\n# Or load with Transformers\nfrom transformers import AutoProcessor, AutoModelForMultimodalLM\nprocessor = AutoProcessor.from_pretrained(\"meta-models/Muse-Spark-Open-816B-A42B\")\nmodel = AutoModelForMultimodalLM.from_pretrained(\"meta-models/Muse-Spark-Open-816B-A42B\")",
     "pricing_notes": "Weights free to download; partner hosting costs vary.",
-    "pricing_url": "https://dev.meta.ai/models/muse-spark-open"
+    "pricing_url": "https://dev.meta.ai/models/muse-spark-open",
+    "has_free_tier": true,
+    "free_tier_summary": "Open weights to download and self-host"
   },
   {
     "pricing_model": "open_source",
@@ -618,8 +627,10 @@
     "best_for": "Always-on local agents and local coding on your own GPU.",
     "not_for": "Anyone who wants a hosted API with no setup.",
     "unknowns": [],
-    "api_snippet": null,
+    "api_snippet": "# Serve locally with vLLM (runs on a single GPU)\nvllm serve meta-models/Muse-Glimmer-30B\n# Weights: https://huggingface.co/meta-models/Muse-Glimmer-30B (Apache 2.0)",
     "pricing_notes": "Weights free to download (Apache 2.0); you provide the hardware.",
-    "pricing_url": "https://dev.meta.ai/models/muse-glimmer"
+    "pricing_url": "https://dev.meta.ai/models/muse-glimmer",
+    "has_free_tier": true,
+    "free_tier_summary": "Open weights to download and self-host"
   }
 ]

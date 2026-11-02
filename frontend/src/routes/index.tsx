@@ -39,30 +39,60 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const stages = [
+const stages: {
+  name: string;
+  label: string;
+  title: string;
+  detail: string;
+  tool: string;
+  model?: string;
+  prompt?: string;
+  steps?: string[];
+}[] = [
   {
-    name: "Draft",
-    label: "Illustrative example · Step 1: Outline & structure",
-    title: "Define the core foundation of your project",
-    detail: "Distill user requirements, target audience, and key constraints into an actionable plan.",
-    tool: "Claude",
-    prompt: "Structure the initial brief and scope for this project...",
+    name: "Capture",
+    label: "Illustrative example · Step 1: Record & upload",
+    title: "Capture voice notes at the counter",
+    detail:
+      "Staff record orders with the browser mic or upload audio files, from a mobile-friendly dashboard built for a busy restaurant.",
+    tool: "Lovable",
+    prompt:
+      "Build a mobile-friendly page where restaurant staff record voice notes with the browser mic or upload audio, then review each order before confirming.",
   },
   {
-    name: "Build",
-    label: "Illustrative example · Step 2: Core execution",
-    title: "Implement the main components",
-    detail: "Generate the necessary assets, models, or schema definitions to bring the idea to life.",
-    tool: "Cursor",
-    prompt: "Create the primary deliverables based on the draft requirements...",
+    name: "Transcribe",
+    label: "Illustrative example · Step 2: Speech to text",
+    title: "Turn speech into accurate text",
+    detail:
+      "Every recording becomes a verbatim transcript with item names, quantities, modifications, and table numbers kept exact.",
+    tool: "Muse Voice Transcribe",
+    model: "muse-voice-transcribe-1.0",
+    prompt:
+      "Transcribe each order recording verbatim. Keep item names, quantities, modifications, and table numbers exact, even with kitchen background noise.",
   },
   {
-    name: "Launch",
-    label: "Illustrative example · Step 3: Polish & deploy",
-    title: "Finalize details and prepare for release",
-    detail: "Review, optimize, and publish the final result for your target audience.",
-    tool: "Vercel",
-    prompt: "Review the current state and deploy the production build...",
+    name: "Structure",
+    label: "Illustrative example · Step 3: Transcript to order",
+    title: "Structure transcripts into orders",
+    detail:
+      "Transcripts are parsed into items, quantities, modifications, and table info, validated, and flagged when anything is unclear.",
+    tool: "Muse Spark",
+    model: "muse-spark-1.3",
+    prompt:
+      "Convert this transcript into a structured order with items, quantities, modifications, and table info. Return JSON and flag anything unclear instead of guessing.",
+  },
+  {
+    name: "Store",
+    label: "Illustrative example · Step 4: Database & tracking",
+    title: "Store and track every order",
+    detail:
+      "Orders land in a database with status tracking from new to completed, plus history and a kitchen-ready view.",
+    tool: "Supabase",
+    steps: [
+      "Create an orders table with items, quantities, modifications, table info, and status.",
+      "Connect the dashboard to save each confirmed order.",
+      "Add status tracking: new, preparing, ready, completed.",
+    ],
   },
 ];
 
@@ -169,6 +199,54 @@ function Header() {
   );
 }
 
+function RouteBackdrop() {
+  const waypoints = [
+    { x: 179, y: 383, delay: "1s" },
+    { x: 458, y: 216, delay: "1.5s" },
+    { x: 910, y: 316, delay: "2s" },
+  ];
+  return (
+    <svg
+      aria-hidden="true"
+      viewBox="0 0 1200 600"
+      preserveAspectRatio="xMidYMid slice"
+      className="pointer-events-none absolute inset-0 h-full w-full text-primary"
+    >
+      <path
+        d="M -60 470 C 260 430 360 140 640 210 C 820 255 900 420 1260 240"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2"
+        pathLength={1}
+        opacity="0.35"
+        className="animate-route-draw"
+      />
+      {waypoints.map((point) => (
+        <g key={point.x}>
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r="7"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="2"
+            opacity="0.5"
+            className="animate-waypoint"
+            style={{ animationDelay: point.delay }}
+          />
+          <circle
+            cx={point.x}
+            cy={point.y}
+            r="3.5"
+            fill="currentColor"
+            opacity="0.7"
+          />
+        </g>
+      ))}
+    </svg>
+  );
+}
+
 function WorkflowPreview({ compact = false }: { compact?: boolean }) {
   const [active, setActive] = useState(compact ? 1 : 0);
   const current = stages[active];
@@ -176,15 +254,25 @@ function WorkflowPreview({ compact = false }: { compact?: boolean }) {
   if (!current) return null;
 
   return (
-    <div className={cn("workflow-shell", compact && "workflow-shell-compact")}>
+    <div
+      className={cn(
+        "workflow-shell",
+        "relative",
+        compact && "workflow-shell-compact",
+      )}
+    >
       <div className="flex items-center justify-between border-b border-border px-5 py-4 sm:px-7">
         <div className="flex min-w-0 items-center gap-3">
           <span className="grid size-8 shrink-0 place-items-center rounded-md bg-accent text-accent-foreground">
             <WandSparkles className="size-4" />
           </span>
           <div className="min-w-0">
-            <p className="truncate text-sm font-semibold">Web App MVP</p>
-            <p className="text-xs text-muted-foreground">Illustrative example · 3 tailored steps (1–6 steps based on goal)</p>
+            <p className="truncate text-sm font-semibold">
+              Voice-to-Order Dashboard
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Illustrative example · 4 tailored steps (1–6 steps based on goal)
+            </p>
           </div>
         </div>
         <span className="hidden items-center gap-1.5 text-xs font-medium text-emerald-600 sm:flex">
@@ -194,7 +282,11 @@ function WorkflowPreview({ compact = false }: { compact?: boolean }) {
 
       <div className="grid min-h-[360px] md:grid-cols-[176px_minmax(0,1fr)]">
         <div className="border-b border-border bg-muted/45 p-3 md:border-r md:border-b-0 md:p-4">
-          <div className="grid grid-cols-5 gap-1 md:grid-cols-1 md:gap-1.5" role="tablist" aria-label="Creation path stages">
+          <div
+            className="grid grid-cols-4 gap-1 md:grid-cols-1 md:gap-1.5"
+            role="tablist"
+            aria-label="Creation path stages"
+          >
             {stages.map((stage, index) => (
               <Button
                 key={stage.name}
@@ -222,17 +314,38 @@ function WorkflowPreview({ compact = false }: { compact?: boolean }) {
           <h3 className="mt-4 max-w-lg text-2xl font-semibold leading-[1.18] sm:text-[32px]">{current.title}</h3>
           <p className="mt-4 max-w-lg text-sm leading-6 text-muted-foreground sm:text-[15px]">{current.detail}</p>
           <div className="mt-8 grid gap-3 sm:grid-cols-2">
-            <div className="rounded-lg border border-border bg-background p-4">
+            <div className="rounded-lg border border-border bg-background p-4 transition-colors hover:border-primary/30">
               <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
                 <Layers3 className="size-4 text-primary" /> Recommended tool
               </div>
               <p className="mt-3 text-sm font-semibold">{current.tool}</p>
+              {current.model && (
+                <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+                  {current.model}
+                </p>
+              )}
             </div>
-            <div className="rounded-lg border border-border bg-background p-4">
+            <div className="rounded-lg border border-border bg-background p-4 transition-colors hover:border-primary/30">
               <div className="flex items-center gap-2 text-xs font-medium text-muted-foreground">
-                <Sparkles className="size-4 text-primary" /> Starting prompt
+                <Sparkles className="size-4 text-primary" />
+                {current.steps ? "Setup steps" : "Starting prompt"}
               </div>
-              <p className="mt-3 text-sm font-semibold leading-5">{current.prompt}</p>
+              {current.steps ? (
+                <ol className="mt-3 space-y-2 text-sm font-medium leading-5">
+                  {current.steps.map((step, index) => (
+                    <li key={index} className="flex gap-2">
+                      <span className="font-mono text-xs font-bold text-primary">
+                        {index + 1}.
+                      </span>
+                      <span>{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p className="mt-3 text-sm font-semibold leading-5">
+                  {current.prompt}
+                </p>
+              )}
             </div>
           </div>
           <div className="mt-auto flex items-center justify-between pt-8">
@@ -258,8 +371,13 @@ function Index() {
       <Header />
 
       {/* HERO SECTION */}
-      <section className="mx-auto grid max-w-[1440px] items-center gap-12 px-5 pt-12 pb-16 sm:px-8 sm:pt-16 lg:min-h-[680px] lg:grid-cols-[0.78fr_1.22fr] lg:gap-14 lg:px-12 lg:pt-10 lg:pb-16 xl:gap-20">
-        <div className="max-w-xl lg:pl-4">
+      <section className="relative mx-auto grid max-w-[1440px] items-center gap-12 overflow-hidden px-5 pt-12 pb-16 sm:px-8 sm:pt-16 lg:min-h-[680px] lg:grid-cols-[0.78fr_1.22fr] lg:gap-14 lg:px-12 lg:pt-10 lg:pb-16 xl:gap-20">
+        <div
+          aria-hidden="true"
+          className="bg-grid-faint pointer-events-none absolute inset-0 [mask-image:radial-gradient(ellipse_75%_70%_at_50%_40%,black,transparent)]"
+        />
+        <RouteBackdrop />
+        <div className="relative max-w-xl animate-rise lg:pl-4">
           <p className="eyebrow">Your creation coach</p>
           <h1 className="mt-5 max-w-[580px] text-[44px] font-semibold leading-[0.98] sm:text-[64px] lg:text-[72px] tracking-tight">
             Turn your idea into a clear path.
@@ -293,7 +411,10 @@ function Index() {
       </section>
 
       {/* HOW IT WORKS */}
-      <section id="how-it-works" className="mx-auto max-w-[1200px] px-5 py-20 sm:px-8 md:py-28 lg:px-12">
+      <section
+        id="how-it-works"
+        className="bg-grid-faint mx-auto max-w-[1200px] scroll-mt-24 px-5 py-20 sm:px-8 md:py-28 lg:px-12"
+      >
         <div className="grid gap-8 md:grid-cols-[0.48fr_1fr]">
           <div>
             <p className="eyebrow">How Pathwise works</p>
@@ -315,15 +436,21 @@ function Index() {
       </section>
 
       {/* EXAMPLE SECTION */}
-      <section id="example" className="bg-surface-strong py-20 md:py-28">
+      <section
+        id="example"
+        className="bg-surface-strong bg-grid-faint scroll-mt-24 py-20 md:py-28"
+      >
         <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12">
           <div className="grid items-end gap-8 md:grid-cols-[1fr_0.68fr]">
             <div>
               <p className="eyebrow">Example creation path</p>
-              <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">From a loose idea to a launch-ready plan.</h2>
+              <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">
+                From a voice note to a kitchen-ready order.
+              </h2>
             </div>
             <p className="max-w-md text-sm leading-6 text-muted-foreground md:justify-self-end">
-              Explore each stage to see how Pathwise keeps the tool, prompt, and next decision in one clear view.
+              This example turns spoken restaurant notes into structured,
+              trackable orders — tool, prompt, and next decision in one view.
             </p>
           </div>
           <div className="mt-12 md:mt-16">

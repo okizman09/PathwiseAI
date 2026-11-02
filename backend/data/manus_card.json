@@ -1,0 +1,73 @@
+[
+  {
+    "name": "Manus",
+    "domain": "builders",
+    "official_url": "https://manus.im",
+    "docs_url": "https://manus.im/docs",
+    "pricing_url": "https://manus.im/pricing",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "300 daily refresh credits + 1,000 starter credits",
+    "free_tier_limits": "1 concurrent task and 2 scheduled automations on the Free plan",
+    "starting_price_monthly_usd": 20.0,
+    "pricing_notes": "Credit-based: Pro from $20/mo (4,000 credits) or $40/mo (8,000 credits, 7-day trial); Team from $20/seat; 17% off annual billing.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": ["web", "desktop", "mobile", "api"],
+    "skill_level": "all",
+    "jobs": ["build_website", "build_web_app", "make_presentation", "research_topic", "generate_video_clips"],
+    "tagline": "Autonomous agent that turns one prompt into a finished website, app, or report.",
+    "summary": "Manus is an autonomous AI agent: describe the outcome and it plans, browses, codes, and delivers finished work such as websites, apps, slides, and research reports. Tasks run in the cloud with live progress, then hand over deployable results.",
+    "how_it_helps": "Instead of chatting back and forth, you delegate the whole task. Manus breaks it down, uses real tools and browsers, and returns completed work you can review and deploy.",
+    "pros": [
+      "Completes multi-step tasks end to end from a single prompt",
+      "Builds and deploys real websites and web apps",
+      "Generous free tier with 300 daily refresh credits"
+    ],
+    "cons": [
+      "Credit costs scale fast on complex, long-running tasks",
+      "Agent output needs review before production use",
+      "Less direct control than building in a code editor yourself"
+    ],
+    "prompt_style": {
+      "technique": "Outcome-based delegation",
+      "format": "Goal plus context plus constraints",
+      "rules": [
+        "State the finished deliverable first",
+        "Include audience, scope, and must-haves",
+        "Let the agent plan the steps"
+      ],
+      "example": "Build a landing page for my dog-walking service with pricing, a booking form, and a contact section. Deploy it and send me the link."
+    },
+    "input_types": ["text", "files", "links"],
+    "output_types": ["websites", "apps", "slides", "reports"],
+    "best_for": "Founders and teams who want finished work from one prompt: sites, apps, slides, research.",
+    "not_for": "Developers who want direct control over code, or tasks needing on-device execution.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://help.manus.im/en/articles/11711111-what-is-the-current-membership-pricing-for-manus",
+        "quote": "Manus offers Free & Pro & Team plan options",
+        "checked": null
+      },
+      "has_free_tier": {
+        "source_url": "https://help.manus.im/en/articles/11711111-what-is-the-current-membership-pricing-for-manus",
+        "quote": "Daily Refresh Credits: 300 credits provided daily",
+        "checked": null
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://help.manus.im/en/articles/11711111-what-is-the-current-membership-pricing-for-manus",
+        "quote": "Pro Plan Price 1: Starting from $20/month",
+        "checked": null
+      }
+    },
+    "unknowns": [],
+    "checked_on": "2026-11-02",
+    "official_domains": ["manus.im", "manus.ai"],
+    "logo_source_url": null,
+    "ecosystem": null,
+    "kind": null,
+    "model_id": null,
+    "api_snippet": null
+  }
+]

@@ -36,6 +36,8 @@ class WorkflowStep(Base):
     primary_tool_id = Column(Integer, ForeignKey("tools.id"), nullable=True)
     alternative_tool_ids = Column(JSON, nullable=False, default=list)
     prompt = Column(Text, nullable=True)
+    content_type = Column(String(10), nullable=True, server_default="prompt")  # "prompt" | "steps"
+    action_steps = Column(JSON, nullable=True)  # ordered setup actions when content_type is steps
     technique = Column(Text, nullable=True)
     output_expected = Column(Text, nullable=True)
     why_tool = Column(Text, nullable=True)

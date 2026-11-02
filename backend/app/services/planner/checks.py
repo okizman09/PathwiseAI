@@ -39,7 +39,11 @@ def check_plan(
         tool = step.primary_tool
         if step.kind != "tool" or tool is None or tool.id not in known_tool_ids:
             failures.append(f"step {n}: no catalog tool")
-        if not (step.prompt or "").strip():
+        if step.content_type == "steps":
+            actions = [a for a in (step.action_steps or []) if a and a.strip()]
+            if not actions:
+                failures.append(f"step {n}: empty action_steps")
+        elif not (step.prompt or "").strip():
             failures.append(f"step {n}: empty prompt")
 
     jobs = [s.job for s in steps]
@@ -51,6 +55,8 @@ def check_plan(
         found: set[str] = set()
         for field in _STEP_TEXT_FIELDS:
             found |= find_model_ids(getattr(step, field, None))
+        for item in step.action_steps or []:
+            found |= find_model_ids(item)
         unknown = sorted(found - known_model_ids)
         if unknown:
             failures.append(

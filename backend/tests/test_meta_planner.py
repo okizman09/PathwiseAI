@@ -171,3 +171,76 @@ def test_strip_unknown_model_ids_unit():
     assert cleaned == "Use muse-keep-1.0, not . (Also .)"
     assert sorted(removed) == ["muse-drop-2", "sam-drop"]
     assert _strip_unknown_model_ids("", {"a"}) == ("", [])
+
+
+@pytest.mark.asyncio
+async def test_plan_persists_steps_content(seeded_db, monkeypatch):
+    """A steps-type synthesized step round-trips through the response and DB."""
+    from app.services.plan import generate_workflow_plan
+
+    meta_id = seeded_db.query(Tool).filter(Tool.name == META_NAME).one().id
+    calls = []
+
+    async def fake_generate_structured(*, system, user, schema, temperature=0.2, max_output_tokens=None):
+        calls.append({"system": system, "schema": schema.__name__})
+        if schema.__name__ == "LLMJobsPlan":
+            return LLMJobsPlan(jobs=[JobPlanningItem(
+                step_number=1, job="transcribe_audio", job_tags=[],
+                input_types=["audio"], output_types=["text"], output_expected="Transcript")])
+        return LLMWorkflowSynthesis(title="T plan", steps=[LLMStepSynthesis(
+            step_number=1, job="transcribe_audio", why_step="why",
+            primary_tool_id=meta_id, alternative_tool_ids=[],
+            prompt="", content_type="steps",
+            action_steps=["Install the CLI.", "Run transcribe."],
+            output_expected="Transcript")])
+
+    monkeypatch.setattr("app.services.plan.generate_structured", fake_generate_structured)
+    user = seeded_db.query(Profile).filter(Profile.id == USER_ID).one()
+
+    from app.schemas.brief import ProductBrief
+    brief = ProductBrief(
+        what_being_made="m", purpose="p", target_audience="a", constraints=[],
+        must_haves=[], nice_to_haves=[], assumptions=[], skill_level="intermediate",
+        budget_preference="flexible", needs_commercial_use="unknown",
+        detected_domains=["audio"],
+    )
+    result = await generate_workflow_plan(seeded_db, user, brief)
+
+    synthesis = next(c for c in calls if c["schema"] == "LLMWorkflowSynthesis")
+    assert "CONTENT FORMAT" in synthesis["system"]
+    assert result.steps[0].content_type == "steps"
+    assert result.steps[0].action_steps == ["Install the CLI.", "Run transcribe."]
+    row = seeded_db.query(DBWorkflowStep).filter(
+        DBWorkflowStep.workflow_id == result.id).one()
+    assert row.content_type == "steps"
+    assert row.action_steps == ["Install the CLI.", "Run transcribe."]
+
+
+@pytest.mark.asyncio
+async def test_regenerate_preserves_steps_format(monkeypatch):
+    """Regenerate on a steps-type step revises the steps, keeping the format."""
+    from app.schemas.tool import PromptStyleSchema
+    from app.schemas.workflow import ToolShortCard, WorkflowStep
+    from app.services.prompts import StepPromptRewriteResponse, regenerate_step_prompt
+
+    step = WorkflowStep(
+        step_id="step-1", step_number=1, job="deploy_backend", why_step="w",
+        primary_tool=ToolShortCard(
+            id=1, name="T", go_path="/go/1",
+            prompt_style=PromptStyleSchema(technique="t", format="f", rules=[], example="ex")),
+        prompt="", content_type="steps", action_steps=["Old step."],
+        output_expected="o")
+
+    async def fake_llm(*, system, user, schema, temperature=0.2, max_output_tokens=None):
+        assert "SETUP STEPS" in system
+        assert "Old step." in user
+        return StepPromptRewriteResponse(
+            prompt="", content_type="steps",
+            action_steps=["New step 1.", "New step 2."], technique="t")
+
+    monkeypatch.setattr("app.services.prompts.generate_structured", fake_llm)
+    updated = await regenerate_step_prompt(step, feedback="clearer")
+
+    assert updated.content_type == "steps"
+    assert updated.action_steps == ["New step 1.", "New step 2."]
+    assert updated.prompt == ""

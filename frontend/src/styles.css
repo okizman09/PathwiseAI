@@ -192,6 +192,74 @@
   box-shadow: 0 14px 38px color-mix(in oklab, var(--foreground) 7%, transparent);
 }
 
+/* Wayfinding backdrop: hairline grid + drawn route with waypoint pings.
+ * Single accent color (primary), no gradients. Disabled under
+ * prefers-reduced-motion by the global guard below. */
+@utility bg-grid-faint {
+  background-image:
+    linear-gradient(
+      to right,
+      color-mix(in oklab, var(--color-primary) 7%, transparent) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-primary) 7%, transparent) 1px,
+      transparent 1px
+    );
+  background-size: 44px 44px;
+}
+
+@keyframes route-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes waypoint-ping {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.7;
+  }
+  70% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(2.2);
+    opacity: 0;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@utility animate-route-draw {
+  stroke-dasharray: 1;
+  animation: route-draw 2.2s ease-out 0.2s both;
+}
+
+@utility animate-waypoint {
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: waypoint-ping 2.8s ease-out infinite;
+}
+
+@utility animate-rise {
+  animation: rise-in 0.7s ease-out both;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;

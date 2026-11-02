@@ -25,6 +25,8 @@ import { cn } from "@/lib/utils";
 
 const FALLBACK_DOMAINS = [
   { id: "all", label: "All Domains" },
+  { id: "models", label: "Models" },
+  { id: "meta", label: "Meta" },
   { id: "software", label: "Software" },
   { id: "builders", label: "Builders" },
   { id: "design", label: "Design" },
@@ -35,19 +37,6 @@ const FALLBACK_DOMAINS = [
   { id: "deploy_backend", label: "Deploy & Cloud" },
   { id: "freelance_ops", label: "Freelance Ops" },
 ];
-
-function formatVerifiedBadge(dateStr?: string | null): string | null {
-  if (!dateStr) return null;
-  try {
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return null;
-    const month = d.toLocaleString("en-US", { month: "short" });
-    const year = d.getFullYear();
-    return `Verified ${month} ${year}`;
-  } catch {
-    return null;
-  }
-}
 
 export function ToolsDirectoryModal() {
   const [open, setOpen] = useState(false);
@@ -83,6 +72,8 @@ export function ToolsDirectoryModal() {
     if (taxonomy?.domains?.length) {
       return [
         { id: "all", label: "All Domains" },
+        { id: "models", label: "Models" },
+        { id: "meta", label: "Meta" },
         ...taxonomy.domains.map((d) => ({ id: d.slug, label: d.label })),
       ];
     }
@@ -92,7 +83,11 @@ export function ToolsDirectoryModal() {
   const filteredTools = useMemo(() => {
     const q = searchQuery.toLowerCase().trim();
     const filtered = tools.filter((tool) => {
-      if (selectedDomain !== "all") {
+      if (selectedDomain === "models") {
+        if (!tool.kind) return false;
+      } else if (selectedDomain === "meta") {
+        if (tool.ecosystem !== "meta") return false;
+      } else if (selectedDomain !== "all") {
         const d = (tool.domain || tool.category || "").toLowerCase();
         if (d !== selectedDomain.toLowerCase()) return false;
       }
@@ -132,7 +127,8 @@ export function ToolsDirectoryModal() {
               <div>
                 <DialogTitle className="text-xl font-bold">Verified Tools Catalog</DialogTitle>
                 <DialogDescription className="text-xs">
-                  Real creative tools across 9 domains with verified prompt styles and pricing models.
+                  Real creative tools and AI models with verified details and
+                  pricing models.
                 </DialogDescription>
               </div>
             </div>
@@ -204,7 +200,8 @@ export function ToolsDirectoryModal() {
           ) : (
             <div className="grid gap-3.5 sm:grid-cols-2">
               {filteredTools.map((tool) => {
-                const verifiedBadge = tool.verified_badge || formatVerifiedBadge(tool.verified_at);
+                const verifiedBadge =
+                  tool.verified_badge || tool.verified_at ? "Verified" : null;
                 return (
                   <div
                     key={tool.id}
@@ -229,6 +226,11 @@ export function ToolsDirectoryModal() {
                               <span>{verifiedBadge}</span>
                             </Badge>
                           )}
+                          {tool.ecosystem === "meta" && (
+                            <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] font-semibold py-0.5">
+                              <span>Meta</span>
+                            </Badge>
+                          )}
                         </div>
                         <Badge variant="outline" className="text-[10px] uppercase font-semibold">
                           {tool.pricing_model || tool.pricing || "freemium"}
@@ -237,13 +239,29 @@ export function ToolsDirectoryModal() {
 
                       {/* Title + Open Link */}
                       <div className="flex items-start justify-between gap-2">
-                        <div className="min-w-0">
-                          <h4 className="font-bold text-sm text-foreground truncate">{tool.name}</h4>
-                          {tool.domain && (
-                            <span className="text-[10px] text-muted-foreground capitalize">
-                              {tool.domain.replace("_", " ")}
+                        <div className="flex min-w-0 items-start gap-2.5">
+                          {tool.logo_url ? (
+                            <img
+                              src={tool.logo_url}
+                              alt=""
+                              loading="lazy"
+                              className="size-9 shrink-0 rounded-lg border border-border/60 object-cover"
+                            />
+                          ) : (
+                            <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-primary/10 text-sm font-bold text-primary">
+                              {tool.name.charAt(0)}
                             </span>
                           )}
+                          <div className="min-w-0">
+                            <h4 className="font-bold text-sm text-foreground truncate">
+                              {tool.name}
+                            </h4>
+                            {tool.domain && (
+                              <span className="text-[10px] text-muted-foreground capitalize">
+                                {tool.domain.replace("_", " ")}
+                              </span>
+                            )}
+                          </div>
                         </div>
                         <a
                           href={`${getApiBaseUrl()}${tool.go_path || `/go/${tool.id}`}`}
@@ -288,8 +306,7 @@ export function ToolsDirectoryModal() {
                       )}
                     </div>
 
-                    <div className="mt-3 border-t border-border pt-2 flex items-center justify-between text-[10px] text-muted-foreground">
-                      <span>May include affiliate link</span>
+                    <div className="mt-3 border-t border-border pt-2 flex items-center justify-end text-[10px] text-muted-foreground">
                       <Link
                         to="/tools"
                         onClick={() => setOpen(false)}

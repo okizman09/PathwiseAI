@@ -317,6 +317,10 @@ function AppPage() {
         <h1 className="mt-4 text-3xl sm:text-4xl font-semibold tracking-tight">
           What do you want to create?
         </h1>
+        <p className="mt-2 max-w-xl text-sm text-muted-foreground">
+          Describe what you want to make, who it is for, and what success looks
+          like.
+        </p>
 
         {!started ? (
           <form
@@ -710,8 +714,42 @@ function StepCard({
         </div>
       ) : null}
 
-      {/* PROMPT BOX */}
-      {step.prompt ? (
+      {/* PROMPT OR SETUP STEPS */}
+      {step.content_type === "steps" &&
+      step.action_steps &&
+      step.action_steps.length > 0 ? (
+        <div className="mt-5 rounded-xl border border-border bg-background p-4 sm:p-5">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
+              <Layers3 className="size-3.5" /> Setup Steps
+            </span>
+            <Button
+              size="sm"
+              variant="secondary"
+              className="h-7 px-2.5 text-xs gap-1.5 font-medium"
+              onClick={() => {
+                navigator.clipboard.writeText((step.action_steps || []).join("\n"));
+                toast.success("Steps copied to clipboard!");
+              }}
+            >
+              <Copy className="size-3.5" /> Copy
+            </Button>
+          </div>
+          <ol className="mt-3 space-y-2">
+            {step.action_steps.map((action, i) => (
+              <li
+                key={i}
+                className="flex items-start gap-2 text-sm leading-relaxed text-foreground/90"
+              >
+                <span className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10 text-[10px] font-bold text-primary">
+                  {i + 1}
+                </span>
+                <span className="whitespace-pre-wrap">{action}</span>
+              </li>
+            ))}
+          </ol>
+        </div>
+      ) : step.prompt ? (
         <div className="mt-5 rounded-xl border border-border bg-background p-4 sm:p-5">
           <div className="flex items-center justify-between gap-2">
             <span className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
@@ -789,7 +827,7 @@ function StepCard({
           onClick={() => onAction(step, "regenerate")}
         >
           {b("regenerate") ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
-          Regenerate Prompt
+          {step.content_type === "steps" ? "Regenerate Steps" : "Regenerate Prompt"}
         </Button>
         {step.alternatives?.map((alt) => (
           <Button

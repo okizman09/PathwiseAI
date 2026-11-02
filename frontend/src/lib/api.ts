@@ -221,6 +221,8 @@ export interface WorkflowStep {
   primary_tool?: ToolShortCard | null;
   alternatives?: ToolShortCard[];
   prompt?: string | null;
+  content_type?: "prompt" | "steps" | null;
+  action_steps?: string[] | null;
   technique?: string | null;
   output_expected?: string | null;
   why_tool?: string | null;
