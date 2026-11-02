@@ -1,0 +1,114 @@
+name,domain,jobs,url,docs_url,logo_url,logo_source_url
+Cursor,software,write_code|debug_code|review_code,https://cursor.com,https://cursor.com/docs,/logos/cursor.svg,
+Claude Code,software,write_code|debug_code|review_code|manage_code,https://claude.com/product/claude-code,https://code.claude.com/docs/en/overview,/logos/claude-code.svg,
+GitHub Copilot,software,write_code|debug_code|review_code|manage_code,https://github.com/features/copilot,https://docs.github.com/en/copilot,/logos/github-copilot.svg,
+Google Antigravity,software,plan_app|write_code|debug_code|review_code,https://antigravity.google,,/logos/google-antigravity.svg,
+Windsurf,software,write_code|debug_code|review_code,https://windsurf.com,https://docs.windsurf.com,/logos/windsurf.svg,
+GitHub,software,manage_code|review_code|plan_app,https://github.com,https://docs.github.com,/logos/github.svg,
+Figma,design,design_ui|make_presentation,https://www.figma.com,https://help.figma.com,/logos/figma.svg,
+Canva,design,generate_image|edit_image|design_brand|make_social_graphics|make_presentation,https://www.canva.com,https://www.canva.com/help,,https://www.google.com/s2/favicons?domain=canva.com&sz=128
+Adobe Firefly,design,generate_image|edit_image|make_social_graphics,https://firefly.adobe.com,,/logos/adobe-firefly.svg,
+Midjourney,design,generate_image|edit_image|design_brand|make_social_graphics,https://www.midjourney.com,https://docs.midjourney.com,/logos/midjourney.svg,
+Ideogram,design,generate_image|edit_image|design_brand|make_social_graphics,https://ideogram.ai,,/logos/ideogram.svg,
+Gamma,design,make_presentation|make_social_graphics,https://gamma.app,,,https://www.google.com/s2/favicons?domain=gamma.app&sz=128
+Replit,builders,build_web_app|build_mobile_app|write_code,https://replit.com,https://docs.replit.com,/logos/replit.svg,
+Lovable,builders,build_web_app|build_landing_page|build_website,https://lovable.dev,https://docs.lovable.dev,/logos/lovable.svg,
+Bolt.new,builders,build_web_app|build_website|build_landing_page,https://bolt.new,https://support.bolt.new,,https://www.google.com/s2/favicons?domain=bolt.new&sz=128
+v0,builders,design_ui|build_landing_page|build_web_app,https://v0.app,https://v0.app/docs,/logos/v0.svg,
+Framer,builders,build_website|build_landing_page|design_ui,https://www.framer.com,https://www.framer.com/help,/logos/framer.svg,
+Runway,video,generate_video_clips|edit_video,https://runwayml.com,https://help.runwayml.com,/logos/runway.svg,
+CapCut,video,edit_video|add_captions|repurpose_clips,https://www.capcut.com,,/logos/capcut.svg,
+Descript,video,edit_video|edit_audio|add_captions|transcribe_audio,https://www.descript.com,https://help.descript.com,,https://www.google.com/s2/favicons?domain=descript.com&sz=128
+HeyGen,video,make_avatar_video|generate_voiceover,https://www.heygen.com,https://help.heygen.com,,https://www.google.com/s2/favicons?domain=heygen.com&sz=128
+Luma Dream Machine,video,generate_video_clips,https://lumalabs.ai,,/logos/luma-dream-machine.svg,
+Kling AI,video,generate_video_clips,https://klingai.com,,/logos/kling-ai.svg,
+Suno,audio,generate_music,https://suno.com,,/logos/suno.svg,
+Udio,audio,generate_music,https://www.udio.com,,/logos/udio.svg,
+ElevenLabs,audio,generate_voiceover|transcribe_audio,https://elevenlabs.io,https://elevenlabs.io/docs,/logos/elevenlabs.svg,
+Audacity,audio,edit_audio|record_podcast,https://www.audacityteam.org,https://support.audacityteam.org,/logos/audacity.svg,
+Otter.ai,audio,transcribe_audio|take_notes,https://otter.ai,https://help.otter.ai,,https://www.google.com/s2/favicons?domain=otter.ai&sz=128
+ChatGPT,writing,draft_content|edit_proofread|research_topic|write_email_copy,https://chatgpt.com,https://help.openai.com,/logos/chatgpt.svg,
+Claude,writing,draft_content|edit_proofread|write_code|summarize_documents,https://claude.ai,https://support.claude.com,/logos/claude.svg,
+Gemini,writing,draft_content|research_topic|summarize_documents,https://gemini.google.com,,/logos/gemini.svg,
+Grammarly,writing,edit_proofread|write_email_copy,https://www.grammarly.com,https://support.grammarly.com,/logos/grammarly.svg,
+Perplexity,research,research_topic|summarize_documents,https://www.perplexity.ai,https://docs.perplexity.ai,/logos/perplexity.svg,
+NotebookLM,research,summarize_documents|research_topic|take_notes,https://notebooklm.google,,/logos/notebooklm.svg,
+Notion,research,take_notes|organize_knowledge|manage_projects,https://www.notion.com,https://www.notion.com/help,/logos/notion.svg,
+Obsidian,research,take_notes|organize_knowledge,https://obsidian.md,https://help.obsidian.md,/logos/obsidian.svg,
+Supabase,deploy_backend,set_up_database|set_up_auth|host_backend,https://supabase.com,https://supabase.com/docs,/logos/supabase.svg,
+Vercel,deploy_backend,host_frontend,https://vercel.com,https://vercel.com/docs,/logos/vercel.svg,
+Cloudflare,deploy_backend,host_frontend|host_backend|set_up_analytics,https://www.cloudflare.com/developer-platform,https://developers.cloudflare.com,/logos/cloudflare.svg,
+Render,deploy_backend,host_backend|host_frontend|set_up_database,https://render.com,https://render.com/docs,/logos/render.svg,
+Netlify,deploy_backend,host_frontend,https://www.netlify.com,https://docs.netlify.com,/logos/netlify.svg,
+Stripe,freelance_ops,collect_payments|send_invoice,https://stripe.com,https://docs.stripe.com,/logos/stripe.svg,
+Calendly,freelance_ops,schedule_meetings,https://calendly.com,https://help.calendly.com,/logos/calendly.svg,
+Loom,freelance_ops,record_walkthroughs,https://www.loom.com,https://support.atlassian.com/loom,/logos/loom.svg,
+Gemini CLI,software,write_code|debug_code|manage_code,https://geminicli.com,https://geminicli.com/docs,/logos/gemini-cli.svg,
+OpenAI Codex,software,write_code|debug_code|review_code,https://openai.com/codex,https://developers.openai.com,/logos/openai-codex.svg,
+Cline,software,write_code|debug_code,https://cline.bot,https://docs.cline.bot,/logos/cline.svg,
+Aider,software,write_code|manage_code,https://aider.chat,https://aider.chat/docs,,https://www.google.com/s2/favicons?domain=aider.chat&sz=128
+Warp,software,manage_code|debug_code,https://www.warp.dev,https://docs.warp.dev,/logos/warp.svg,
+Postman,software,write_tests|write_docs|debug_code,https://www.postman.com,https://learning.postman.com/docs,/logos/postman.svg,
+Hugging Face,software,analyze_data|write_code,https://huggingface.co,https://huggingface.co/docs,/logos/hugging-face.svg,
+Webflow,builders,build_website|build_landing_page,https://webflow.com,https://help.webflow.com,/logos/webflow.svg,
+Bubble,builders,build_web_app|automate_workflow,https://bubble.io,https://manual.bubble.io,,https://www.google.com/s2/favicons?domain=bubble.io&sz=128
+FlutterFlow,builders,build_mobile_app|build_web_app,https://flutterflow.io,https://docs.flutterflow.io,,https://www.google.com/s2/favicons?domain=flutterflow.io&sz=128
+Zapier,builders,automate_workflow,https://zapier.com,https://docs.zapier.com,/logos/zapier.svg,
+n8n,builders,automate_workflow,https://n8n.io,https://docs.n8n.io,/logos/n8n.svg,
+Adobe Express,design,make_social_graphics|edit_image|make_presentation,https://www.adobe.com/express,,/logos/adobe-express.svg,
+Leonardo.Ai,design,generate_image|edit_image,https://leonardo.ai,,,https://www.google.com/s2/favicons?domain=leonardo.ai&sz=128
+Recraft,design,generate_image|design_brand|make_social_graphics,https://www.recraft.ai,,/logos/recraft.svg,
+Krea,design,generate_image|edit_image,https://www.krea.ai,,/logos/krea.svg,
+Looka,design,design_brand,https://looka.com,,,https://www.google.com/s2/favicons?domain=looka.com&sz=128
+Photopea,design,edit_image,https://www.photopea.com,,/logos/photopea.svg,
+remove.bg,design,edit_image,https://www.remove.bg,,/logos/remove-bg.svg,
+Pika,video,generate_video_clips,https://pika.art,,/logos/pika.svg,
+Hailuo AI,video,generate_video_clips,https://hailuoai.video,,/logos/hailuo-ai.svg,
+Google Flow,video,generate_video_clips|storyboard_video,https://labs.google/flow,,,https://www.google.com/s2/favicons?domain=labs.google&sz=128
+VEED,video,edit_video|add_captions|repurpose_clips,https://www.veed.io,https://www.veed.io/support,/logos/veed.svg,
+DaVinci Resolve,video,edit_video,https://www.blackmagicdesign.com/products/davinciresolve,,/logos/davinci-resolve.svg,
+OBS Studio,video,record_walkthroughs|record_podcast,https://obsproject.com,https://obsproject.com/kb,/logos/obs-studio.svg,
+Synthesia,video,make_avatar_video|generate_voiceover,https://www.synthesia.io,https://help.synthesia.io,,https://www.google.com/s2/favicons?domain=synthesia.io&sz=128
+OpusClip,video,repurpose_clips|add_captions,https://www.opus.pro,,,https://www.google.com/s2/favicons?domain=opus.pro&sz=128
+Stable Audio,audio,generate_music,https://stableaudio.com,,/logos/stable-audio.svg,
+Murf,audio,generate_voiceover,https://murf.ai,,,https://www.google.com/s2/favicons?domain=murf.ai&sz=128
+Riverside,audio,record_podcast|edit_audio,https://riverside.com,,,https://www.google.com/s2/favicons?domain=riverside.com&sz=128
+Adobe Podcast,audio,edit_audio|record_podcast,https://podcast.adobe.com,,/logos/adobe-podcast.svg,
+Moises,audio,separate_stems|edit_audio,https://moises.ai,,,https://www.google.com/s2/favicons?domain=moises.ai&sz=128
+Jasper,writing,draft_content|write_email_copy|plan_content_calendar,https://www.jasper.ai,,,https://www.google.com/s2/favicons?domain=jasper.ai&sz=128
+QuillBot,writing,edit_proofread,https://quillbot.com,,,https://www.google.com/s2/favicons?domain=quillbot.com&sz=128
+Surfer SEO,writing,optimize_seo|draft_content,https://surferseo.com,https://docs.surferseo.com,,https://www.google.com/s2/favicons?domain=surferseo.com&sz=128
+Buffer,writing,schedule_social_posts|plan_content_calendar,https://buffer.com,https://support.buffer.com,/logos/buffer.svg,
+Hemingway Editor,writing,edit_proofread,https://hemingwayapp.com,,,https://www.google.com/s2/favicons?domain=hemingwayapp.com&sz=128
+Elicit,research,research_topic|summarize_documents,https://elicit.com,,,https://www.google.com/s2/favicons?domain=elicit.com&sz=128
+Consensus,research,research_topic,https://consensus.app,,,https://www.google.com/s2/favicons?domain=consensus.app&sz=128
+Julius AI,research,analyze_data,https://julius.ai,,,https://www.google.com/s2/favicons?domain=julius.ai&sz=128
+Microsoft Copilot,research,research_topic|draft_content,https://copilot.microsoft.com,,/logos/microsoft-copilot.svg,
+Airtable,research,organize_knowledge|manage_projects|automate_workflow,https://www.airtable.com,https://support.airtable.com,/logos/airtable.svg,
+Linear,research,manage_projects,https://linear.app,https://linear.app/docs,/logos/linear.svg,
+Railway,deploy_backend,host_backend|set_up_database,https://railway.com,https://docs.railway.com,/logos/railway.svg,
+Firebase,deploy_backend,set_up_auth|set_up_database|host_frontend,https://firebase.google.com,https://firebase.google.com/docs,/logos/firebase.svg,
+Neon,deploy_backend,set_up_database,https://neon.com,https://neon.com/docs,/logos/neon.svg,
+Sentry,deploy_backend,monitor_errors,https://sentry.io,https://docs.sentry.io,/logos/sentry.svg,
+PostHog,deploy_backend,set_up_analytics,https://posthog.com,https://posthog.com/docs,/logos/posthog.svg,
+PayPal,freelance_ops,collect_payments|send_invoice,https://www.paypal.com,,/logos/paypal.svg,
+Wave,freelance_ops,send_invoice,https://www.waveapps.com,,,https://www.google.com/s2/favicons?domain=waveapps.com&sz=128
+Bonsai,freelance_ops,write_proposal|send_invoice,https://www.hellobonsai.com,,,https://www.google.com/s2/favicons?domain=hellobonsai.com&sz=128
+Cal.com,freelance_ops,schedule_meetings,https://cal.com,https://cal.com/docs,/logos/cal-com.svg,
+Paystack,freelance_ops,collect_payments,https://paystack.com,https://paystack.com/docs,,https://www.google.com/s2/favicons?domain=paystack.com&sz=128
+OpenArt,design,generate_image|edit_image|make_social_graphics,https://openart.ai,,,https://www.google.com/s2/favicons?domain=openart.ai&sz=128
+DALL·E,design,generate_image|edit_image,https://openai.com/index/dall-e-3/,https://platform.openai.com/docs/guides/image-generation,/logos/dall-e.svg,
+Artbreeder,design,generate_image|edit_image,https://www.artbreeder.com,,,https://www.google.com/s2/favicons?domain=artbreeder.com&sz=128
+DaVinci AI,design,generate_image|design_brand|make_social_graphics,https://davinci.ai,,,https://www.google.com/s2/favicons?domain=davinci.ai&sz=128
+Hotpot,design,generate_image|edit_image|make_social_graphics,https://hotpot.ai,https://hotpot.ai/docs/api,,https://www.google.com/s2/favicons?domain=hotpot.ai&sz=128
+WaveNet (Google TTS),audio,generate_voiceover,https://cloud.google.com/text-to-speech,https://cloud.google.com/text-to-speech/docs,/logos/wavenet-google-tts.svg,
+Jukebox,audio,generate_music,https://openai.com/index/jukebox/,https://github.com/openai/jukebox,/logos/jukebox.svg,
+AudioCraft,audio,generate_music|edit_audio,https://github.com/facebookresearch/audiocraft,https://facebookresearch.github.io/audiocraft/,/logos/audiocraft.svg,
+InVideo,video,generate_video_clips|edit_video|write_script,https://invideo.io,https://support.invideo.io,,https://www.google.com/s2/favicons?domain=invideo.io&sz=128
+Fliki,video,generate_voiceover|edit_video|make_avatar_video,https://fliki.ai,https://docs.fliki.ai,,https://www.google.com/s2/favicons?domain=fliki.ai&sz=128
+Tabnine,software,write_code|review_code|write_tests,https://www.tabnine.com,https://docs.tabnine.com,,https://www.google.com/s2/favicons?domain=tabnine.com&sz=128
+CodeT5,software,write_code|write_docs,https://github.com/salesforce/CodeT5,https://huggingface.co/Salesforce/codet5-base,,https://www.google.com/s2/favicons?domain=github.com&sz=128
+Gretel,research,analyze_data,https://gretel.ai,https://docs.gretel.ai,,https://www.google.com/s2/favicons?domain=gretel.ai&sz=128
+MOSTLY AI,research,analyze_data,https://mostly.ai,https://mostly.ai/docs,,https://www.google.com/s2/favicons?domain=mostly.ai&sz=128
+K2view,research,analyze_data,https://www.k2view.com,https://support.k2view.com,,https://www.google.com/s2/favicons?domain=k2view.com&sz=128
+Gebeya Dala,builders,build_web_app|build_mobile_app,https://gebeya.com,,,https://www.google.com/s2/favicons?domain=gebeya.com&sz=128

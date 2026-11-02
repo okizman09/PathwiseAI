@@ -1,0 +1,565 @@
+[
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Spark",
+    "domain": "software",
+    "kind": "runnable",
+    "model_id": "muse-spark-1.3",
+    "official_url": "https://dev.meta.ai/models/muse-spark",
+    "docs_url": "https://dev.meta.ai/docs/models",
+    "jobs": [
+      "summarize_documents",
+      "draft_content",
+      "analyze_data",
+      "research_topic",
+      "plan_app"
+    ],
+    "tagline": "Meta's general multimodal model on the Meta Model API.",
+    "summary": "Muse Spark is Meta's general-purpose model on the Meta Model API. Meta's models page lists muse-spark-1.3 as the version to use for new work.",
+    "how_it_helps": "Use it to read documents and images, draft and summarise text, extract structured data, or plan a build, by calling the API with the OpenAI SDK.",
+    "pros": [
+      "Listed by Meta as the model to start with for new projects.",
+      "Works with the OpenAI Python SDK by changing the base URL and key.",
+      "The API supports structured JSON output and tool calling, which Meta's workshop code uses with this model."
+    ],
+    "cons": [
+      "Audio understanding is not fully supported on this version; use Muse Voice Transcribe or Spark 1.2 for audio.",
+      "Pricing and rate limits depend on your account tier and are not recorded here yet.",
+      "Access depends on your Meta account and region; confirm with a test call."
+    ],
+    "prompt_style": {
+      "technique": "State the task, give the input, and say the exact output format you want.",
+      "format": "Plain-language instruction followed by the input; ask for JSON when you need structured output.",
+      "rules": [
+        "Name the output format (for example JSON with named fields).",
+        "Say what to do when information is missing.",
+        "Keep one task per request."
+      ],
+      "example": "Extract the order items from this voice-note transcript and return JSON with customer, items (name, quantity) and delivery_date. Use null for anything not mentioned."
+    },
+    "input_types": [
+      "text",
+      "image",
+      "pdf"
+    ],
+    "output_types": [
+      "text",
+      "json"
+    ],
+    "best_for": "Builders who need reading, writing, extraction or planning inside their own app.",
+    "not_for": "Audio transcription (use Muse Voice Transcribe) or image generation (use Muse Image).",
+    "unknowns": [
+      "Exact supported input types (check video and PDF support on the model page).",
+      "Pricing and rate limits.",
+      "Context window and output limits."
+    ],
+    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)"
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Wonder",
+    "domain": "software",
+    "kind": "runnable",
+    "model_id": "muse-wonder-1.0",
+    "official_url": "https://dev.meta.ai/models/muse-wonder",
+    "docs_url": "https://dev.meta.ai/docs/models",
+    "jobs": [
+      "plan_app",
+      "write_code",
+      "debug_code",
+      "review_code"
+    ],
+    "tagline": "Meta's most capable model on the API, in preview.",
+    "summary": "Muse Wonder is a preview model on the Meta Model API that Meta's models page presents as its most capable option, with adjustable reasoning effort.",
+    "how_it_helps": "Use it for harder planning and coding tasks where a stronger model is worth the extra cost, once you have confirmed access.",
+    "pros": [
+      "Presented by Meta as its most capable model on the API.",
+      "Reasoning effort can be adjusted per request.",
+      "Called through the same API and SDK as Muse Spark."
+    ],
+    "cons": [
+      "Preview status: behaviour and availability may change.",
+      "Meta's models page lists it for the Standard tier only; confirm your access.",
+      "Pricing and rate limits are not recorded here yet."
+    ],
+    "prompt_style": {
+      "technique": "Give the goal, the constraints and the definition of done.",
+      "format": "A short brief followed by the relevant code or files.",
+      "rules": [
+        "State constraints first.",
+        "Ask for a plan before code on large tasks.",
+        "Say how you will check the result."
+      ],
+      "example": "Review this function for bugs. List each problem with the line it affects, then give a corrected version and one test for each fix."
+    },
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "output_types": [
+      "text",
+      "code"
+    ],
+    "best_for": "Complex planning and coding tasks in a project you are building.",
+    "not_for": "Simple extraction or drafting, where Muse Spark is the better starting point.",
+    "unknowns": [
+      "Exact input types supported.",
+      "Pricing and rate limits.",
+      "Preview end date or stability guarantees."
+    ],
+    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-wonder-1.0\", input=\"Your prompt here\")\nprint(response.output_text)"
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Voice Transcribe",
+    "domain": "audio",
+    "kind": "runnable",
+    "model_id": "muse-voice-transcribe-1.0",
+    "official_url": "https://dev.meta.ai/models/muse-voice-transcribe",
+    "docs_url": "https://dev.meta.ai/docs/models",
+    "jobs": [
+      "transcribe_audio"
+    ],
+    "tagline": "Speech-to-text model on the Meta Model API.",
+    "summary": "Muse Voice Transcribe turns speech into text. Meta's materials describe uploading a whole recording in one request, and live transcription over a WebSocket.",
+    "how_it_helps": "Use it to turn voice notes, interviews or calls into text before another model extracts or summarises the content.",
+    "pros": [
+      "Transcribes a whole recording with a single HTTP request.",
+      "Also supports live transcription over a WebSocket, per Meta's cookbook.",
+      "Meta points to it for audio instead of Muse Spark 1.3."
+    ],
+    "cons": [
+      "Language coverage, including Nigerian Pidgin and Yoruba, is not confirmed here; test with your own audio.",
+      "Output details such as timestamps and speaker labels need checking on the docs page.",
+      "Pricing and limits are not recorded here yet."
+    ],
+    "prompt_style": {
+      "technique": "No text prompt: send the audio file.",
+      "format": "Audio file in, transcript text out.",
+      "rules": [
+        "Use clear recordings with little background noise.",
+        "Send one speaker's note per file when you can.",
+        "Check the transcript before using it downstream."
+      ],
+      "example": "Transcribe the attached voice note."
+    },
+    "input_types": [
+      "audio"
+    ],
+    "output_types": [
+      "text"
+    ],
+    "best_for": "Turning voice notes, interviews and calls into text for later processing.",
+    "not_for": "Understanding or summarising audio directly; transcribe first, then use a text model.",
+    "unknowns": [
+      "Exact endpoint and request format: copy the official example into api_snippet.",
+      "Supported languages.",
+      "Pricing, file size and length limits."
+    ],
+    "api_snippet": null
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "SAM 3.1",
+    "domain": "design",
+    "kind": "runnable",
+    "model_id": "sam-3.1",
+    "official_url": "https://dev.meta.ai/models/sam-3-1",
+    "docs_url": "https://dev.meta.ai/docs/models",
+    "jobs": [
+      "edit_image"
+    ],
+    "tagline": "Meta's segmentation model, available on the Meta Model API.",
+    "summary": "SAM 3.1 finds and outlines objects in images. Meta's workshop code calls it through the Model API and gets box outputs back.",
+    "how_it_helps": "Use it to locate objects or regions in a picture, for example to count items, crop them, or highlight them for review.",
+    "pros": [
+      "Available through the same API and key as the Muse models.",
+      "Used in Meta's workshop code to locate regions in documents.",
+      "Listed in the hackathon guide as a model to build with."
+    ],
+    "cons": [
+      "Pathwise's taxonomy has no segmentation job, so this card is mapped to edit_image.",
+      "Output format and prompt options need checking on the docs page.",
+      "Your key must have sam-3.1 enabled."
+    ],
+    "prompt_style": {
+      "technique": "Describe what to find in the image.",
+      "format": "Image plus a short text description of the object or region.",
+      "rules": [
+        "Name the object plainly.",
+        "Use clear images.",
+        "Check the returned regions before relying on them."
+      ],
+      "example": "Find every product label in the attached photo."
+    },
+    "input_types": [
+      "image",
+      "text"
+    ],
+    "output_types": [
+      "segmentation"
+    ],
+    "best_for": "Locating and outlining objects in images inside your own app.",
+    "not_for": "Generating new images or describing a scene in prose.",
+    "unknowns": [
+      "Exact request and response format: copy the official example into api_snippet.",
+      "Pricing and limits."
+    ],
+    "api_snippet": null
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Image",
+    "domain": "design",
+    "kind": "runnable",
+    "model_id": "muse-image-1.0",
+    "official_url": "https://dev.meta.ai/models/muse-image",
+    "docs_url": "https://dev.meta.ai/docs/models",
+    "jobs": [
+      "generate_image",
+      "edit_image",
+      "make_social_graphics"
+    ],
+    "tagline": "Meta's image generation model on the Meta Model API.",
+    "summary": "Muse Image generates images from text through the Meta Model API. Check the docs for editing options and output format.",
+    "how_it_helps": "Use it to produce illustrations, product visuals or social graphics from a written description, inside your own app.",
+    "pros": [
+      "Image generation through the same API key as the Muse models.",
+      "Listed by Meta among the models for this hackathon.",
+      "Model ID is published on Meta's models page."
+    ],
+    "cons": [
+      "Output format and editing options are not recorded here; check the docs.",
+      "Region restrictions may apply; check Meta's Geographic Use Policy.",
+      "Pricing and limits are not recorded here yet."
+    ],
+    "prompt_style": {
+      "technique": "Describe subject, style and framing.",
+      "format": "One descriptive paragraph.",
+      "rules": [
+        "Name the subject first.",
+        "Add style and lighting.",
+        "State the aspect ratio if it matters."
+      ],
+      "example": "A clean product photo of a handmade soap bar on a white background, soft side light, square format."
+    },
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "output_types": [
+      "image"
+    ],
+    "best_for": "Generating visuals from text inside a product you are building.",
+    "not_for": "Precise logos or text-heavy graphics that need exact lettering.",
+    "unknowns": [
+      "Exact request and response format: copy the official example into api_snippet.",
+      "Editing support.",
+      "Pricing and limits."
+    ],
+    "api_snippet": null
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "cli"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Code",
+    "domain": "software",
+    "kind": "developer_tool",
+    "model_id": null,
+    "official_url": "https://dev.meta.ai/docs/muse-code",
+    "docs_url": "https://dev.meta.ai/docs/muse-code",
+    "jobs": [
+      "write_code",
+      "debug_code",
+      "write_tests"
+    ],
+    "tagline": "Meta's terminal coding agent.",
+    "summary": "Muse Code is Meta's coding agent that you run from a terminal inside a project folder. Meta's workshop used it to build an agent loop.",
+    "how_it_helps": "Use it to plan and make code changes, run tests and report what changed, working inside the project folder you start it from.",
+    "pros": [
+      "Meta's own coding agent, used in the hackathon workshop.",
+      "Signs in with a Meta Model API key.",
+      "Meta's cookbook lists bundled skills such as /plan and /taste."
+    ],
+    "cons": [
+      "Needs macOS or Linux; Windows users need WSL.",
+      "Install steps are on Meta's docs page and must be followed exactly.",
+      "Cost of usage through an API key is not recorded here yet."
+    ],
+    "prompt_style": {
+      "technique": "Set ground rules first, then give one small task at a time.",
+      "format": "A short instruction naming the files to touch and how to check the result.",
+      "rules": [
+        "Ask it to inspect the repo before editing.",
+        "Give one task per prompt.",
+        "Ask for a report of files changed and tests run."
+      ],
+      "example": "Inspect the project first. Add a Meta filter to the tools list, change only the files needed, run the tests and report what changed."
+    },
+    "input_types": [
+      "text",
+      "code"
+    ],
+    "output_types": [
+      "code",
+      "text"
+    ],
+    "best_for": "Developers who want an agent that edits a local project from the terminal.",
+    "not_for": "Non-technical users who want a no-code builder.",
+    "unknowns": [
+      "Pricing for API-key usage.",
+      "Supported models inside the tool."
+    ],
+    "api_snippet": null
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Meta Model API",
+    "domain": "software",
+    "kind": "platform",
+    "model_id": null,
+    "official_url": "https://dev.meta.ai/products/meta-model-api",
+    "docs_url": "https://dev.meta.ai/docs/quickstart",
+    "jobs": [
+      "automate_workflow"
+    ],
+    "tagline": "The API that serves Meta's Muse models and SAM.",
+    "summary": "The Meta Model API serves Muse Spark, Muse Wonder, Muse Image, Muse Voice Transcribe and SAM 3.1. Its quickstart shows it working with the OpenAI and Anthropic SDKs.",
+    "how_it_helps": "Use it as the backend for AI features in your own app, calling Meta's models with an SDK you may already use.",
+    "pros": [
+      "Compatible with the OpenAI and Anthropic SDKs by changing the base URL.",
+      "Supports Responses, Chat Completions and Messages style calls.",
+      "Lists structured output and tool calling among its features."
+    ],
+    "cons": [
+      "Availability depends on your account and region.",
+      "Model IDs and features change; check the models page before relying on a name.",
+      "Pricing and rate limits are not recorded here yet."
+    ],
+    "prompt_style": {
+      "technique": "Not applicable: this is a platform, not a prompt-driven tool.",
+      "format": "Use the SDK with base_url set to https://api.meta.ai/v1.",
+      "rules": [
+        "Keep your API key on the server.",
+        "Pick the model for the task.",
+        "Handle rate-limit errors."
+      ],
+      "example": "client.responses.create(model='muse-spark-1.3', input='Hello')"
+    },
+    "input_types": [
+      "text",
+      "image",
+      "audio"
+    ],
+    "output_types": [
+      "text",
+      "json",
+      "image"
+    ],
+    "best_for": "Developers adding Meta models to an app.",
+    "not_for": "People who want a finished app builder with no code.",
+    "unknowns": [
+      "Pricing and rate limits.",
+      "Full list of regions where it is available."
+    ],
+    "api_snippet": "from openai import OpenAI\n\nclient = OpenAI(api_key=\"YOUR_MODEL_API_KEY\", base_url=\"https://api.meta.ai/v1\")\nresponse = client.responses.create(model=\"muse-spark-1.3\", input=\"Your prompt here\")\nprint(response.output_text)"
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Spark Open",
+    "domain": "software",
+    "kind": "open_weight",
+    "model_id": null,
+    "official_url": "https://dev.meta.ai/models/muse-spark-open",
+    "docs_url": "https://dev.meta.ai/models/muse-spark-open",
+    "jobs": [
+      "draft_content",
+      "summarize_documents"
+    ],
+    "tagline": "Open-weight Muse Spark model you can run or access through partners.",
+    "summary": "Muse Spark Open is an open-weight model from Meta. The hackathon guide says Baseten hosts it for participants under the name meta-models/muse-spark-open-1026.",
+    "how_it_helps": "Use it when you want to run or host a model yourself, or use a partner endpoint, instead of the Meta Model API.",
+    "pros": [
+      "Open weights, so you can run it yourself.",
+      "Baseten and Modal list support for Meta's open models in the hackathon guide.",
+      "Meta publishes an open-model cookbook for it."
+    ],
+    "cons": [
+      "Capabilities and licence terms are not recorded here; read the model page.",
+      "You host it or use a partner; it is not served by the Meta Model API by default.",
+      "The hackathon model name differs from the name in Baseten's own docs."
+    ],
+    "prompt_style": {
+      "technique": "Same task-and-format style as Muse Spark; check the model page for details.",
+      "format": "Plain instruction plus input.",
+      "rules": [
+        "State the output format.",
+        "One task per request.",
+        "Test on your host before relying on it."
+      ],
+      "example": "Summarise the text below in five bullet points for a busy customer."
+    },
+    "input_types": [
+      "text"
+    ],
+    "output_types": [
+      "text"
+    ],
+    "best_for": "Builders who want to self-host or use a partner endpoint.",
+    "not_for": "People who want the simplest hosted API path.",
+    "unknowns": [
+      "Input types.",
+      "Licence terms.",
+      "Hardware needed to self-host."
+    ],
+    "api_snippet": null
+  },
+  {
+    "pricing_model": "unknown",
+    "platforms": [
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "official_domains": [
+      "dev.meta.ai",
+      "meta.ai"
+    ],
+    "checked_on": null,
+    "evidence": {},
+    "ecosystem": "meta",
+    "name": "Muse Glimmer",
+    "domain": "software",
+    "kind": "open_weight",
+    "model_id": null,
+    "official_url": "https://dev.meta.ai/models/muse-glimmer",
+    "docs_url": "https://dev.meta.ai/models/muse-glimmer",
+    "jobs": [
+      "draft_content"
+    ],
+    "tagline": "Open-weight Meta model listed for the hackathon.",
+    "summary": "Muse Glimmer is an open-weight model from Meta that the hackathon guide lists alongside Muse Spark Open. Most details still need to be checked on its model page.",
+    "how_it_helps": "Use it if you want to run an open Meta model yourself. Read its model page first to confirm what it is good at.",
+    "pros": [
+      "Open weights per the hackathon guide.",
+      "Listed by Meta among the models to build with.",
+      "Covered by Meta's open-model cookbook materials."
+    ],
+    "cons": [
+      "What it is best at is not recorded here.",
+      "You host it yourself or use a partner.",
+      "Licence terms and hardware needs are not recorded here."
+    ],
+    "prompt_style": {
+      "technique": "Check the model page for the recommended prompting style.",
+      "format": "Plain instruction plus input.",
+      "rules": [
+        "Start with short, clear tasks.",
+        "Test before relying on it.",
+        "Compare with Muse Spark for your task."
+      ],
+      "example": "Rewrite this paragraph in a friendly, simple tone."
+    },
+    "input_types": [
+      "text"
+    ],
+    "output_types": [
+      "text"
+    ],
+    "best_for": "Experimenters who want an open Meta model.",
+    "not_for": "Anyone who needs documented, verified capabilities today.",
+    "unknowns": [
+      "Capabilities and best uses.",
+      "Input types.",
+      "Licence terms.",
+      "Hardware needed."
+    ],
+    "api_snippet": null
+  }
+]

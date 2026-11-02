@@ -1,0 +1,13 @@
+# New work during the hackathon (Oct 26 to Nov 4, 2026)
+
+This repo is the pre-existing Pathwise project and the rebuild is happening
+in place (no separate import commit). Everything under "Built during the
+event" was built during the hackathon window.
+
+## Built during the event
+- T1: Meta hello-world probe (`backend/scripts/meta_hello.py`) + `openai` dependency; gate passed, structured method `json_schema` (commit pending)
+- T2: Meta LLM module (`generate_structured`/`generate_text`) next to Gemini code + `MODEL_API_KEY`/`META_*` settings + Meta models check + 7 mocked tests; suite 141 green (commit pending)
+- T3: Migrated all call sites (interview, plan, prompts, both extractors) to Meta; deleted Gemini code, settings, dependency; suite 141 green (commit pending)
+
+## Reused from before the event
+- Auth, quotas, catalog and importer, planner scoring, existing UI

@@ -1,0 +1,105 @@
+# Pathwise AI Catalog v3 Taxonomy (Single Source of Truth)
+# Nine domains with controlled job slugs and display labels.
+
+taxonomy:
+  software: [plan_app, write_code, debug_code, review_code, write_tests, write_docs, manage_code]
+  builders: [build_website, build_web_app, build_mobile_app, build_landing_page, automate_workflow]
+  design: [design_ui, generate_image, edit_image, design_brand, make_social_graphics, make_presentation]
+  video: [write_script, storyboard_video, generate_video_clips, edit_video, add_captions, make_avatar_video, repurpose_clips]
+  audio: [generate_music, generate_voiceover, transcribe_audio, edit_audio, record_podcast, separate_stems]
+  writing: [draft_content, edit_proofread, optimize_seo, plan_content_calendar, schedule_social_posts, write_email_copy]
+  research: [research_topic, summarize_documents, take_notes, organize_knowledge, analyze_data, manage_projects]
+  deploy_backend: [host_frontend, host_backend, set_up_database, set_up_auth, monitor_errors, set_up_analytics]
+  freelance_ops: [write_proposal, send_invoice, collect_payments, schedule_meetings, record_walkthroughs, find_clients]
+
+domains:
+  software:
+    label: "Software Development"
+    jobs:
+      plan_app: "Plan app"
+      write_code: "Write code"
+      debug_code: "Debug code"
+      review_code: "Review code"
+      write_tests: "Write tests"
+      write_docs: "Write docs"
+      manage_code: "Manage code"
+
+  builders:
+    label: "No-Code & Website Builders"
+    jobs:
+      build_website: "Build website"
+      build_web_app: "Build web app"
+      build_mobile_app: "Build mobile app"
+      build_landing_page: "Build landing page"
+      automate_workflow: "Automate workflow"
+
+  design:
+    label: "Design & Visuals"
+    jobs:
+      design_ui: "Design UI"
+      generate_image: "Generate image"
+      edit_image: "Edit image"
+      design_brand: "Design brand"
+      make_social_graphics: "Make social graphics"
+      make_presentation: "Make presentation"
+
+  video:
+    label: "Video Production"
+    jobs:
+      write_script: "Write script"
+      storyboard_video: "Storyboard video"
+      generate_video_clips: "Generate video clips"
+      edit_video: "Edit video"
+      add_captions: "Add captions"
+      make_avatar_video: "Make avatar video"
+      repurpose_clips: "Repurpose clips"
+
+  audio:
+    label: "Audio & Speech"
+    jobs:
+      generate_music: "Generate music"
+      generate_voiceover: "Generate voiceover"
+      transcribe_audio: "Transcribe audio"
+      edit_audio: "Edit audio"
+      record_podcast: "Record podcast"
+      separate_stems: "Separate stems"
+
+  writing:
+    label: "Writing & Content"
+    jobs:
+      draft_content: "Draft content"
+      edit_proofread: "Edit & proofread"
+      optimize_seo: "Optimize SEO"
+      plan_content_calendar: "Plan content calendar"
+      schedule_social_posts: "Schedule social posts"
+      write_email_copy: "Write email copy"
+
+  research:
+    label: "Research & Data"
+    jobs:
+      research_topic: "Research topic"
+      summarize_documents: "Summarize documents"
+      take_notes: "Take notes"
+      organize_knowledge: "Organize knowledge"
+      analyze_data: "Analyze data"
+      manage_projects: "Manage projects"
+
+  deploy_backend:
+    label: "Deploy & Backend"
+    jobs:
+      host_frontend: "Host frontend"
+      host_backend: "Host backend"
+      set_up_database: "Set up database"
+      set_up_auth: "Set up auth"
+      monitor_errors: "Monitor errors"
+      set_up_analytics: "Set up analytics"
+
+  freelance_ops:
+    label: "Freelance & Operations"
+    jobs:
+      write_proposal: "Write proposal"
+      send_invoice: "Send invoice"
+      collect_payments: "Collect payments"
+      schedule_meetings: "Schedule meetings"
+      record_walkthroughs: "Record walkthroughs"
+      find_clients: "Find clients"

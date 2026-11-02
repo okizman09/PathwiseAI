@@ -1,0 +1,45 @@
+name,domain,url,docs_url,pricing_url,affiliate_url,official_domains
+Cursor,software,https://cursor.com,https://cursor.com/docs,https://cursor.com/pricing,,cursor.com
+Claude Code,software,https://claude.com/product/claude-code,https://code.claude.com/docs/en/overview,https://claude.com/pricing,,claude.com|claude.ai|code.claude.com|support.claude.com|docs.claude.com|anthropic.com
+GitHub Copilot,software,https://github.com/features/copilot,https://docs.github.com/en/copilot,https://github.com/features/copilot/plans,,github.com|docs.github.com|github.blog
+Google Antigravity,software,https://antigravity.google,,,,antigravity.google
+Windsurf,software,https://windsurf.com,https://docs.windsurf.com,,,windsurf.com
+GitHub,software,https://github.com,https://docs.github.com,https://github.com/pricing,,github.com|docs.github.com
+Replit,builders,https://replit.com,https://docs.replit.com,https://replit.com/pricing,,replit.com
+Lovable,builders,https://lovable.dev,https://docs.lovable.dev,,,lovable.dev
+Bolt.new,builders,https://bolt.new,https://support.bolt.new,,,bolt.new|stackblitz.com
+v0,builders,https://v0.app,https://v0.app/docs,,,v0.app|vercel.com
+Framer,builders,https://www.framer.com,https://www.framer.com/help,,,framer.com
+Figma,design,https://www.figma.com,https://help.figma.com,https://www.figma.com/pricing,,figma.com
+Canva,design,https://www.canva.com,https://www.canva.com/help,https://www.canva.com/pricing,,canva.com
+Adobe Firefly,design,https://firefly.adobe.com,,,,adobe.com
+Midjourney,design,https://www.midjourney.com,https://docs.midjourney.com,,,midjourney.com
+Ideogram,design,https://ideogram.ai,,,,ideogram.ai
+Gamma,design,https://gamma.app,,,,gamma.app
+Runway,video,https://runwayml.com,https://help.runwayml.com,https://runwayml.com/pricing,,runwayml.com
+CapCut,video,https://www.capcut.com,,,,capcut.com
+Descript,video,https://www.descript.com,https://help.descript.com,,,descript.com
+HeyGen,video,https://www.heygen.com,https://help.heygen.com,,,heygen.com
+Luma Dream Machine,video,https://lumalabs.ai,,,,lumalabs.ai
+Kling AI,video,https://klingai.com,,,,klingai.com
+Suno,audio,https://suno.com,,https://suno.com/pricing,,suno.com
+Udio,audio,https://www.udio.com,,,,udio.com
+ElevenLabs,audio,https://elevenlabs.io,https://elevenlabs.io/docs,,,elevenlabs.io
+Audacity,audio,https://www.audacityteam.org,https://support.audacityteam.org,,,audacityteam.org
+Otter.ai,audio,https://otter.ai,https://help.otter.ai,,,otter.ai
+ChatGPT,writing,https://chatgpt.com,https://help.openai.com,,,chatgpt.com|openai.com|help.openai.com
+Claude,writing,https://claude.ai,https://support.claude.com,https://claude.com/pricing,,claude.ai|claude.com|support.claude.com|anthropic.com
+Gemini,writing,https://gemini.google.com,,,,gemini.google.com|google.com|ai.google.dev|support.google.com
+Grammarly,writing,https://www.grammarly.com,https://support.grammarly.com,,,grammarly.com
+Perplexity,research,https://www.perplexity.ai,https://docs.perplexity.ai,,,perplexity.ai
+NotebookLM,research,https://notebooklm.google,,,,notebooklm.google|google.com|support.google.com
+Notion,research,https://www.notion.com,https://www.notion.com/help,https://www.notion.com/pricing,,notion.com
+Obsidian,research,https://obsidian.md,https://help.obsidian.md,,,obsidian.md
+Supabase,deploy_backend,https://supabase.com,https://supabase.com/docs,https://supabase.com/pricing,,supabase.com
+Vercel,deploy_backend,https://vercel.com,https://vercel.com/docs,https://vercel.com/pricing,,vercel.com
+Cloudflare,deploy_backend,https://www.cloudflare.com/developer-platform,https://developers.cloudflare.com,,,cloudflare.com
+Render,deploy_backend,https://render.com,https://render.com/docs,https://render.com/pricing,,render.com
+Netlify,deploy_backend,https://www.netlify.com,https://docs.netlify.com,https://www.netlify.com/pricing,,netlify.com
+Stripe,freelance_ops,https://stripe.com,https://docs.stripe.com,https://stripe.com/pricing,,stripe.com
+Calendly,freelance_ops,https://calendly.com,https://help.calendly.com,,,calendly.com
+Loom,freelance_ops,https://www.loom.com,https://support.atlassian.com/loom,,,loom.com|atlassian.com

@@ -1,0 +1,86 @@
+name,domain,url,docs_url,pricing_url,affiliate_url,official_domains,suggested_jobs,logo_source_url,wave
+Replit,builders,https://replit.com,https://docs.replit.com,,,replit.com,build_web_app|build_mobile_app|write_code,https://www.google.com/s2/favicons?domain=replit.com&sz=128,wave1
+Lovable,builders,https://lovable.dev,https://docs.lovable.dev,,,lovable.dev,build_web_app|build_landing_page|build_website,https://www.google.com/s2/favicons?domain=lovable.dev&sz=128,wave1
+Bolt.new,builders,https://bolt.new,https://support.bolt.new,,,bolt.new|stackblitz.com,build_web_app|build_website|build_landing_page,https://www.google.com/s2/favicons?domain=bolt.new&sz=128,wave1
+v0,builders,https://v0.app,https://v0.app/docs,,,v0.app|vercel.com,design_ui|build_landing_page|build_web_app,https://www.google.com/s2/favicons?domain=v0.app&sz=128,wave1
+Framer,builders,https://www.framer.com,https://www.framer.com/help,,,framer.com,build_website|build_landing_page|design_ui,https://www.google.com/s2/favicons?domain=framer.com&sz=128,wave1
+Runway,video,https://runwayml.com,https://help.runwayml.com,,,runwayml.com,generate_video_clips|edit_video,https://www.google.com/s2/favicons?domain=runwayml.com&sz=128,wave1
+CapCut,video,https://www.capcut.com,,,,capcut.com,edit_video|add_captions|repurpose_clips,https://www.google.com/s2/favicons?domain=capcut.com&sz=128,wave1
+Descript,video,https://www.descript.com,https://help.descript.com,,,descript.com,edit_video|edit_audio|add_captions|transcribe_audio,https://www.google.com/s2/favicons?domain=descript.com&sz=128,wave1
+HeyGen,video,https://www.heygen.com,https://help.heygen.com,,,heygen.com,make_avatar_video|generate_voiceover,https://www.google.com/s2/favicons?domain=heygen.com&sz=128,wave1
+Luma Dream Machine,video,https://lumalabs.ai,,,,lumalabs.ai,generate_video_clips,https://www.google.com/s2/favicons?domain=lumalabs.ai&sz=128,wave1
+Kling AI,video,https://klingai.com,,,,klingai.com,generate_video_clips,https://www.google.com/s2/favicons?domain=klingai.com&sz=128,wave1
+Suno,audio,https://suno.com,,,,suno.com,generate_music,https://www.google.com/s2/favicons?domain=suno.com&sz=128,wave1
+Udio,audio,https://www.udio.com,,,,udio.com,generate_music,https://www.google.com/s2/favicons?domain=udio.com&sz=128,wave1
+ElevenLabs,audio,https://elevenlabs.io,https://elevenlabs.io/docs,,,elevenlabs.io,generate_voiceover|transcribe_audio,https://www.google.com/s2/favicons?domain=elevenlabs.io&sz=128,wave1
+Audacity,audio,https://www.audacityteam.org,https://support.audacityteam.org,,,audacityteam.org,edit_audio|record_podcast,https://www.google.com/s2/favicons?domain=audacityteam.org&sz=128,wave1
+Otter.ai,audio,https://otter.ai,https://help.otter.ai,,,otter.ai,transcribe_audio|take_notes,https://www.google.com/s2/favicons?domain=otter.ai&sz=128,wave1
+ChatGPT,writing,https://chatgpt.com,https://help.openai.com,,,chatgpt.com|openai.com,draft_content|edit_proofread|research_topic|write_email_copy,https://www.google.com/s2/favicons?domain=chatgpt.com&sz=128,wave1
+Claude,writing,https://claude.ai,https://support.claude.com,,,claude.ai|claude.com|anthropic.com,draft_content|edit_proofread|write_code|summarize_documents,https://www.google.com/s2/favicons?domain=claude.ai&sz=128,wave1
+Gemini,writing,https://gemini.google.com,,,,gemini.google.com|google.com|ai.google.dev,draft_content|research_topic|summarize_documents,https://www.google.com/s2/favicons?domain=gemini.google.com&sz=128,wave1
+Grammarly,writing,https://www.grammarly.com,https://support.grammarly.com,,,grammarly.com,edit_proofread|write_email_copy,https://www.google.com/s2/favicons?domain=grammarly.com&sz=128,wave1
+Perplexity,research,https://www.perplexity.ai,https://docs.perplexity.ai,,,perplexity.ai,research_topic|summarize_documents,https://www.google.com/s2/favicons?domain=perplexity.ai&sz=128,wave1
+NotebookLM,research,https://notebooklm.google,,,,notebooklm.google|google.com,summarize_documents|research_topic|take_notes,https://www.google.com/s2/favicons?domain=notebooklm.google&sz=128,wave1
+Notion,research,https://www.notion.com,https://www.notion.com/help,,,notion.com,take_notes|organize_knowledge|manage_projects,https://www.google.com/s2/favicons?domain=notion.com&sz=128,wave1
+Obsidian,research,https://obsidian.md,https://help.obsidian.md,,,obsidian.md,take_notes|organize_knowledge,https://www.google.com/s2/favicons?domain=obsidian.md&sz=128,wave1
+Supabase,deploy_backend,https://supabase.com,https://supabase.com/docs,,,supabase.com,set_up_database|set_up_auth|host_backend,https://www.google.com/s2/favicons?domain=supabase.com&sz=128,wave1
+Vercel,deploy_backend,https://vercel.com,https://vercel.com/docs,,,vercel.com,host_frontend,https://www.google.com/s2/favicons?domain=vercel.com&sz=128,wave1
+Cloudflare,deploy_backend,https://www.cloudflare.com/developer-platform,https://developers.cloudflare.com,,,cloudflare.com,host_frontend|host_backend|set_up_analytics,https://www.google.com/s2/favicons?domain=cloudflare.com&sz=128,wave1
+Render,deploy_backend,https://render.com,https://render.com/docs,,,render.com,host_backend|host_frontend|set_up_database,https://www.google.com/s2/favicons?domain=render.com&sz=128,wave1
+Netlify,deploy_backend,https://www.netlify.com,https://docs.netlify.com,,,netlify.com,host_frontend,https://www.google.com/s2/favicons?domain=netlify.com&sz=128,wave1
+Stripe,freelance_ops,https://stripe.com,https://docs.stripe.com,,,stripe.com,collect_payments|send_invoice,https://www.google.com/s2/favicons?domain=stripe.com&sz=128,wave1
+Calendly,freelance_ops,https://calendly.com,https://help.calendly.com,,,calendly.com,schedule_meetings,https://www.google.com/s2/favicons?domain=calendly.com&sz=128,wave1
+Loom,freelance_ops,https://www.loom.com,https://support.atlassian.com/loom,,,loom.com|atlassian.com,record_walkthroughs,https://www.google.com/s2/favicons?domain=loom.com&sz=128,wave1
+Gemini CLI,software,https://geminicli.com,https://geminicli.com/docs,,,geminicli.com|google.com,write_code|debug_code|manage_code,https://www.google.com/s2/favicons?domain=geminicli.com&sz=128,wave2
+OpenAI Codex,software,https://openai.com/codex,https://developers.openai.com,,,openai.com|chatgpt.com,write_code|debug_code|review_code,https://www.google.com/s2/favicons?domain=openai.com&sz=128,wave2
+Cline,software,https://cline.bot,https://docs.cline.bot,,,cline.bot,write_code|debug_code,https://www.google.com/s2/favicons?domain=cline.bot&sz=128,wave2
+Aider,software,https://aider.chat,https://aider.chat/docs,,,aider.chat,write_code|manage_code,https://www.google.com/s2/favicons?domain=aider.chat&sz=128,wave2
+Warp,software,https://www.warp.dev,https://docs.warp.dev,,,warp.dev,manage_code|debug_code,https://www.google.com/s2/favicons?domain=warp.dev&sz=128,wave2
+Postman,software,https://www.postman.com,https://learning.postman.com/docs,,,postman.com,write_tests|write_docs|debug_code,https://www.google.com/s2/favicons?domain=postman.com&sz=128,wave2
+Hugging Face,software,https://huggingface.co,https://huggingface.co/docs,,,huggingface.co,analyze_data|write_code,https://www.google.com/s2/favicons?domain=huggingface.co&sz=128,wave2
+Webflow,builders,https://webflow.com,https://help.webflow.com,,,webflow.com,build_website|build_landing_page,https://www.google.com/s2/favicons?domain=webflow.com&sz=128,wave2
+Bubble,builders,https://bubble.io,https://manual.bubble.io,,,bubble.io,build_web_app|automate_workflow,https://www.google.com/s2/favicons?domain=bubble.io&sz=128,wave2
+FlutterFlow,builders,https://flutterflow.io,https://docs.flutterflow.io,,,flutterflow.io,build_mobile_app|build_web_app,https://www.google.com/s2/favicons?domain=flutterflow.io&sz=128,wave2
+Zapier,builders,https://zapier.com,https://docs.zapier.com,,,zapier.com,automate_workflow,https://www.google.com/s2/favicons?domain=zapier.com&sz=128,wave2
+n8n,builders,https://n8n.io,https://docs.n8n.io,,,n8n.io,automate_workflow,https://www.google.com/s2/favicons?domain=n8n.io&sz=128,wave2
+Adobe Express,design,https://www.adobe.com/express,,,,adobe.com,make_social_graphics|edit_image|make_presentation,https://www.google.com/s2/favicons?domain=adobe.com&sz=128,wave2
+Leonardo.Ai,design,https://leonardo.ai,,,,leonardo.ai,generate_image|edit_image,https://www.google.com/s2/favicons?domain=leonardo.ai&sz=128,wave2
+Recraft,design,https://www.recraft.ai,,,,recraft.ai,generate_image|design_brand|make_social_graphics,https://www.google.com/s2/favicons?domain=recraft.ai&sz=128,wave2
+Krea,design,https://www.krea.ai,,,,krea.ai,generate_image|edit_image,https://www.google.com/s2/favicons?domain=krea.ai&sz=128,wave2
+Looka,design,https://looka.com,,,,looka.com,design_brand,https://www.google.com/s2/favicons?domain=looka.com&sz=128,wave2
+Photopea,design,https://www.photopea.com,,,,photopea.com,edit_image,https://www.google.com/s2/favicons?domain=photopea.com&sz=128,wave2
+remove.bg,design,https://www.remove.bg,,,,remove.bg,edit_image,https://www.google.com/s2/favicons?domain=remove.bg&sz=128,wave2
+Pika,video,https://pika.art,,,,pika.art,generate_video_clips,https://www.google.com/s2/favicons?domain=pika.art&sz=128,wave2
+Hailuo AI,video,https://hailuoai.video,,,,hailuoai.video,generate_video_clips,https://www.google.com/s2/favicons?domain=hailuoai.video&sz=128,wave2
+Google Flow,video,https://labs.google/flow,,,,labs.google|google.com,generate_video_clips|storyboard_video,https://www.google.com/s2/favicons?domain=labs.google&sz=128,wave2
+VEED,video,https://www.veed.io,https://www.veed.io/support,,,veed.io,edit_video|add_captions|repurpose_clips,https://www.google.com/s2/favicons?domain=veed.io&sz=128,wave2
+DaVinci Resolve,video,https://www.blackmagicdesign.com/products/davinciresolve,,,,blackmagicdesign.com,edit_video,https://www.google.com/s2/favicons?domain=blackmagicdesign.com&sz=128,wave2
+OBS Studio,video,https://obsproject.com,https://obsproject.com/kb,,,obsproject.com,record_walkthroughs|record_podcast,https://www.google.com/s2/favicons?domain=obsproject.com&sz=128,wave2
+Synthesia,video,https://www.synthesia.io,https://help.synthesia.io,,,synthesia.io,make_avatar_video|generate_voiceover,https://www.google.com/s2/favicons?domain=synthesia.io&sz=128,wave2
+OpusClip,video,https://www.opus.pro,,,,opus.pro,repurpose_clips|add_captions,https://www.google.com/s2/favicons?domain=opus.pro&sz=128,wave2
+Stable Audio,audio,https://stableaudio.com,,,,stableaudio.com|stability.ai,generate_music,https://www.google.com/s2/favicons?domain=stableaudio.com&sz=128,wave2
+Murf,audio,https://murf.ai,,,,murf.ai,generate_voiceover,https://www.google.com/s2/favicons?domain=murf.ai&sz=128,wave2
+Riverside,audio,https://riverside.com,,,,riverside.com,record_podcast|edit_audio,https://www.google.com/s2/favicons?domain=riverside.com&sz=128,wave2
+Adobe Podcast,audio,https://podcast.adobe.com,,,,adobe.com,edit_audio|record_podcast,https://www.google.com/s2/favicons?domain=podcast.adobe.com&sz=128,wave2
+Moises,audio,https://moises.ai,,,,moises.ai,separate_stems|edit_audio,https://www.google.com/s2/favicons?domain=moises.ai&sz=128,wave2
+Jasper,writing,https://www.jasper.ai,,,,jasper.ai,draft_content|write_email_copy|plan_content_calendar,https://www.google.com/s2/favicons?domain=jasper.ai&sz=128,wave2
+QuillBot,writing,https://quillbot.com,,,,quillbot.com,edit_proofread,https://www.google.com/s2/favicons?domain=quillbot.com&sz=128,wave2
+Surfer SEO,writing,https://surferseo.com,https://docs.surferseo.com,,,surferseo.com,optimize_seo|draft_content,https://www.google.com/s2/favicons?domain=surferseo.com&sz=128,wave2
+Buffer,writing,https://buffer.com,https://support.buffer.com,,,buffer.com,schedule_social_posts|plan_content_calendar,https://www.google.com/s2/favicons?domain=buffer.com&sz=128,wave2
+Hemingway Editor,writing,https://hemingwayapp.com,,,,hemingwayapp.com,edit_proofread,https://www.google.com/s2/favicons?domain=hemingwayapp.com&sz=128,wave2
+Elicit,research,https://elicit.com,,,,elicit.com,research_topic|summarize_documents,https://www.google.com/s2/favicons?domain=elicit.com&sz=128,wave2
+Consensus,research,https://consensus.app,,,,consensus.app,research_topic,https://www.google.com/s2/favicons?domain=consensus.app&sz=128,wave2
+Julius AI,research,https://julius.ai,,,,julius.ai,analyze_data,https://www.google.com/s2/favicons?domain=julius.ai&sz=128,wave2
+Microsoft Copilot,research,https://copilot.microsoft.com,,,,microsoft.com,research_topic|draft_content,https://www.google.com/s2/favicons?domain=copilot.microsoft.com&sz=128,wave2
+Airtable,research,https://www.airtable.com,https://support.airtable.com,,,airtable.com,organize_knowledge|manage_projects|automate_workflow,https://www.google.com/s2/favicons?domain=airtable.com&sz=128,wave2
+Linear,research,https://linear.app,https://linear.app/docs,,,linear.app,manage_projects,https://www.google.com/s2/favicons?domain=linear.app&sz=128,wave2
+Railway,deploy_backend,https://railway.com,https://docs.railway.com,,,railway.com,host_backend|set_up_database,https://www.google.com/s2/favicons?domain=railway.com&sz=128,wave2
+Firebase,deploy_backend,https://firebase.google.com,https://firebase.google.com/docs,,,firebase.google.com|google.com,set_up_auth|set_up_database|host_frontend,https://www.google.com/s2/favicons?domain=firebase.google.com&sz=128,wave2
+Neon,deploy_backend,https://neon.com,https://neon.com/docs,,,neon.com|neon.tech,set_up_database,https://www.google.com/s2/favicons?domain=neon.com&sz=128,wave2
+Sentry,deploy_backend,https://sentry.io,https://docs.sentry.io,,,sentry.io,monitor_errors,https://www.google.com/s2/favicons?domain=sentry.io&sz=128,wave2
+PostHog,deploy_backend,https://posthog.com,https://posthog.com/docs,,,posthog.com,set_up_analytics,https://www.google.com/s2/favicons?domain=posthog.com&sz=128,wave2
+PayPal,freelance_ops,https://www.paypal.com,,,,paypal.com,collect_payments|send_invoice,https://www.google.com/s2/favicons?domain=paypal.com&sz=128,wave2
+Wave,freelance_ops,https://www.waveapps.com,,,,waveapps.com,send_invoice,https://www.google.com/s2/favicons?domain=waveapps.com&sz=128,wave2
+Bonsai,freelance_ops,https://www.hellobonsai.com,,,,hellobonsai.com,write_proposal|send_invoice,https://www.google.com/s2/favicons?domain=hellobonsai.com&sz=128,wave2
+Cal.com,freelance_ops,https://cal.com,https://cal.com/docs,,,cal.com,schedule_meetings,https://www.google.com/s2/favicons?domain=cal.com&sz=128,wave2
+Paystack,freelance_ops,https://paystack.com,https://paystack.com/docs,,,paystack.com,collect_payments,https://www.google.com/s2/favicons?domain=paystack.com&sz=128,wave2

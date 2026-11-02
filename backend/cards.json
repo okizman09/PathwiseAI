@@ -1,0 +1,1018 @@
+[
+  {
+    "name": "Cursor",
+    "domain": "software",
+    "official_url": "https://cursor.com",
+    "pricing_url": "https://cursor.com/pricing",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free Hobby plan with limited Agent requests and Composer access.",
+    "free_tier_limits": "Hobby includes limited Agent requests; the official page gives no numeric quota.",
+    "starting_price_monthly_usd": 20,
+    "pricing_notes": "Individual (Pro) is $20/month; Pro+ and Ultra are higher individual tiers. Teams are $40/user/month; Enterprise is custom. Usage beyond the included amount is billed on demand, in arrears.",
+    "credit_card_required": false,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "desktop",
+      "cli",
+      "mobile",
+      "web"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "write_code",
+      "debug_code",
+      "review_code"
+    ],
+    "tagline": "AI code editor for codebase-aware edits and agent workflows.",
+    "summary": "Cursor is a code editor with AI chat and agents that can work across a whole project. You give it instructions, attach the relevant files, and review the changes it proposes.",
+    "how_it_helps": "Use it to make code changes, investigate bugs, or work through multi-file tasks while keeping your project open in the editor.",
+    "pros": [
+      "The free plan does not require a card.",
+      "You can attach files, folders, terminal output and diffs as context.",
+      "Supports persistent project and team rules."
+    ],
+    "cons": [
+      "Free-plan Agent limits are not quantified on the pricing page.",
+      "Paid usage can continue as metered on-demand billing.",
+      "The pricing page does not state free-plan commercial-use terms."
+    ],
+    "prompt_style": {
+      "technique": "State the task clearly and attach known relevant context; use project rules for persistent guidance.",
+      "format": "Natural-language chat prompt, optionally with @-attached files, folders, terminal output or diffs.",
+      "rules": [
+        "Be clear about the intended task.",
+        "Use @ mentions when you know which files are relevant.",
+        "Use rules for repeated project guidance."
+      ],
+      "example": "Inspect @src/auth.ts and the related tests. Fix the login redirect bug without changing unrelated behavior, then run the relevant tests."
+    },
+    "input_types": [
+      "text",
+      "code",
+      "image"
+    ],
+    "output_types": [
+      "code",
+      "text"
+    ],
+    "best_for": "Developers who want an AI assistant to inspect and edit a local codebase from an editor.",
+    "not_for": "People who want a no-code website builder or a published, quantified free agent quota.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://cursor.com/pricing",
+        "quote": "Hobby For the tinkerer Free"
+      },
+      "has_free_tier": {
+        "source_url": "https://cursor.com/pricing",
+        "quote": "Hobby For the tinkerer Free"
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://cursor.com/pricing",
+        "quote": "$20 / mo."
+      },
+      "credit_card_required": {
+        "source_url": "https://cursor.com/pricing",
+        "quote": "No credit card required"
+      },
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: prompt_style not verified against Cursor docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Claude Code",
+    "domain": "software",
+    "official_url": "https://claude.com/product/claude-code",
+    "pricing_url": "https://claude.com/pricing",
+    "pricing_model": "paid",
+    "has_free_tier": false,
+    "free_tier_summary": "No free access: Claude Code needs a paid Claude plan.",
+    "free_tier_limits": null,
+    "starting_price_monthly_usd": 20,
+    "pricing_notes": "Pro is $20/month billed monthly, or $17/month with annual billing ($200 up front). Max starts at $100/month. Team standard seats are $20/seat/month billed annually ($25 monthly). Claude Code shares usage limits with the rest of the plan.",
+    "credit_card_required": true,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "cli",
+      "desktop",
+      "extension",
+      "web"
+    ],
+    "skill_level": "intermediate",
+    "jobs": [
+      "write_code",
+      "debug_code",
+      "review_code",
+      "manage_code"
+    ],
+    "tagline": "Coding agent that works in your terminal and editor.",
+    "summary": "Claude Code is a coding agent that can read a project, edit files, run commands and connect to development tools. It is included in paid Claude plans, and its usage draws from the same limits as Claude chat.",
+    "how_it_helps": "Use it when you want an agent to take on a scoped coding task in a repository and check its work with commands or tests.",
+    "pros": [
+      "Works from a terminal and supported editors.",
+      "Can inspect files and run development commands.",
+      "Included in every paid Claude plan."
+    ],
+    "cons": [
+      "Not available on the free Claude plan.",
+      "Usage is shared with Claude chat on Pro and Max.",
+      "An agent's changes still need your review and testing."
+    ],
+    "prompt_style": {
+      "technique": "Give clear, explicit instructions and say what the finished result should be.",
+      "format": "Natural-language task prompt; structure long context with clearly labelled sections.",
+      "rules": [
+        "State the task directly.",
+        "Be specific about the desired result.",
+        "Ask it to run tests or checks and report what changed."
+      ],
+      "example": "Fix the failing login test. First identify the cause, make the smallest appropriate change, run the relevant tests, and report what changed."
+    },
+    "input_types": [
+      "text",
+      "code",
+      "files"
+    ],
+    "output_types": [
+      "code",
+      "text"
+    ],
+    "best_for": "Developers who want a terminal-oriented agent to carry out and check repository tasks.",
+    "not_for": "Anyone who needs a free coding agent.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://claude.com/pricing",
+        "quote": "Claude Code is included in all paid plans."
+      },
+      "has_free_tier": {
+        "source_url": "https://claude.com/pricing",
+        "quote": "Claude Code is included in all paid plans."
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://claude.com/pricing",
+        "quote": "$20 if billed monthly."
+      },
+      "credit_card_required": {
+        "source_url": "https://claude.com/pricing",
+        "quote": "Credit card n/a Yes Yes Yes"
+      },
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: prompt_style is general Claude advice; confirm against the Claude Code docs at code.claude.com"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "GitHub Copilot",
+    "domain": "software",
+    "official_url": "https://github.com/features/copilot",
+    "pricing_url": "https://github.com/features/copilot/plans",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free plan: 2,000 inline suggestions a month plus limited chat and agent use.",
+    "free_tier_limits": "2,000 inline suggestions per month and limited chat and agent usage; the page also says 50 chat requests.",
+    "starting_price_monthly_usd": 10,
+    "pricing_notes": "Pro is $10/month and includes AI credits ($10 base plus a $5 flexible allotment). Pro+ is $39/month and Max is $100/month. Code completions do not use credits on paid plans; chat, agents and code review do.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "desktop",
+      "mobile",
+      "cli",
+      "extension",
+      "web"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "write_code",
+      "debug_code",
+      "review_code",
+      "manage_code"
+    ],
+    "tagline": "Coding help in your editor, terminal and on GitHub.",
+    "summary": "GitHub Copilot offers inline code suggestions, chat and agent workflows in supported editors, the command line and GitHub itself. The free plan has monthly caps, and paid plans add higher limits and more features.",
+    "how_it_helps": "Use it for inline suggestions, code explanations, debugging, or handing a scoped coding task to an agent.",
+    "pros": [
+      "Works in many editors and in the terminal.",
+      "Has a free plan with stated monthly caps.",
+      "Repository instructions and custom agents can supply context."
+    ],
+    "cons": [
+      "Free usage is capped.",
+      "Chat and agent costs on paid plans depend on the model and task.",
+      "Generated code still needs review and testing."
+    ],
+    "prompt_style": {
+      "technique": "Describe the goal, requirements, relevant context and acceptance criteria; split large work into smaller tasks.",
+      "format": "Natural-language prompt in chat or the CLI, with relevant files or repository instructions.",
+      "rules": [
+        "Explain the problem and the expected outcome.",
+        "Include the relevant files, errors or inputs.",
+        "State what done means, such as tests that must pass.",
+        "Break complex work into smaller tasks."
+      ],
+      "example": "In src/cart.ts, fix the quantity validation so quantities below 1 are rejected. Add tests for 0, 1 and 2, and run the cart test suite."
+    },
+    "input_types": [
+      "text",
+      "code",
+      "files"
+    ],
+    "output_types": [
+      "code",
+      "text"
+    ],
+    "best_for": "Developers who want code completion and AI chat built into GitHub and their existing editor.",
+    "not_for": "People who need unlimited free chat or agent usage.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://github.com/features/copilot/plans",
+        "quote": "GitHub Copilot Free is a new free pricing tier with limited functionality for individual developers."
+      },
+      "has_free_tier": {
+        "source_url": "https://github.com/features/copilot/plans",
+        "quote": "GitHub Copilot Free users are limited to 2000 completions and 50 chat requests (including Copilot Edits)."
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://github.com/features/copilot/plans",
+        "quote": "Pro $10 per month"
+      },
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: the official page is inconsistent on free chat limits (the FAQ says 50 chat requests, the credits table says limited chat and agent usage); recheck before verifying",
+      "check: prompt_style not verified against GitHub docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Google Antigravity",
+    "domain": "software",
+    "official_url": "https://antigravity.google",
+    "pricing_url": "https://antigravity.google/pricing/",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free individual plan: agent models, unlimited Tab and Command requests, basic weekly rate limits.",
+    "free_tier_limits": "The free individual plan has basic weekly rate limits; no numeric quota is published.",
+    "starting_price_monthly_usd": 19.99,
+    "pricing_notes": "The free 'For Individuals' plan is $0/month. Google AI Pro and Ultra add more rate limits and a flexible AI credit pool; the Antigravity pricing page does not show their prices. Google AI Pro is listed at $19.99/month on Google's plans page (US price, region may vary). Organizations can use it through Google Cloud (Gemini Enterprise plans from $30 per seat per month, or pay-as-you-go).",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "desktop",
+      "cli",
+      "extension",
+      "api"
+    ],
+    "skill_level": "intermediate",
+    "jobs": [
+      "plan_app",
+      "write_code",
+      "debug_code",
+      "review_code"
+    ],
+    "tagline": "Agent-based development across your editor, terminal and browser.",
+    "summary": "Google Antigravity is a development environment where agents can work with a codebase and use editor, terminal and browser tools. It also comes as a CLI, editor extensions and an SDK.",
+    "how_it_helps": "Use it to explore a codebase, plan a change, make edits and run local checks. It also supports parallel agents for work that can be separated.",
+    "pros": [
+      "The individual plan is free and includes agent models.",
+      "Agents can use the editor, terminal and browser.",
+      "Available as an IDE, a CLI, extensions and an SDK."
+    ],
+    "cons": [
+      "The free plan has basic weekly rate limits.",
+      "Exact free usage quotas are not published.",
+      "The pages reviewed do not state free-plan commercial-use terms."
+    ],
+    "prompt_style": {
+      "technique": "For complex changes, separate exploration, planning and execution, and include a verification step.",
+      "format": "Natural-language task prompt, with optional file-path context and attached screenshots or video.",
+      "rules": [
+        "Ask the agent to explore the relevant code before changing it.",
+        "Request a plan for complex work, then direct implementation after review.",
+        "Have it run the relevant tests or build command."
+      ],
+      "example": "Explore how this router handles /docs/:page, propose a plan to add /docs/best-practices, then implement it and run the relevant tests."
+    },
+    "input_types": [
+      "text",
+      "code",
+      "image",
+      "video"
+    ],
+    "output_types": [
+      "code",
+      "text",
+      "image"
+    ],
+    "best_for": "Developers who want agents to plan, change and verify code using their local development tools.",
+    "not_for": "Users who need a published numeric free quota or a no-code, browser-only builder.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://antigravity.google/pricing/",
+        "quote": "For Individuals $0/month"
+      },
+      "has_free_tier": {
+        "source_url": "https://antigravity.google/pricing/",
+        "quote": "Experience Antigravity without a subscription plan"
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://one.google.com/about/plans",
+        "quote": "Google AI Pro (5 TB) $19.99/mo"
+      },
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: the paid price comes from one.google.com (add it to official_domains) and was not verified by me; Google AI Pro is a Google plan, not an Antigravity-only plan",
+      "check: prompt_style not verified against Antigravity docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Windsurf",
+    "domain": "software",
+    "official_url": "https://windsurf.com",
+    "pricing_url": "https://devin.ai/pricing",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free plan: light agent quota, limited models, unlimited inline edits and Tab completions.",
+    "free_tier_limits": "Agent use has a light quota and model availability is limited; no numeric quota is published.",
+    "starting_price_monthly_usd": 20,
+    "pricing_notes": "windsurf.com/pricing now shows 'Devin Plans and Pricing' on devin.ai. Pro is $20/month and Max is $200/month. Teams is $80/month for the team plus $40/month per full dev seat. Paid plans have a usage allowance that refreshes daily and weekly; extra usage is billed at API pricing. Pro currently includes free use of SWE-2 Free in Devin Desktop and the CLI through October 16, 2026.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "desktop",
+      "cli"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "write_code",
+      "debug_code",
+      "review_code"
+    ],
+    "tagline": "AI desktop coding editor with agents and autocomplete.",
+    "summary": "Windsurf is an AI coding editor that now appears on its official pricing page under the Devin Desktop name. It offers agent-based coding, inline edits, Tab completions and project-level instructions.",
+    "how_it_helps": "Use it when you want an AI assistant inside a desktop coding environment for changes, debugging or repeated project workflows.",
+    "pros": [
+      "A permanent free plan is listed.",
+      "The free plan includes unlimited inline edits and Tab completions.",
+      "Project rules can give the assistant reusable guidance."
+    ],
+    "cons": [
+      "The free agent quota is described as light, with no number.",
+      "Extra paid usage is charged at API pricing.",
+      "The product now goes by both Windsurf and Devin Desktop."
+    ],
+    "prompt_style": {
+      "technique": "Give a clear objective, relevant context and any necessary constraints.",
+      "format": "Natural-language task prompt, with project context supplied directly or through @ mentions.",
+      "rules": [
+        "Say what outcome you want.",
+        "Include relevant project context.",
+        "State required languages, frameworks and constraints.",
+        "Keep persistent rules short and specific."
+      ],
+      "example": "In the checkout flow, fix the bug that accepts a quantity of zero. Use the existing validation pattern, add tests for zero and positive quantities, and run the relevant test suite."
+    },
+    "input_types": [
+      "text",
+      "code",
+      "image"
+    ],
+    "output_types": [
+      "code",
+      "text"
+    ],
+    "best_for": "Developers who want an AI-assisted desktop editor with agent features and project rules.",
+    "not_for": "Users who need a published free-agent quota or a web-only coding environment.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://devin.ai/pricing",
+        "quote": "Free $0"
+      },
+      "has_free_tier": {
+        "source_url": "https://devin.ai/pricing",
+        "quote": "Light quota to code with agents"
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://devin.ai/pricing",
+        "quote": "$20per month"
+      },
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: windsurf.com/pricing redirects to devin.ai/pricing and the product is now called Devin Desktop; add devin.ai and cognition.com to official_domains and decide the display name",
+      "check: prompt_style not verified against the docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "GitHub",
+    "domain": "software",
+    "official_url": "https://github.com",
+    "pricing_url": "https://github.com/pricing",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Unlimited public and private repos, 2,000 Actions minutes and 500 MB Packages storage a month.",
+    "free_tier_limits": "Many collaboration and review features are limited to public repositories on the Free plan.",
+    "starting_price_monthly_usd": 4,
+    "pricing_notes": "Team is listed at $4 per user/month 'for the first 12 months' (the price after that is not shown). Enterprise is $21 per user/month, also 'for the first 12 months'. GitHub Copilot is a separate add-on with its own plans and is not included in these platform prices.",
+    "credit_card_required": false,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web",
+      "desktop",
+      "mobile",
+      "cli",
+      "api"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "manage_code",
+      "review_code",
+      "plan_app"
+    ],
+    "tagline": "Host code, review changes and automate development.",
+    "summary": "GitHub is a platform for hosting Git repositories and collaborating on software. It also provides issues, pull requests, project boards and automated workflows through GitHub Actions.",
+    "how_it_helps": "Use it to store and manage a codebase, review contributions, track work and run automated builds and tests.",
+    "pros": [
+      "The free plan has unlimited public and private repositories.",
+      "Works on the web, the command line and mobile.",
+      "Issues, pull requests and Actions cover common collaboration needs."
+    ],
+    "cons": [
+      "Some features for private repositories need a paid plan.",
+      "Actions minutes and package storage have monthly allowances.",
+      "Copilot is a separate product with separate pricing."
+    ],
+    "prompt_style": null,
+    "input_types": [
+      "code",
+      "text",
+      "files"
+    ],
+    "output_types": [
+      "code",
+      "text"
+    ],
+    "best_for": "Individuals and teams who need Git hosting and collaboration around their code.",
+    "not_for": "Users looking for an AI coding agent as part of the core GitHub plan.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://github.com/pricing",
+        "quote": "The basics for individuals and organizations"
+      },
+      "has_free_tier": {
+        "source_url": "https://github.com/pricing",
+        "quote": "$ 0 USD per month"
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://github.com/pricing",
+        "quote": "$ 4 USD per user/month"
+      },
+      "credit_card_required": {
+        "source_url": "https://docs.github.com/en/site-policy/github-terms/github-terms-of-service",
+        "quote": "Free Accounts are not required to provide payment information."
+      },
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: the $4 Team price is labelled 'for the first 12 months*'; confirm the regular price before verifying",
+      "check: the credit card claim cites the GitHub Terms of Service and was not verified by me"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Figma",
+    "domain": "design",
+    "official_url": "https://www.figma.com",
+    "pricing_url": "https://www.figma.com/pricing/",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Starter plan: limited access to Figma products and 500 AI credits a month.",
+    "free_tier_limits": "Starter limits collaborative Figma Design files and has a daily AI credit cap (150 reported).",
+    "starting_price_monthly_usd": null,
+    "pricing_notes": "Reported seat prices: Professional Full seat $16/month billed annually (about $20 billed monthly) and Collab seat $3/month. The $3 Collab seat is not full design access, so no single starting price is set. Confirm on figma.com/pricing before verifying.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web",
+      "desktop",
+      "mobile"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "design_ui",
+      "make_presentation"
+    ],
+    "tagline": "Design interfaces, prototypes and presentations together.",
+    "summary": "Figma is a collaborative design platform for creating interfaces, prototypes and related visual work. It also includes presentation tools and AI-assisted design features, with availability depending on plan and seat.",
+    "how_it_helps": "Use it to make and review interface designs with collaborators, or turn a design into a prototype you can test before development.",
+    "pros": [
+      "The Starter plan is free.",
+      "Several people can work on the same file at once.",
+      "Prices are per seat, so you pay only for people who need full access."
+    ],
+    "cons": [
+      "Starter restricts collaborative design files.",
+      "AI credits and features depend on plan and seat.",
+      "The cheapest paid seat does not include full design access."
+    ],
+    "prompt_style": {
+      "technique": "Describe the task, context and constraints; give examples and attach relevant design frames when possible.",
+      "format": "Natural-language instructions in Figma Make or Figma's AI chat, optionally with frames attached as context.",
+      "rules": [
+        "Be clear and direct about the result you want.",
+        "Explain what you are building and who it is for.",
+        "State constraints and give examples.",
+        "Attach Figma frames rather than screenshots when you can."
+      ],
+      "example": "Create a mobile budgeting app screen for first-time users. Use the attached frame as the layout reference, keep the main action visible, and use our existing color styles."
+    },
+    "input_types": [
+      "text",
+      "image",
+      "files",
+      "url"
+    ],
+    "output_types": [
+      "image",
+      "code",
+      "text",
+      "pdf"
+    ],
+    "best_for": "Product teams and designers who design interfaces and prototypes together.",
+    "not_for": "Users who only need a standalone image generator.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://www.figma.com/pricing/",
+        "quote": "Free limited access to Figma products"
+      },
+      "has_free_tier": {
+        "source_url": "https://www.figma.com/pricing/",
+        "quote": "Free limited access to Figma products"
+      },
+      "starting_price_monthly_usd": null,
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "starting_price_monthly_usd",
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: my fetch of figma.com/pricing returned an outdated cached copy, so none of the Figma facts here were verified by me; confirm plan names, free limits and seat prices on the live page",
+      "check: prompt_style not verified against Figma docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Canva",
+    "domain": "design",
+    "official_url": "https://www.canva.com",
+    "pricing_url": "https://www.canva.com/pricing/",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free plan with templates, 5 GB storage and up to 20 Standard or Premium AI uses.",
+    "free_tier_limits": "Up to 20 Standard or Premium AI uses, no Ultra AI, 1 Brand Kit with 3 colors, 5 GB of storage.",
+    "starting_price_monthly_usd": null,
+    "pricing_notes": "In my fetch the pricing page showed yearly prices: Pro US$144 a year for one person (about $12 a month billed yearly) and Business US$250 a year per person. The monthly-billing price was not shown. Prices vary by region. Pro and Business offer a free trial; AI Pass is an extra-cost add-on.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web",
+      "desktop",
+      "mobile"
+    ],
+    "skill_level": "beginner",
+    "jobs": [
+      "generate_image",
+      "edit_image",
+      "design_brand",
+      "make_social_graphics",
+      "make_presentation"
+    ],
+    "tagline": "Create and edit visual content with templates and AI tools.",
+    "summary": "Canva is a browser-based and mobile design editor for graphics, presentations and other visual content. Its AI tools can generate or edit content from prompts, though access and limits vary by feature and plan.",
+    "how_it_helps": "Use it to quickly make branded social posts, presentations and other graphics from templates, or to change a design with a prompt.",
+    "pros": [
+      "The free plan includes a broad set of design tools and templates.",
+      "AI features cover several kinds of visual content.",
+      "Beginner-friendly drag-and-drop editor."
+    ],
+    "cons": [
+      "Free AI use is limited to a small number of uses.",
+      "Premium content and tools need a paid plan.",
+      "Prices and AI access differ by region and feature."
+    ],
+    "prompt_style": {
+      "technique": "Use a clear, descriptive prompt; specify visible details and add detail in iterations.",
+      "format": "Natural-language description entered in the relevant Canva AI or Magic Media prompt field.",
+      "rules": [
+        "Describe the intended image or design clearly.",
+        "Include useful visual details such as color and placement.",
+        "Keep prompts focused and split complex requests into steps.",
+        "Avoid references to brands, characters or people you do not have permission to use."
+      ],
+      "example": "Create a square social post for a weekend farmers market, with a hand-drawn basket of citrus, warm yellow and green colors, and clear space at the top for a headline."
+    },
+    "input_types": [
+      "text",
+      "image",
+      "video",
+      "audio"
+    ],
+    "output_types": [
+      "image",
+      "video",
+      "audio",
+      "pdf"
+    ],
+    "best_for": "Beginners and small teams who need polished graphics, social posts and presentations without starting from a blank canvas.",
+    "not_for": "Users who need precise professional image-editing controls.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://www.canva.com/pricing/",
+        "quote": "Free Design anything and bring your ideas to life."
+      },
+      "has_free_tier": {
+        "source_url": "https://www.canva.com/pricing/",
+        "quote": "No cost, just creativity."
+      },
+      "starting_price_monthly_usd": null,
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "starting_price_monthly_usd",
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: Perplexity set commercial_use_on_free to true from a general AI-works help page that does not mention the Free plan; I removed it",
+      "check: prompt_style not verified against Canva docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Adobe Firefly",
+    "domain": "design",
+    "official_url": "https://firefly.adobe.com",
+    "pricing_url": "https://www.adobe.com/products/firefly/plans.html",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free daily generations across image, video and audio; limits refresh every day.",
+    "free_tier_limits": "Free generations are limited daily; no fixed count is published on the plans page.",
+    "starting_price_monthly_usd": 9.99,
+    "pricing_notes": "Firefly Standard is US$9.99/month (2,000 generative credits), Pro US$19.99 (4,000), Pro Plus regularly US$49.99 (10,000) and Premium regularly US$199.99 (50,000). All paid plans include unlimited standard image generations; credits are used for video, audio and partner models. A free trial is offered on paid plans and limited-time promotions run until October 21.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web",
+      "mobile"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "generate_image",
+      "edit_image",
+      "make_social_graphics"
+    ],
+    "tagline": "Generate and edit images, video and audio with creative AI.",
+    "summary": "Adobe Firefly is a generative creative tool for making and editing images, video and audio. It offers free daily generations, and paid plans add monthly credits for premium features.",
+    "how_it_helps": "Use it to create or change visual assets from text prompts, especially if you also work in other Adobe tools.",
+    "pros": [
+      "Free daily generations without a paid plan.",
+      "Paid plans include unlimited standard image generations.",
+      "Adobe says Firefly model outputs are safe for commercial use."
+    ],
+    "cons": [
+      "Free limits are daily and not quantified.",
+      "Premium features use credits that vary by plan.",
+      "Partner-model outputs need your own check for suitability."
+    ],
+    "prompt_style": null,
+    "input_types": [
+      "text",
+      "image",
+      "audio",
+      "video"
+    ],
+    "output_types": [
+      "image",
+      "video",
+      "audio"
+    ],
+    "best_for": "Creators who want prompt-based image or media generation connected to Adobe workflows.",
+    "not_for": "Users who need unlimited free generations.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://www.adobe.com/products/firefly/plans.html",
+        "quote": "Start creating for free."
+      },
+      "has_free_tier": {
+        "source_url": "https://www.adobe.com/products/firefly/plans.html",
+        "quote": "You don't need a plan to get free daily generations across image, video, and audio"
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://www.adobe.com/products/firefly/plans.html",
+        "quote": "Firefly Standard US$9.99/mo"
+      },
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: Adobe's FAQ says Firefly outputs are safe for commercial use but does not address the free plan or partner models separately, so commercial_use_on_free is left null"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Midjourney",
+    "domain": "design",
+    "official_url": "https://www.midjourney.com",
+    "pricing_url": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+    "pricing_model": "paid",
+    "has_free_tier": false,
+    "free_tier_summary": null,
+    "free_tier_limits": null,
+    "starting_price_monthly_usd": 10,
+    "pricing_notes": "Monthly prices: Basic $10, Standard $30, Pro $60, Mega $120. Annual billing is 20% cheaper (Basic $96 a year). Basic has about 3.3 hours of fast GPU time a month and no Relax Mode; Standard and above have unlimited image generations in Relax Mode. Companies earning over $1,000,000 a year in gross revenue must use Pro or Mega. The official page says a limited trial exists only in the niji journey mobile app.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "generate_image",
+      "edit_image",
+      "design_brand",
+      "make_social_graphics"
+    ],
+    "tagline": "Generate and refine images from text and image prompts.",
+    "summary": "Midjourney generates images from text prompts and can use reference images to guide a new result. Its plans differ in generation modes, privacy options and video features.",
+    "how_it_helps": "Use it to explore visual directions, make illustrations or campaign imagery, and refine results by adjusting your prompt and settings.",
+    "pros": [
+      "Works from text prompts and image references.",
+      "Standard and higher plans offer unlimited image generations in Relax Mode.",
+      "Subscribers can use their images commercially under its terms."
+    ],
+    "cons": [
+      "There is no free plan on the website or Discord.",
+      "Large companies must buy the Pro or Mega plan.",
+      "Private Stealth Mode is only on Pro and Mega."
+    ],
+    "prompt_style": {
+      "technique": "Use a concise, specific description of the image; add references or parameters when you need more control.",
+      "format": "A text phrase or sentence, optionally with image references and parameters at the end.",
+      "rules": [
+        "Keep prompts short and say clearly what should appear.",
+        "Be specific about important subjects and details.",
+        "Describe what you want rather than relying on negative instructions.",
+        "Put parameters after the text description."
+      ],
+      "example": "Editorial illustration of a small greenhouse in a city courtyard, morning light, muted greens, wide composition --ar 3:2"
+    },
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "output_types": [
+      "image",
+      "video"
+    ],
+    "best_for": "Creators exploring image concepts and styles through iterative prompts.",
+    "not_for": "Users who need a free plan.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+        "quote": "Midjourney offers four subscription tiers: Basic, Standard, Pro, and Mega."
+      },
+      "has_free_tier": {
+        "source_url": "https://docs.midjourney.com/hc/en-us/articles/27870399340173-Free-Trials",
+        "quote": "No free trial is currently available in Discord or the midjourney.com website."
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://docs.midjourney.com/hc/en-us/articles/27870484040333-Comparing-Midjourney-Plans",
+        "quote": "Monthly Price $10 $30 $60 $120"
+      },
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: Perplexity could not read the prices; I filled them from the official plan page. The no-free-trial quote comes from a second page that I did not fetch.",
+      "check: prompt_style not verified against Midjourney docs"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Ideogram",
+    "domain": "design",
+    "official_url": "https://ideogram.ai",
+    "pricing_url": "https://ideogram.ai/pricing/",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Eligible Google, Apple and Microsoft sign-ins get 30 credits each week; free creations are public.",
+    "free_tier_limits": "30 credits a week for eligible sign-ins; email-and-password accounts get no free credits.",
+    "starting_price_monthly_usd": 20,
+    "pricing_notes": "Plus is $20/month billed monthly (2,400 credits), or $15/month billed yearly ($180 a year). Pro is $60/month. Team is $30 per user/month. Everything made on the free plan is public. Monthly credits do not roll over. The older Basic plan is no longer sold.",
+    "credit_card_required": null,
+    "watermark_on_free": null,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web",
+      "api"
+    ],
+    "skill_level": "all",
+    "jobs": [
+      "generate_image",
+      "edit_image",
+      "design_brand",
+      "make_social_graphics"
+    ],
+    "tagline": "Generate and edit images with strong prompt and text control.",
+    "summary": "Ideogram creates images and videos from prompts and has tools to edit and refine them. Its prompt guide covers plain-language descriptions and, on newer models, structured JSON for more exact layout or text placement.",
+    "how_it_helps": "Use it to create visuals that include specific wording, then refine details or adjust layout and color.",
+    "pros": [
+      "The free plan gives weekly credits to eligible sign-in methods.",
+      "The prompt guide explains how to specify text and layout.",
+      "Paid plans keep new images private until you publish them."
+    ],
+    "cons": [
+      "Everything made on the free plan is public.",
+      "Free credits depend on how you signed up.",
+      "The cheapest paid plan is $20/month when billed monthly."
+    ],
+    "prompt_style": {
+      "technique": "Write a literal, visual description; put the main idea and any required image text near the beginning.",
+      "format": "A plain-language sentence or paragraph; newer models also accept structured JSON prompts.",
+      "rules": [
+        "Name the kind of image, its main subject and tone.",
+        "Describe visible details and how elements relate.",
+        "Put required wording in quotation marks near the start.",
+        "Change one thing at a time while refining."
+      ],
+      "example": "A clean product poster for a neighborhood bakery, with a loaf of sourdough on a wooden counter and the words \"Fresh daily\" near the top, warm morning light."
+    },
+    "input_types": [
+      "text",
+      "image"
+    ],
+    "output_types": [
+      "image",
+      "video"
+    ],
+    "best_for": "People making visuals where text, layout and composition need deliberate control.",
+    "not_for": "Users who need private generations on the free plan.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://docs.ideogram.ai/plans-and-pricing/available-plans",
+        "quote": "Free accounts get 30 credits each week if they sign in with Google, Apple or Microsoft."
+      },
+      "has_free_tier": {
+        "source_url": "https://docs.ideogram.ai/plans-and-pricing/available-plans",
+        "quote": "Free accounts get 30 credits each week if they sign in with Google, Apple or Microsoft."
+      },
+      "starting_price_monthly_usd": {
+        "source_url": "https://docs.ideogram.ai/plans-and-pricing/available-plans",
+        "quote": "$20/month"
+      },
+      "credit_card_required": null,
+      "watermark_on_free": null,
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "credit_card_required",
+      "watermark_on_free",
+      "commercial_use_on_free",
+      "check: prompt_style not verified against the Ideogram prompt guide"
+    ],
+    "checked_on": "2026-10-09"
+  },
+  {
+    "name": "Gamma",
+    "domain": "design",
+    "official_url": "https://gamma.app",
+    "pricing_url": "https://gamma.app/pricing",
+    "pricing_model": "freemium",
+    "has_free_tier": true,
+    "free_tier_summary": "Free plan: up to 10 slides per prompt, PDF and PPTX import, export to PDF, PPTX, PNG and Google Slides.",
+    "free_tier_limits": "AI credits are one-time (400 reported) and do not refresh; Gamma branding stays on free content.",
+    "starting_price_monthly_usd": null,
+    "pricing_notes": "The plans are Free, Plus, Pro and Ultra. The pricing page text does not show their prices (they load dynamically), so no starting price is set. Plus adds up to 100 slides per prompt and removes Gamma branding.",
+    "credit_card_required": false,
+    "watermark_on_free": true,
+    "commercial_use_on_free": null,
+    "platforms": [
+      "web",
+      "mobile"
+    ],
+    "skill_level": "beginner",
+    "jobs": [
+      "make_presentation",
+      "make_social_graphics"
+    ],
+    "tagline": "Turn prompts and existing files into presentations and documents.",
+    "summary": "Gamma is a web tool for creating presentations, documents and websites from prompts or imported material. Its AI drafts content and layouts, and you can then edit and share the result.",
+    "how_it_helps": "Use it when you need a first draft of a presentation or visual document quickly, from a topic or existing files.",
+    "pros": [
+      "The free plan needs no credit card.",
+      "Free includes AI creation and up to 10 slides per prompt.",
+      "Imports PDF and PowerPoint files and exports to common formats."
+    ],
+    "cons": [
+      "Free AI credits do not refresh.",
+      "Free content keeps Gamma branding.",
+      "Paid prices are not shown in the page text."
+    ],
+    "prompt_style": null,
+    "input_types": [
+      "text",
+      "pdf",
+      "files",
+      "image"
+    ],
+    "output_types": [
+      "presentation",
+      "pdf",
+      "image",
+      "url"
+    ],
+    "best_for": "People who want to draft and share a presentation or visual document from a short brief.",
+    "not_for": "Users who need unbranded free exports or recurring free AI credits.",
+    "evidence": {
+      "pricing_model": {
+        "source_url": "https://gamma.app/pricing",
+        "quote": "For simple projects and getting to know Gamma"
+      },
+      "has_free_tier": {
+        "source_url": "https://gamma.app/pricing",
+        "quote": "Free includes:"
+      },
+      "starting_price_monthly_usd": null,
+      "credit_card_required": {
+        "source_url": "https://gamma.app/pricing",
+        "quote": "No credit card required"
+      },
+      "watermark_on_free": {
+        "source_url": "https://gamma.app/pricing",
+        "quote": "Remove Gamma branding"
+      },
+      "commercial_use_on_free": null
+    },
+    "unknowns": [
+      "starting_price_monthly_usd",
+      "commercial_use_on_free",
+      "check: the 400 one-time credits figure comes from Perplexity and is not on the pricing page; confirm in the Gamma help center",
+      "check: fill the Plus monthly price from the live pricing page before verifying"
+    ],
+    "checked_on": "2026-10-09"
+  }
+]
