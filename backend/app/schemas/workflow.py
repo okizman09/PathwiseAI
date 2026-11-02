@@ -22,6 +22,10 @@ class ToolShortCard(BaseModel):
     go_path: str
     category: str = ""
     domain: str | None = None
+    ecosystem: str | None = None
+    kind: str | None = None
+    model_id: str | None = None
+    api_snippet: str | None = None
     jobs: list[str] = Field(default_factory=list)
     input_types: list[str] = Field(default_factory=list)
     output_types: list[str] = Field(default_factory=list)

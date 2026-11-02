@@ -278,6 +278,7 @@ class CardImporterService:
                 # Update fields (Preserve affiliate_url, verified_by, verified_at, logo_url, og_image_url)
                 existing_tool.name = card.name.strip()
                 existing_tool.url = url_norm
+                existing_tool.docs_url = card_data["docs_url"]
                 existing_tool.domain = card.domain
                 existing_tool.category = card.domain  # DB backward compatibility
                 existing_tool.jobs = card_data["jobs"]
@@ -307,6 +308,11 @@ class CardImporterService:
                 existing_tool.prompt_style = card_data.get("prompt_style") or {}
                 existing_tool.input_types = card_data["input_types"]
                 existing_tool.output_types = card_data["output_types"]
+
+                existing_tool.ecosystem = card_data["ecosystem"]
+                existing_tool.kind = card_data["kind"]
+                existing_tool.model_id = card_data["model_id"]
+                existing_tool.api_snippet = card_data["api_snippet"]
 
                 existing_tool.status = "researched"
                 existing_tool.evidence = card_data["evidence"]
@@ -374,7 +380,7 @@ class CardImporterService:
                 name=card.name.strip(),
                 url=url_norm,
                 affiliate_url=None,
-                docs_url=None,
+                docs_url=card_data["docs_url"],
                 domain=card.domain,
                 category=card.domain,
                 jobs=card_data["jobs"],
@@ -401,6 +407,10 @@ class CardImporterService:
                 prompt_style=card_data.get("prompt_style") or {},
                 input_types=card_data["input_types"],
                 output_types=card_data["output_types"],
+                ecosystem=card_data["ecosystem"],
+                kind=card_data["kind"],
+                model_id=card_data["model_id"],
+                api_snippet=card_data["api_snippet"],
                 logo_url=resolved_logo,
                 logo_source=resolved_src,
                 og_image_url=resolved_og,

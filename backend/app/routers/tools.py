@@ -374,8 +374,9 @@ async def check_all_admin_links(
 async def list_public_tools(
     category: str | None = Query(None, description="Filter by category"),
     domain: str | None = Query(None, description="Filter by domain"),
+    ecosystem: str | None = Query(None, description="Filter by ecosystem (e.g. meta)"),
     db: Session = Depends(get_db),
 ):
     """Public catalog: returns VERIFIED tools only."""
-    return catalog_service.list_public_tools(db=db, category=category, domain=domain)
+    return catalog_service.list_public_tools(db=db, category=category, domain=domain, ecosystem=ecosystem)
 

@@ -17,6 +17,12 @@ class Tool(Base):
     affiliate_url = Column(String(1024), nullable=True)
     docs_url = Column(String(1024), nullable=True)
 
+    # Meta ecosystem (hackathon T4)
+    ecosystem = Column(String(50), nullable=True, index=True)  # e.g. 'meta'
+    kind = Column(String(30), nullable=True)  # runnable | open_weight | developer_tool | platform
+    model_id = Column(String(100), nullable=True)  # exact API model ID
+    api_snippet = Column(Text, nullable=True)  # hand-written how-to-call code
+
     # Taxonomy & categorization
     domain = Column(String(50), nullable=True, index=True)
     category = Column(String(100), nullable=False, default="", index=True)  # Kept DB column

@@ -60,6 +60,12 @@ class ToolBase(BaseModel):
     affiliate_url: str | None = None
     docs_url: str | None = None
 
+    # Meta ecosystem (hackathon T4)
+    ecosystem: str | None = None
+    kind: str | None = None
+    model_id: str | None = None
+    api_snippet: str | None = None
+
     # Taxonomy & categorization
     domain: str | None = None
     category: str | None = ""
@@ -158,6 +164,10 @@ class AdminToolCreateRequest(BaseModel):
     url: str
     docs_urls: list[str] | None = None
     affiliate_url: str | None = None
+    ecosystem: str | None = None
+    kind: str | None = None
+    model_id: str | None = None
+    api_snippet: str | None = None
     domain: str | None = None
     category: str | None = None
     jobs: list[str] | None = None
@@ -214,6 +224,10 @@ class ToolUpdate(BaseModel):
     url: str | None = None
     affiliate_url: str | None = None
     docs_url: str | None = None
+    ecosystem: str | None = None
+    kind: str | None = None
+    model_id: str | None = None
+    api_snippet: str | None = None
     domain: str | None = None
     category: str | None = None
     jobs: list[str] | None = None
@@ -311,6 +325,10 @@ class ToolPublicResponse(BaseModel):
     id: int
     name: str
     docs_url: str | None = None
+    ecosystem: str | None = None
+    kind: str | None = None
+    model_id: str | None = None
+    api_snippet: str | None = None
     domain: str | None = None
     category: str | None = ""
     jobs: list[str] = Field(default_factory=list)

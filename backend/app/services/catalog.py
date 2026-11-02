@@ -251,6 +251,7 @@ def list_public_tools(
     db: Session,
     category: str | None = None,
     domain: str | None = None,
+    ecosystem: str | None = None,
 ) -> list[Tool]:
     """List only verified tools for public catalog, sorted picks first then name."""
     query = db.query(Tool).filter(
@@ -261,6 +262,8 @@ def list_public_tools(
         query = query.filter((Tool.domain == domain) | (Tool.category == domain))
     elif category:
         query = query.filter((Tool.category == category) | (Tool.domain == category))
+    if ecosystem:
+        query = query.filter(Tool.ecosystem == ecosystem)
     tools = query.order_by(Tool.is_pick.desc(), Tool.name.asc()).all()
     counts = get_tool_feedback_counts(db)
     for tool in tools:

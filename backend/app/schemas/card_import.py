@@ -86,6 +86,11 @@ class CardImport(BaseModel):
     checked_on: str | None = None
     official_domains: list[str] = Field(default_factory=list)
     logo_source_url: str | None = None
+    ecosystem: str | None = None
+    kind: str | None = None
+    model_id: str | None = None
+    api_snippet: str | None = None
+    docs_url: str | None = None
 
     @field_validator("logo_source_url")
     @classmethod
