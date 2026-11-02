@@ -4,6 +4,7 @@ Decomposes the ProductBrief into 1 to 6 taxonomy jobs, enforces budget and comme
 scores tools in code, and synthesizes paste-ready prompts tailored to each tool's prompt style.
 """
 import json
+import re
 from datetime import UTC, datetime, timedelta
 from typing import Literal
 
@@ -98,6 +99,44 @@ class LLMWorkflowSynthesis(BaseModel):
         max_length=6,
         description="The detailed synthesized steps with tool assignments and paste-ready prompts",
     )
+
+
+_MODEL_ID_RE = re.compile(r"\bmuse-[A-Za-z0-9_.-]+|\bsam-[A-Za-z0-9_.-]+")
+
+
+def _candidate_summary(t: Tool) -> dict:
+    """Shortlist entry for the synthesis prompt; Meta tools carry ecosystem/kind/model_id."""
+    summary = {
+        "id": t.id,
+        "name": t.name,
+        "category": t.category,
+        "jobs": t.jobs,
+        "prompt_style": t.prompt_style,
+    }
+    if t.ecosystem:
+        summary["ecosystem"] = t.ecosystem
+        summary["kind"] = t.kind
+        summary["model_id"] = t.model_id
+    return summary
+
+
+def _strip_unknown_model_ids(text: str, known_ids: set[str]) -> tuple[str, list[str]]:
+    """Strip muse-/sam- tokens not present in the catalog.
+
+    Returns the cleaned text plus the removed IDs (for step warnings).
+    Trailing punctuation is preserved; known IDs are left untouched.
+    """
+    removed: list[str] = []
+
+    def _replace(match: re.Match) -> str:
+        raw = match.group(0)
+        token = raw.rstrip(".,;:!?\"')]")
+        if token in known_ids:
+            return raw
+        removed.append(token)
+        return raw[len(token):]
+
+    return _MODEL_ID_RE.sub(_replace, text or ""), removed
 
 
 def compute_free_tier_note(tool: Tool | ToolShortCard | None, brief: ProductBrief) -> tuple[str, list[str]]:
@@ -328,16 +367,7 @@ async def generate_workflow_plan(
         job_candidates_map.append({
             "job_item": job_item,
             "candidates": top_candidates,
-            "candidate_summaries": [
-                {
-                    "id": t.id,
-                    "name": t.name,
-                    "category": t.category,
-                    "jobs": t.jobs,
-                    "prompt_style": t.prompt_style,
-                }
-                for t in top_candidates
-            ] if top_candidates else [],
+            "candidate_summaries": [_candidate_summary(t) for t in top_candidates],
         })
         prev_outputs = job_item.output_types
 
@@ -350,7 +380,9 @@ async def generate_workflow_plan(
         "2. TOOL-SPECIFIC PROMPTS: Write each prompt strictly tailored to the chosen tool's `prompt_style` (technique, structure, rules).\n"
         "3. EXPLANATIONS: Write short 1-2 sentence why_step, why_tool, and learn_note.\n"
         "4. HANDOFF CONTINUITY: If Step 2 follows Step 1, ensure the prompt explicitly takes the output of Step 1.\n"
-        "5. DO NOT PAD OR DROP: Return exactly the steps provided in the input list, even if candidates are empty."
+        "5. DO NOT PAD OR DROP: Return exactly the steps provided in the input list, even if candidates are empty.\n"
+        "6. MODEL IDS: Use only model IDs that appear in the tool context. Never invent a model ID.\n"
+        "7. META MODEL STEPS: For a Meta model step, write the prompt to be sent to that model, with the expected output format."
     )
 
     steps_input_payload = []
@@ -375,6 +407,24 @@ async def generate_workflow_plan(
         schema=LLMWorkflowSynthesis,
         temperature=0.2,
     )
+
+    # T6 post-check: strip invented Meta model IDs from synthesized step text.
+    known_model_ids = {
+        row[0]
+        for row in db.query(Tool.model_id).filter(Tool.model_id.isnot(None)).all()
+    }
+    invented_warnings: list[list[str]] = []
+    for step_syn in workflow_synthesis.steps:
+        stripped: list[str] = []
+        for field in ("prompt", "why_step", "why_tool", "learn_note", "technique"):
+            cleaned, removed = _strip_unknown_model_ids(getattr(step_syn, field) or "", known_model_ids)
+            setattr(step_syn, field, cleaned)
+            stripped.extend(removed)
+        invented_warnings.append(
+            [f"Removed unrecognized model reference(s): {', '.join(sorted(set(stripped)))}"]
+            if stripped
+            else []
+        )
 
     # 5. Hydrate final workflow steps and save to DB
     db_wf = DBWorkflow(
@@ -422,7 +472,7 @@ async def generate_workflow_plan(
                 learn_note=None,
                 handoff_note="No verified tool yet. Come back later.",
                 free_tier_note=gap_note,
-                warnings=["No verified tool option available for this job yet."],
+                warnings=["No verified tool option available for this job yet."] + invented_warnings[idx - 1],
             )
             final_steps.append(step_schema)
 
@@ -468,7 +518,7 @@ async def generate_workflow_plan(
             why_tool=step_syn.why_tool,
             learn_note=step_syn.learn_note,
             free_tier_note=free_note,
-            warnings=step_warnings,
+            warnings=step_warnings + invented_warnings[idx - 1],
         )
         final_steps.append(step_schema)
 
