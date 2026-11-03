@@ -22,6 +22,13 @@ event" was built during the hackathon window.
 - Batch follow-up 7: fixed Hugging Face (domain research, job research_topic, model-hub tagline/best_for); tagline script gained --exclude-ids; ruff clean (commit pending)
 - Batch follow-up 8: researched + imported Manus (ID 124, builders, freemium $20+, official help-center evidence x3 matched, logo+og, VERIFIED); backfill 114 ok / 0 failed; catalog now 124 tools (commit pending)
 - Batch follow-up 9: landing beautification (hairline grid, animated route + waypoint SVG, entrance motion, section anchors); same theme, single accent color; tsc + build green (commit pending)
+- Batch follow-up 10: tagline rewrite executed by user (114/114 saved incl. 4-ID rerun); fixed freelancer substring false-rejects (word-boundary ban); restored curated Manus tagline (commit pending)
+- Batch follow-up 11: nav labels (Discover -> Explore tools, Example -> Sample workflow incl. mobile/footer/eyebrow/mockup); tsc + build green (commit pending)
+- Batch follow-up 12: fixed plan truncation (synthesis max_output_tokens 4096 -> 8192; action_steps outgrew budget); ruff + 13 step tests green, no new test (config value) (commit pending)
+- Batch follow-up 13: interview loaders (spinner session gate, question skeleton, thinking dots; dropped loading texts); tsc + build green (commit pending)
+- Batch follow-up 14: honest cost summary (pricing_complete flag, estimate wording, note dedupe) + affiliate line removed from workspace + verified Lovable/Firebase pricing; suite 166 green, tsc + build green (commit pending)
+- Batch follow-up 15: product-name capture (brief.product_name, interview rule 4, planner rule 9, brief card display, 4 contract tests); suite 170 green, tsc + build green (commit pending)
+- Batch follow-up 16: native-coverage jobs rule (skip redundant hosting/database steps, Lovable+Supabase example) + Lovable/Supabase summaries; suite 171 green (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

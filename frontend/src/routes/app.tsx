@@ -33,6 +33,7 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible";
 import { Input } from "@/components/ui/input";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
   api,
@@ -253,7 +254,16 @@ function AppPage() {
 
   const started = question || brief || answers.length > 0;
 
-  if (!sessionUser) return <div className="p-8 text-center text-muted-foreground">Loading session...</div>;
+  if (!sessionUser)
+    return (
+      <div
+        role="status"
+        aria-label="Loading workspace"
+        className="grid min-h-screen place-items-center bg-background"
+      >
+        <Loader2 className="size-8 animate-spin text-primary" />
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-background">
@@ -381,6 +391,25 @@ function AppPage() {
           </div>
         ) : null}
 
+        {/* QUESTION SKELETON (first question still generating) */}
+        {!question && !brief && busy === "interview" ? (
+          <section
+            aria-label="Loading next question"
+            className="mt-10 rounded-2xl border border-border bg-card p-6 shadow-sm sm:p-8"
+          >
+            <div className="flex items-center justify-between">
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-16" />
+            </div>
+            <Skeleton className="mt-4 h-7 w-3/4" />
+            <div className="mt-6 grid gap-2.5">
+              <Skeleton className="h-[52px] w-full rounded-lg" />
+              <Skeleton className="h-[52px] w-full rounded-lg" />
+              <Skeleton className="h-[52px] w-full rounded-lg" />
+            </div>
+          </section>
+        ) : null}
+
         {/* INTERVIEW QUESTION STEP */}
         {question ? (
           <section className="mt-10 rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm">
@@ -428,8 +457,14 @@ function AppPage() {
             ) : null}
 
             {busy === "interview" ? (
-              <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
-                <Loader2 className="size-4 animate-spin text-primary" /> Processing answer...
+              <div
+                role="status"
+                aria-label="Thinking about your answer"
+                className="mt-6 flex items-center gap-1.5"
+              >
+                <span className="size-2 animate-bounce rounded-full bg-primary/70 [animation-delay:-0.3s]" />
+                <span className="size-2 animate-bounce rounded-full bg-primary/70 [animation-delay:-0.15s]" />
+                <span className="size-2 animate-bounce rounded-full bg-primary/70" />
               </div>
             ) : null}
           </section>
@@ -441,6 +476,9 @@ function AppPage() {
             <p className="eyebrow">Product Brief Finalized</p>
             <h2 className="mt-2 text-2xl font-semibold">{brief.what_being_made}</h2>
             <dl className="mt-6 grid gap-6 text-sm sm:grid-cols-2">
+              {brief.product_name ? (
+                <BriefItem label="Product Name" value={brief.product_name} />
+              ) : null}
               <BriefItem label="Purpose" value={brief.purpose} />
               <BriefItem label="Target Audience" value={brief.target_audience} />
               <BriefItem label="Must Haves" list={brief.must_haves} />
@@ -487,7 +525,11 @@ function AppPage() {
                   {workflow.cost_summary.mode === "free" ? (
                     <Badge className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 border-emerald-500/30 gap-1 text-xs font-semibold py-1">
                       <CheckCircle2 className="size-3.5" />
-                      <span>100% Free Plan ($0/mo)</span>
+                      <span>
+                        {workflow.cost_summary.pricing_complete === false
+                          ? "Estimated Free · verify pricing"
+                          : "100% Free Plan ($0/mo)"}
+                      </span>
                     </Badge>
                   ) : (
                     <Badge className="bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30 gap-1 text-xs font-semibold py-1">
@@ -678,7 +720,6 @@ function StepCard({
             {openingLink ? <Loader2 className="size-3.5 animate-spin" /> : null}
             Open tool <ExternalLink className="size-3.5" />
           </Button>
-          <span className="text-[10px] text-muted-foreground">May include an affiliate link</span>
         </div>
       </div>
 

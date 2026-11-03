@@ -263,6 +263,26 @@ def test_compute_cost_summary_with_paid(base_brief):
     assert any("T1" in n for n in summary.notes)
 
 
+def test_compute_cost_summary_unknown_pricing_softens_claim(base_brief):
+    """Unknown pricing keeps mode='free' but marks $0 as an estimate (notes deduped)."""
+    unknown = ToolShortCard(id=1, name="Mystery", url="https://m.com", go_path="/api/v1/tools/1/go", pricing_model="unknown", has_free_tier=None)
+    free = ToolShortCard(id=2, name="Freebie", url="https://f.com", go_path="/api/v1/tools/2/go", pricing_model="free", has_free_tier=True, starting_price_monthly_usd=0)
+
+    steps = [
+        WorkflowStep(step_id="step-1", step_number=1, job="Job 1", why_step="Why 1", primary_tool=unknown, output_expected="Out 1"),
+        WorkflowStep(step_id="step-2", step_number=2, job="Job 2", why_step="Why 2", primary_tool=unknown, output_expected="Out 2"),
+        WorkflowStep(step_id="step-3", step_number=3, job="Job 3", why_step="Why 3", primary_tool=free, output_expected="Out 3"),
+    ]
+
+    base_brief.budget_preference = "flexible"
+    summary = compute_cost_summary(steps, base_brief)
+    assert summary.mode == "free"
+    assert summary.pricing_complete is False
+    assert sum("pricing not checked yet" in n for n in summary.notes) == 1
+    assert "estimate" in summary.notes[-1].lower()
+    assert "$0 baseline" not in " ".join(summary.notes)
+
+
 def test_compute_free_tier_note(base_brief):
     """compute_free_tier_note correctly formats summary and limits."""
     t_summary_only = Tool(
@@ -299,3 +319,12 @@ def test_empty_shortlist_under_free_only(base_brief, video_job):
     )
     candidates = shortlist_and_score([paid_tool], video_job, [], base_brief)
     assert len(candidates) == 0
+
+
+def test_jobs_coverage_rule_prefers_native_integrations():
+    """Jobs-phase rule tells the planner to skip redundant hosting/database steps."""
+    from app.services.plan import JOBS_COVERAGE_RULE
+
+    assert "native" in JOBS_COVERAGE_RULE.lower()
+    assert "hosting" in JOBS_COVERAGE_RULE
+    assert "Lovable" in JOBS_COVERAGE_RULE

@@ -37,6 +37,7 @@ from app.services.research.logos import fetch_binary_safe  # noqa: E402
 BATCH_SIZE = 12
 MAX_TAGLINE = 90
 TARGET_TAGLINE = 80
+BANNED_RE = re.compile(r"\b(best|free|paid|pricing)\b|#1|\$|http", re.IGNORECASE)
 
 TITLE_RE = re.compile(r"<title[^>]*>(.*?)</title>", re.IGNORECASE | re.DOTALL)
 META_RE = re.compile(
@@ -148,9 +149,7 @@ def batch_prompt(tools: list, groundings: dict[int, str]) -> str:
 def valid_tagline(text: str) -> bool:
     if not text or len(text) > MAX_TAGLINE:
         return False
-    lowered = text.lower()
-    banned = ["best ", " #1", "free", "paid", "$", "pricing", "http"]
-    return not any(b in lowered for b in banned)
+    return BANNED_RE.search(text) is None
 
 
 async def draft_batch(tools: list, groundings: dict[int, str]) -> dict[int, str]:

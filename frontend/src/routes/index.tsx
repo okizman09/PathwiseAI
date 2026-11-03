@@ -132,7 +132,9 @@ function Header() {
           <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
             <ToolsDirectoryModal />
             <a className="nav-link" href="#how-it-works">How it works</a>
-            <a className="nav-link" href="#example">Example</a>
+            <a className="nav-link" href="#example">
+              Sample workflow
+            </a>
           </nav>
         </div>
 
@@ -176,7 +178,7 @@ function Header() {
               How it works
             </a>
             <a href="#example" className="rounded-md px-3 py-2 text-sm font-medium hover:bg-muted" onClick={() => setOpen(false)}>
-              Example
+              Sample workflow
             </a>
             {session ? (
               <Button asChild className="mt-3 h-11 rounded-lg">
@@ -443,7 +445,7 @@ function Index() {
         <div className="mx-auto max-w-[1200px] px-5 sm:px-8 lg:px-12">
           <div className="grid items-end gap-8 md:grid-cols-[1fr_0.68fr]">
             <div>
-              <p className="eyebrow">Example creation path</p>
+              <p className="eyebrow">Sample workflow</p>
               <h2 className="mt-4 max-w-2xl text-3xl font-semibold leading-tight sm:text-4xl">
                 From a voice note to a kitchen-ready order.
               </h2>
@@ -477,7 +479,9 @@ function Index() {
         <BrandMark />
         <div className="flex items-center gap-6 text-xs text-muted-foreground">
           <a href="#how-it-works" className="hover:text-foreground">How it works</a>
-          <a href="#example" className="hover:text-foreground">Example</a>
+          <a href="#example" className="hover:text-foreground">
+            Sample workflow
+          </a>
           <Link to="/terms" className="hover:text-foreground">Terms</Link>
           <Link to="/privacy" className="hover:text-foreground">Privacy</Link>
           <Link to="/login" search={{ mode: "signin" }} className="hover:text-foreground">Sign in</Link>

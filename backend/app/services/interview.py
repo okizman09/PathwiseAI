@@ -28,16 +28,9 @@ class InterviewLLMDecision(BaseModel):
     )
 
 
-async def conduct_interview(
-    goal: str,
-    answers: list[InterviewAnswer],
-) -> InterviewResponse:
-    """Run interview turn with the Meta model. Returns either the next question or finalized brief."""
-
-    turns_count = len(answers)
-    force_ready = turns_count >= 5
-
-    system_instruction = (
+def build_interview_instruction(force_ready: bool) -> str:
+    """System instruction for the interview turn (pure, so the prompt contract is testable)."""
+    return (
         "You are Pathwise AI's Product Interviewer for creators, developers, and freelancers.\n"
         "Your mission is to gather context to create an actionable, accurate Product Brief across 9 creator domains.\n\n"
         "Creator Domains: software, builders, design, video, audio, writing, research, deploy_backend, freelance_ops.\n\n"
@@ -57,16 +50,28 @@ async def conduct_interview(
         "   - budget_preference: 'free_only' | 'low' | 'flexible'\n"
         "   - skill_level: 'beginner' | 'intermediate' | 'advanced'\n"
         "   - needs_commercial_use: 'yes' | 'no' | 'unknown'\n"
-        "4. 0-5 QUESTION RULE: If the user's initial goal answers enough of these to proceed, skip redundant questions and return is_ready=True immediately. Maximum 5 total questions.\n"
-        "5. Ask at most ONE question per turn. Keep questions concise and focused.\n"
-        "6. Provide 3-4 quick-select chip options with each question.\n"
-        "7. NEVER invent features. Use only what the user states or reasonable default assumptions based on the context.\n"
+        "4. PRODUCT NAME: If the goal doesn't already name the product, project, business, or brand being created, and the deliverable is something with a name (app, site, product, business, newsletter, brand), ask for its name early. Store it verbatim in brief.product_name. If the user declines or has no name, leave product_name null. NEVER invent a name.\n"
+        "5. 0-5 QUESTION RULE: If the user's initial goal answers enough of these to proceed, skip redundant questions and return is_ready=True immediately. Maximum 5 total questions.\n"
+        "6. Ask at most ONE question per turn. Keep questions concise and focused.\n"
+        "7. Provide 3-4 quick-select chip options with each question.\n"
+        "8. NEVER invent features. Use only what the user states or reasonable default assumptions based on the context.\n"
         + (
-            "8. IMPORTANT: 5 questions have already been completed. You MUST set is_ready=True and produce the final Product Brief now."
+            "9. IMPORTANT: 5 questions have already been completed. You MUST set is_ready=True and produce the final Product Brief now."
             if force_ready
             else ""
         )
     )
+
+
+async def conduct_interview(
+    goal: str,
+    answers: list[InterviewAnswer],
+) -> InterviewResponse:
+    """Run interview turn with the Meta model. Returns either the next question or finalized brief."""
+
+    turns_count = len(answers)
+    force_ready = turns_count >= 5
+    system_instruction = build_interview_instruction(force_ready)
 
     conversation_history = [f"Initial User Goal: {goal}"]
     for idx, item in enumerate(answers, 1):

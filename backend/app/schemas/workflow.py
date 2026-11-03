@@ -14,6 +14,7 @@ class CostSummary(BaseModel):
     mode: Literal["free", "may_cost"] = "free"
     estimated_monthly_usd: float | None = 0.0
     notes: list[str] = Field(default_factory=list)
+    pricing_complete: bool = True
 
 
 class ToolShortCard(BaseModel):

@@ -185,6 +185,7 @@ export interface ProductBrief {
   budget_preference: "free_only" | "low" | "flexible" | "unknown";
   needs_commercial_use: "yes" | "no" | "unknown";
   detected_domains?: string[];
+  product_name?: string | null;
 }
 
 export interface InterviewAnswer {
@@ -210,6 +211,7 @@ export interface CostSummary {
   mode: "free" | "may_cost";
   estimated_monthly_usd?: number | null;
   notes: string[];
+  pricing_complete?: boolean;
 }
 
 export interface WorkflowStep {

@@ -217,9 +217,10 @@ def compute_free_tier_note(tool: Tool | ToolShortCard | None, brief: ProductBrie
 
 def compute_cost_summary(steps: list[WorkflowStep], brief: ProductBrief) -> CostSummary:
     """Compute overall workflow cost summary in code from stored tool fields (Catalog v3, Slice C5)."""
-    notes: list[str] = []
+    tool_notes: dict[str, str] = {}
     total_estimated_usd = 0.0
     has_paid_tool = False
+    has_unknown_tool = False
     all_free = True
 
     for step in steps:
@@ -239,28 +240,38 @@ def compute_cost_summary(steps: list[WorkflowStep], brief: ProductBrief) -> Cost
         )
 
         if is_unknown:
-            notes.append(f"{tool.name}: pricing not checked yet.")
+            has_unknown_tool = True
+            tool_notes.setdefault(tool.name, f"{tool.name}: pricing not checked yet.")
         elif not has_free:
             has_paid_tool = True
             all_free = False
             price = tool.starting_price_monthly_usd or 0.0
             total_estimated_usd += price
-            notes.append(
+            tool_notes.setdefault(
+                tool.name,
                 f"{tool.name} requires a paid subscription (~${price:.0f}/mo)."
                 if price > 0
-                else f"{tool.name} has no free tier."
+                else f"{tool.name} has no free tier.",
             )
         elif brief.needs_commercial_use == "yes" and tool.commercial_use_on_free is False:
-            notes.append(
-                f"{tool.name} free tier is for personal use only. Commercial use requires a paid license."
+            tool_notes.setdefault(
+                tool.name,
+                f"{tool.name} free tier is for personal use only. Commercial use requires a paid license.",
             )
             has_paid_tool = True
             all_free = False
 
+    notes = list(tool_notes.values())
     mode: Literal["free", "may_cost"] = "free" if (all_free and not has_paid_tool) else "may_cost"
 
     if mode == "free":
-        notes.append("All recommended tools have a free tier or are open source ($0 baseline cost).")
+        if has_unknown_tool:
+            notes.append(
+                "Pricing hasn't been checked for some tools, so $0 is an estimate — "
+                "confirm free tiers before committing."
+            )
+        else:
+            notes.append("All recommended tools have a free tier or are open source ($0 baseline cost).")
     elif total_estimated_usd > 0:
         notes.append(f"Estimated baseline cost for required paid tools is approximately ${total_estimated_usd:.0f}/mo.")
 
@@ -268,6 +279,7 @@ def compute_cost_summary(steps: list[WorkflowStep], brief: ProductBrief) -> Cost
         mode=mode,
         estimated_monthly_usd=total_estimated_usd if total_estimated_usd > 0 else 0.0,
         notes=notes,
+        pricing_complete=not has_unknown_tool,
     )
 
 
@@ -305,6 +317,21 @@ def build_short_card(tool: Tool, why_chosen: str = "") -> ToolShortCard:
     )
 
 
+SYNTHESIS_NAME_RULE = (
+    "9. NAMES: If brief.product_name is set, use it verbatim wherever the product is named. "
+    'If null, refer generically ("your landing page", "the app") — '
+    "NEVER invent a business, product, or project name."
+)
+
+
+JOBS_COVERAGE_RULE = (
+    "4. PREFER NATIVE COVERAGE: If one tool typically covers several needs natively "
+    "(a builder with built-in hosting and a native database integration, like Lovable with Supabase), "
+    "plan fewer steps — never add a separate hosting or database job for capability the primary tool "
+    "already includes. Every step must earn its place with a distinct deliverable."
+)
+
+
 async def generate_workflow_plan(
     db: Session,
     user: Profile,
@@ -335,7 +362,8 @@ async def generate_workflow_plan(
         "STRICT CONSTRAINTS:\n"
         "1. VARIABLE STEPS (1-6): Plan between 1 and 6 steps. 1 step is completely valid if a single job satisfies the brief. NEVER pad.\n"
         "2. NO UNREQUESTED SCOPE: Do not include SEO, analytics, custom domains, marketing campaigns, or extra features unless explicitly requested in the brief.\n"
-        "3. EACH STEP IS A DISTINCT JOB: Produce a clear tangible deliverable per step."
+        "3. EACH STEP IS A DISTINCT JOB: Produce a clear tangible deliverable per step.\n"
+        + JOBS_COVERAGE_RULE
     )
 
     jobs_prompt = (
@@ -389,7 +417,8 @@ async def generate_workflow_plan(
         "5. DO NOT PAD OR DROP: Return exactly the steps provided in the input list, even if candidates are empty.\n"
         "6. MODEL IDS: Use only model IDs that appear in the tool context. Never invent a model ID.\n"
         "7. META MODEL STEPS: For a Meta model step, write the prompt to be sent to that model, with the expected output format.\n"
-        "8. CONTENT FORMAT: For each step, choose the format that fits the job. Setup, deployment, database, hosting, domain, auth and other configuration jobs use content_type \"steps\" with 2-8 ordered action_steps, each one concrete action with the exact command, URL, setting or click path. Creative, writing, coding, design, research, media and analysis jobs use content_type \"prompt\" with a paste-ready prompt. Populate only the matching field and leave the other empty."
+        "8. CONTENT FORMAT: For each step, choose the format that fits the job. Setup, deployment, database, hosting, domain, auth and other configuration jobs use content_type \"steps\" with 2-8 ordered action_steps, each one concrete action with the exact command, URL, setting or click path. Creative, writing, coding, design, research, media and analysis jobs use content_type \"prompt\" with a paste-ready prompt. Populate only the matching field and leave the other empty.\n"
+        + SYNTHESIS_NAME_RULE
     )
 
     steps_input_payload = []
@@ -413,6 +442,8 @@ async def generate_workflow_plan(
         user=synthesis_prompt,
         schema=LLMWorkflowSynthesis,
         temperature=0.2,
+        # action_steps payloads outgrew the 4096 default; reasoning shares this budget.
+        max_output_tokens=8192,
     )
 
     # T6 post-check: strip invented Meta model IDs from synthesized step text.

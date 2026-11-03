@@ -113,7 +113,7 @@ export function ToolsDirectoryModal() {
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <button type="button" className="nav-link cursor-pointer">
-          Discover
+          Explore tools
         </button>
       </DialogTrigger>
 

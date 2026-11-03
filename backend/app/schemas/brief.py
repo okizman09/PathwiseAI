@@ -69,6 +69,10 @@ class ProductBrief(BaseModel):
         default_factory=list,
         description="Detected creator domains: software, builders, design, video, audio, writing, research, deploy_backend, freelance_ops",
     )
+    product_name: str | None = Field(
+        default=None,
+        description="Product, project, business, or brand name exactly as the user gave it, or null when unknown",
+    )
 
 
 class InterviewQuestionResponse(BaseModel):
