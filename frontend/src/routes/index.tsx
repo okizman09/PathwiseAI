@@ -6,6 +6,7 @@ import {
   Compass,
   Layers3,
   Menu,
+  Play,
   Sparkles,
   WandSparkles,
   X,
@@ -48,6 +49,7 @@ const stages: {
   model?: string;
   prompt?: string;
   steps?: string[];
+  runnable?: boolean;
 }[] = [
   {
     name: "Capture",
@@ -67,6 +69,7 @@ const stages: {
       "Every recording becomes a verbatim transcript with item names, quantities, modifications, and table numbers kept exact.",
     tool: "Muse Voice Transcribe",
     model: "muse-voice-transcribe-1.0",
+    runnable: true,
     prompt:
       "Transcribe each order recording verbatim. Keep item names, quantities, modifications, and table numbers exact, even with kitchen background noise.",
   },
@@ -78,6 +81,7 @@ const stages: {
       "Transcripts are parsed into items, quantities, modifications, and table info, validated, and flagged when anything is unclear.",
     tool: "Muse Spark",
     model: "muse-spark-1.3",
+    runnable: true,
     prompt:
       "Convert this transcript into a structured order with items, quantities, modifications, and table info. Return JSON and flag anything unclear instead of guessing.",
   },
@@ -90,7 +94,7 @@ const stages: {
     tool: "Supabase",
     steps: [
       "Create an orders table with items, quantities, modifications, table info, and status.",
-      "Connect the dashboard to save each confirmed order.",
+      "Connect it through the builder's built-in Supabase integration — no separate backend step.",
       "Add status tracking: new, preparing, ready, completed.",
     ],
   },
@@ -348,6 +352,12 @@ function WorkflowPreview({ compact = false }: { compact?: boolean }) {
                   {current.prompt}
                 </p>
               )}
+              {current.runnable ? (
+                <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
+                  <Play className="size-3.5 text-primary" /> Runs live in the
+                  workspace
+                </p>
+              ) : null}
             </div>
           </div>
           <div className="mt-auto flex items-center justify-between pt-8">
@@ -452,7 +462,8 @@ function Index() {
             </div>
             <p className="max-w-md text-sm leading-6 text-muted-foreground md:justify-self-end">
               This example turns spoken restaurant notes into structured,
-              trackable orders — tool, prompt, and next decision in one view.
+              trackable orders — prompts you can run live, plus setup steps, in
+              one view.
             </p>
           </div>
           <div className="mt-12 md:mt-16">

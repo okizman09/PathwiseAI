@@ -233,6 +233,7 @@ export interface WorkflowStep {
   status?: string;
   free_tier_note?: string | null;
   warnings?: string[];
+  can_run?: boolean;
 }
 
 export interface WorkflowResponse {
@@ -262,6 +263,18 @@ export interface StepActionResponse {
   next_step?: WorkflowStep | null;
   action: string;
   message: string;
+}
+
+export interface StepRunResponse {
+  run_id: number;
+  step_id: string;
+  model_id: string;
+  status: string;
+  output_text: string;
+  error_code?: string | null;
+  input_tokens: number;
+  output_tokens: number;
+  latency_ms: number;
 }
 
 export interface WorkflowListResponse {
@@ -530,6 +543,23 @@ export const api = {
       method: "POST",
       body: JSON.stringify(body),
     });
+  },
+
+  /**
+   * Run a prompt step live on its verified catalog model (T9)
+   */
+  async runStep(
+    workflowId: number | string,
+    stepId: string,
+    prompt?: string,
+  ): Promise<StepRunResponse> {
+    return apiFetch<StepRunResponse>(
+      `/workflows/${workflowId}/steps/${stepId}/run`,
+      {
+        method: "POST",
+        body: JSON.stringify(prompt ? { prompt } : {}),
+      },
+    );
   },
 
   /**

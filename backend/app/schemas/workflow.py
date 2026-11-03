@@ -79,6 +79,7 @@ class WorkflowStep(BaseModel):
     status: str = "pending"
     free_tier_note: str | None = Field(default=None, description="Free tier guidance or limits note for this step")
     warnings: list[str] = Field(default_factory=list, description="Any warnings such as commercial use or stale pricing")
+    can_run: bool = Field(default=False, description="True when this prompt step can be executed live (T9)")
 
 
 class WorkflowRequest(BaseModel):
@@ -125,6 +126,22 @@ class StepFeedbackResponse(BaseModel):
     result: str
     note: str | None = None
     created_at: str
+
+
+class StepRunRequest(BaseModel):
+    prompt: str | None = Field(default=None, description="Optional edited prompt; defaults to the step's saved prompt")
+
+
+class StepRunResponse(BaseModel):
+    run_id: int
+    step_id: str
+    model_id: str
+    status: str
+    output_text: str = ""
+    error_code: str | None = None
+    input_tokens: int = 0
+    output_tokens: int = 0
+    latency_ms: int = 0
 
 
 class StepActionResponse(BaseModel):

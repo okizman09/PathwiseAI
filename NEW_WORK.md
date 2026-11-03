@@ -30,5 +30,9 @@ event" was built during the hackathon window.
 - Batch follow-up 15: product-name capture (brief.product_name, interview rule 4, planner rule 9, brief card display, 4 contract tests); suite 170 green, tsc + build green (commit pending)
 - Batch follow-up 16: native-coverage jobs rule (skip redundant hosting/database steps, Lovable+Supabase example) + Lovable/Supabase summaries; suite 171 green (commit pending)
 
+- T9 (backend): live step runs (StepRun model + migration f6a7b8c9d0e1, services/run.py eligibility+prompt+execute, run endpoints, step_run quota 10/day, run caps); 7 run tests green, full suite 178 green, alembic head f6a7b8c9d0e1 (commit pending)
+- T9 (frontend): Run button + live output panel (copy/.md download, tokens/ms) on runnable prompt steps; tsc + prettier-region-clean + build green (commit pending)
+- Landing sample tightening: runnable flags + "Runs live in the workspace" caption on Transcribe/Structure stages, Store step cites builder-native Supabase integration, section copy mentions live runs; tsc + build green (commit pending)
+
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

@@ -315,6 +315,7 @@ async def generate_text(
     user: str,
     model: str | None = None,
     max_output_tokens: int | None = None,
+    timeout: float | None = None,
 ) -> TextResult:
     """Call the Meta Model API and return plain text plus usage.
 
@@ -328,12 +329,15 @@ async def generate_text(
 
     for attempt in range(2):
         try:
-            response = await client.responses.create(
-                model=model_name,
-                instructions=system,
-                input=user,
-                max_output_tokens=budget,
-            )
+            create_kwargs = {
+                "model": model_name,
+                "instructions": system,
+                "input": user,
+                "max_output_tokens": budget,
+            }
+            if timeout is not None:
+                create_kwargs["timeout"] = timeout
+            response = await client.responses.create(**create_kwargs)
         except Exception as exc:
             last_error = exc
             if _is_transient(exc) and attempt == 0:

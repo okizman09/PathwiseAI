@@ -10,10 +10,12 @@ import {
   Compass,
   Copy,
   DollarSign,
+  Download,
   ExternalLink,
   History,
   Layers3,
   Loader2,
+  Play,
   RefreshCw,
   RotateCcw,
   ShieldCheck,
@@ -45,6 +47,7 @@ import {
   type InterviewQuestionResponse,
   type ProductBrief,
   type StepActionResponse,
+  type StepRunResponse,
   type WorkflowResponse,
   type WorkflowStep,
 } from "@/lib/api";
@@ -606,6 +609,9 @@ function StepCard({
   const [note, setNote] = useState("");
   const [feedbackResult, setFeedbackResult] = useState<"worked" | "partly" | "didnt">("worked");
   const [openingLink, setOpeningLink] = useState(false);
+  const [running, setRunning] = useState(false);
+  const [runResult, setRunResult] = useState<StepRunResponse | null>(null);
+  const [runError, setRunError] = useState<string | null>(null);
   const b = (a: string) => busy === `${step.step_id}:${a}`;
 
   async function handleOpenTool() {
@@ -620,6 +626,43 @@ function StepCard({
     } finally {
       setOpeningLink(false);
     }
+  }
+
+  async function handleRunStep() {
+    setRunning(true);
+    setRunError(null);
+    try {
+      const result = await api.runStep(workflowId, step.step_id);
+      setRunResult(result);
+    } catch (err: any) {
+      const message = err?.message || "The run failed. Please try again.";
+      setRunError(message);
+      toast.error(message);
+    } finally {
+      setRunning(false);
+    }
+  }
+
+  function handleCopyOutput() {
+    if (!runResult?.output_text) return;
+    navigator.clipboard.writeText(runResult.output_text);
+    toast.success("Output copied.");
+  }
+
+  function handleDownloadOutput() {
+    if (!runResult?.output_text) return;
+    const blob = new Blob(
+      [
+        `# Step ${step.step_number} output\n\nModel: ${runResult.model_id}\n\n${runResult.output_text}\n`,
+      ],
+      { type: "text/markdown" },
+    );
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `step-${step.step_number}-output.md`;
+    link.click();
+    URL.revokeObjectURL(url);
   }
 
   // Calm card for kind="no_tool" or steps with no verified tool
@@ -870,6 +913,22 @@ function StepCard({
           {b("regenerate") ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
           {step.content_type === "steps" ? "Regenerate Steps" : "Regenerate Prompt"}
         </Button>
+        {step.can_run ? (
+          <Button
+            size="sm"
+            variant="default"
+            className="text-xs h-8 gap-1.5"
+            disabled={busy !== null || running}
+            onClick={handleRunStep}
+          >
+            {running ? (
+              <Loader2 className="size-3.5 animate-spin" />
+            ) : (
+              <Play className="size-3.5" />
+            )}
+            {running ? "Running..." : "Run"}
+          </Button>
+        ) : null}
         {step.alternatives?.map((alt) => (
           <Button
             key={alt.id}
@@ -883,6 +942,48 @@ function StepCard({
           </Button>
         ))}
       </div>
+
+      {/* LIVE RUN OUTPUT (T9) */}
+      {runResult ? (
+        <div className="mt-4 rounded-lg border border-border bg-muted/30 p-4">
+          <div className="flex flex-wrap items-center justify-between gap-2">
+            <p className="text-xs font-semibold">
+              Live output{" "}
+              <span className="font-mono font-normal text-muted-foreground">
+                · {runResult.model_id}
+              </span>
+            </p>
+            <div className="flex items-center gap-2">
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 gap-1 text-xs"
+                onClick={handleCopyOutput}
+              >
+                <Copy className="size-3.5" /> Copy
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                className="h-7 gap-1 text-xs"
+                onClick={handleDownloadOutput}
+              >
+                <Download className="size-3.5" /> .md
+              </Button>
+            </div>
+          </div>
+          <p className="mt-3 max-h-96 overflow-y-auto whitespace-pre-wrap text-sm leading-6">
+            {runResult.output_text}
+          </p>
+          <p className="mt-2 font-mono text-[10px] text-muted-foreground">
+            {runResult.input_tokens + runResult.output_tokens} tokens ·{" "}
+            {runResult.latency_ms} ms
+          </p>
+        </div>
+      ) : null}
+      {runError && !runResult ? (
+        <p className="mt-3 text-xs text-destructive">{runError}</p>
+      ) : null}
 
       {/* FINISHED STEP / USAGE SIGNALS (Catalog v3, Slice C7) */}
       {step.status === "done" ? (

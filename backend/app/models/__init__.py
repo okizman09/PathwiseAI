@@ -7,6 +7,7 @@ from app.models.event import Event
 from app.models.profile import Profile
 from app.models.rate_limit import RateLimitBucket
 from app.models.step_feedback import StepFeedback
+from app.models.step_run import StepRun
 from app.models.tool import Tool
 from app.models.tool_gap import ToolGap
 from app.models.usage import UsageDaily
@@ -18,6 +19,7 @@ __all__ = [
     "Workflow",
     "WorkflowStep",
     "StepFeedback",
+    "StepRun",
     "UsageDaily",
     "ToolGap",
     "Event",

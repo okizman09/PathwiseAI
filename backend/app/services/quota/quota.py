@@ -37,6 +37,8 @@ def _get_limit(kind: str) -> int:
         return settings.INTERVIEW_TURNS_PER_DAY
     if kind == "step_action":
         return settings.STEP_ACTIONS_PER_DAY
+    if kind == "step_run":
+        return settings.RUN_STEPS_PER_DAY
     return 0
 
 def _get_today_utc() -> datetime:

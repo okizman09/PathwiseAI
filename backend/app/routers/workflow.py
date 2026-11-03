@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_beta_access, require_verified_user
-from app.core.errors import log_internal_error
+from app.core.errors import UserFacingError, log_internal_error
 from app.core.rate_limit import rate_limit_dependency
 from app.core.signing import create_click_ref
 from app.db import get_db
@@ -24,6 +24,8 @@ from app.schemas.workflow import (
     StepFeedbackResponse,
     StepFinishRequest,
     StepRegenerateRequest,
+    StepRunRequest,
+    StepRunResponse,
     StepSwitchToolRequest,
     WorkflowRequest,
     WorkflowResponse,
@@ -32,6 +34,7 @@ from app.schemas.workflow import (
 from app.services import catalog as catalog_service
 from app.services import plan as plan_service
 from app.services import prompts as prompts_service
+from app.services import run as run_service
 from app.services.plan import JobPlanningItem
 from app.services.planner.scoring import shortlist_and_score
 from app.services.quota import quota
@@ -49,14 +52,15 @@ class WorkflowListResponse(BaseModel):
 
 def hydrate_db_step(db: Session, s: DBWorkflowStep, brief: ProductBrief | None = None) -> WorkflowStep:
     primary_tool = None
+    primary_db_tool = None
     free_note = None
     step_warnings = []
     if s.primary_tool_id:
-        pt = catalog_service.get_public_tool(db, s.primary_tool_id)
-        if pt:
-            primary_tool = plan_service.build_short_card(pt)
+        primary_db_tool = catalog_service.get_public_tool(db, s.primary_tool_id)
+        if primary_db_tool:
+            primary_tool = plan_service.build_short_card(primary_db_tool)
             if brief:
-                free_note, step_warnings = plan_service.compute_free_tier_note(pt, brief)
+                free_note, step_warnings = plan_service.compute_free_tier_note(primary_db_tool, brief)
 
     alts = []
     for alt_id in (s.alternative_tool_ids or []):
@@ -91,6 +95,8 @@ def hydrate_db_step(db: Session, s: DBWorkflowStep, brief: ProductBrief | None =
         prompt_version=s.prompt_version,
         free_tier_note=free_note,
         warnings=step_warnings,
+        can_run=run_service.is_text_runnable(primary_db_tool)
+        and (s.content_type or "prompt") == "prompt",
     )
 
 def persist_step(db: Session, db_step: DBWorkflowStep, schema_step: WorkflowStep):
@@ -335,6 +341,58 @@ async def step_regenerate(
     except Exception as e:
         quota.refund(db, current_user, "step_action")
         log_internal_error(e, "step_regenerate")
+        raise HTTPException(status_code=502, detail="Something went wrong. Please try again.")
+
+
+@router.post(
+    "/workflows/{id}/steps/{step_id}/run",
+    response_model=StepRunResponse,
+    dependencies=[Depends(rate_limit_dependency)],
+)
+async def step_run(
+    id: int,
+    step_id: str,
+    req: StepRunRequest,
+    db: Session = Depends(get_db),
+    current_user: Profile = Depends(require_verified_user),
+):
+    workflow, db_step = get_workflow_and_step(db, current_user, id, step_id)
+
+    try:
+        quota.reserve(db, current_user, "step_run")
+    except HTTPException:
+        raise
+    except Exception as e:
+        log_internal_error(e, "step_run.reserve")
+        raise HTTPException(status_code=500, detail="Something went wrong. Please try again.")
+
+    try:
+        tool = (
+            catalog_service.get_public_tool(db, db_step.primary_tool_id)
+            if db_step.primary_tool_id
+            else None
+        )
+        run = await run_service.run_text_step(db, current_user.id, db_step, tool, req.prompt)
+        return StepRunResponse(
+            run_id=run.id,
+            step_id=f"step-{db_step.position}",
+            model_id=run.model_id,
+            status=run.status,
+            output_text=run.output_text or "",
+            error_code=run.error_code,
+            input_tokens=run.input_tokens,
+            output_tokens=run.output_tokens,
+            latency_ms=run.latency_ms,
+        )
+    except ValueError as ve:
+        quota.refund(db, current_user, "step_run")
+        raise HTTPException(status_code=400, detail=str(ve) or "Step cannot be run live.")
+    except UserFacingError:
+        quota.refund(db, current_user, "step_run")
+        raise
+    except Exception as e:
+        quota.refund(db, current_user, "step_run")
+        log_internal_error(e, "step_run")
         raise HTTPException(status_code=502, detail="Something went wrong. Please try again.")
 
 
