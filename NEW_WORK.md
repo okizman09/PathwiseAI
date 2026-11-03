@@ -33,6 +33,9 @@ event" was built during the hackathon window.
 - T9 (backend): live step runs (StepRun model + migration f6a7b8c9d0e1, services/run.py eligibility+prompt+execute, run endpoints, step_run quota 10/day, run caps); 7 run tests green, full suite 178 green, alembic head f6a7b8c9d0e1 (commit pending)
 - T9 (frontend): Run button + live output panel (copy/.md download, tokens/ms) on runnable prompt steps; tsc + prettier-region-clean + build green (commit pending)
 - Landing sample tightening: runnable flags + "Runs live in the workspace" caption on Transcribe/Structure stages, Store step cites builder-native Supabase integration, section copy mentions live runs; tsc + build green (commit pending)
+- Batch follow-up 17: corrected Gretel (synthetic training-data generation, was "analyze data") + MOSTLY AI (privacy-safe synthetic tabular data, verified via web); left jobs=analyze_data (no synthesis slug, taxonomy frozen); K2view/Julius checked, no change; live audit re-run, standing gaps unchanged (commit pending: data-only, no code change)
+
+- Security fix: enabled RLS on all 11 public tables (migration a7b8c9d0e1f2, Postgres-guarded); verified frontend is auth-only and backend bypasses RLS, backend reads confirmed post-fix (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

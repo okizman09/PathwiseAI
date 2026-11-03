@@ -554,6 +554,13 @@ function AppPage() {
               </div>
             ) : null}
 
+            {workflow.brief.budget_preference === "free_only" &&
+            workflow.steps.every((step) => !step.can_run) ? (
+              <p className="text-xs text-muted-foreground">
+                Tip: this free-only budget excludes the models that power live runs. A flexible budget unlocks them (10 runs/day).
+              </p>
+            ) : null}
+
             <ol className="grid gap-6">
               {workflow.steps.map((step) => (
                 <StepCard
