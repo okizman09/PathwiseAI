@@ -24,6 +24,7 @@ from app.schemas.workflow import (
     WorkflowStep,
 )
 from app.services import catalog as catalog_service
+from app.services import run as run_service
 from app.services.llm import generate_structured
 from app.services.planner.checks import MODEL_ID_RE as _MODEL_ID_RE
 from app.services.planner.scoring import shortlist_and_score
@@ -576,6 +577,8 @@ async def generate_workflow_plan(
             learn_note=step_syn.learn_note,
             free_tier_note=free_note,
             warnings=step_warnings + invented_warnings[idx - 1],
+            can_run=run_service.is_text_runnable(primary_tool)
+            and (step_syn.content_type or "prompt") == "prompt",
         )
         final_steps.append(step_schema)
 

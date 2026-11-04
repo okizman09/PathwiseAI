@@ -52,6 +52,7 @@ event" was built during the hackathon window.
 - Prod API fallback fix: frontend getApiBaseUrl hardcoded fallback still pointed at deleted qkf1 backend (no build-time VITE_API_URL set); repointed both fallbacks to gxo7 (commit pending)
 - Run-button fix: planner wrote synthesis content_type straight to DB; a 'steps'-tagged step holding only a prompt lost can_run (tutoring goal, no Run on Spark step); post-check now coerces content_type against the populated field both directions + 2 e2e fake-LLM tests; suite 188 green, ruff clean (commit pending)
 - Live-output overflow fix: long JSON lines (whitespace-pre) forced the step card wider; panel + pre now min-w-0/max-w-full so the box scrolls internally (commit pending)
+- POST can_run fix (real Run-button root cause): POST /workflows returned the planner response directly, which never set can_run, so Run only appeared after refresh; planner now computes can_run at generation (same rule as GET) + 1 e2e regression test; suite 189 green, ruff clean (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

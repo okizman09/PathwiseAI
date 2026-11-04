@@ -228,3 +228,36 @@ async def test_prompt_tag_with_only_actions_coerces_to_steps(seeded_db, monkeypa
     assert plan.steps[0].content_type == "steps"
     models, tools = _known_ids(seeded_db)
     assert check_plan(plan, known_model_ids=models, known_tool_ids=tools) == []
+
+
+TEXT_TOOL_NAME = "T7 Text Tool"
+TEXT_MODEL_ID = "t7-text-1"
+
+
+@pytest.mark.asyncio
+async def test_fresh_plan_marks_runnable_prompt_step_can_run(seeded_db, monkeypatch):
+    """Regression: the POST /workflows response must set can_run at generation
+    time (it never re-hydrates), or the Run button only appears after refresh."""
+    seeded_db.add(Tool(
+        name=TEXT_TOOL_NAME, url="https://t7-text.example.com", status="verified",
+        link_status="unknown", domain="audio", category="audio",
+        jobs=["draft_content"], ecosystem="meta", kind="runnable",
+        model_id=TEXT_MODEL_ID, prompt_style={}, pricing_model="freemium",
+        has_free_tier=True,
+    ))
+    seeded_db.commit()
+    try:
+        text_id = seeded_db.query(Tool).filter(Tool.name == TEXT_TOOL_NAME).one().id
+        _fake_plan_with_step(monkeypatch, "draft_content", text_id,
+                             "Draft the landing page copy.", "steps", [])
+        user = seeded_db.query(Profile).filter(Profile.id == USER_ID).one()
+
+        plan = await generate_workflow_plan(seeded_db, user, _brief())
+
+        assert plan.steps[0].content_type == "prompt"
+        assert plan.steps[0].can_run is True
+        models, tools = _known_ids(seeded_db)
+        assert check_plan(plan, known_model_ids=models, known_tool_ids=tools) == []
+    finally:
+        seeded_db.query(Tool).filter(Tool.name == TEXT_TOOL_NAME).delete()
+        seeded_db.commit()
