@@ -1,4 +1,6 @@
 import logging
+import time
+from collections.abc import Collection
 from datetime import UTC, datetime, timedelta
 from typing import Any
 from urllib.parse import urlparse
@@ -11,6 +13,7 @@ from app.schemas.tool import (
     AdminToolCreateRequest,
     PromptStyleSchema,
     ToolCreate,
+    ToolPublicResponse,
     ToolStatus,
     ToolUpdate,
 )
@@ -173,6 +176,23 @@ def get_public_tool(db: Session, tool_id: int) -> Tool | None:
         Tool.link_status != "dead",
     ).first()
 
+
+def get_public_tools_map(db: Session, tool_ids: Collection[int]) -> dict[int, Tool]:
+    """Batch version of get_public_tool: one query for many ids (perf)."""
+    ids = sorted({i for i in tool_ids if i})
+    if not ids:
+        return {}
+    rows = (
+        db.query(Tool)
+        .filter(
+            Tool.id.in_(ids),
+            Tool.status == ToolStatus.VERIFIED.value,
+            Tool.link_status != "dead",
+        )
+        .all()
+    )
+    return {t.id: t for t in rows}
+
 def list_admin_tools(
     db: Session,
     status: ToolStatus | None = None,
@@ -270,6 +290,36 @@ def list_public_tools(
         cnt = counts.get(tool.id, 0)
         tool.used_in_workflows_count = cnt if cnt >= 10 else None
     return tools
+
+
+# Public directory response cache: GET /tools costs a full-table scan plus
+# serialization (~2.5 s against Supabase). Entries hold detached-safe dicts
+# (never ORM objects) and expire after 60 s; admin mutations invalidate.
+_PUBLIC_TOOLS_CACHE: dict[tuple[str, str, str], tuple[float, list[dict[str, Any]]]] = {}
+PUBLIC_TOOLS_CACHE_TTL_SECONDS = 60
+
+
+def invalidate_public_tools_cache() -> None:
+    """Drop all cached public directory payloads (call after catalog writes)."""
+    _PUBLIC_TOOLS_CACHE.clear()
+
+
+def list_public_tools_cached(
+    db: Session,
+    category: str | None = None,
+    domain: str | None = None,
+    ecosystem: str | None = None,
+) -> list[dict[str, Any]]:
+    """Cached variant of list_public_tools returning serialized payloads."""
+    key = (category or "", domain or "", ecosystem or "")
+    now = time.monotonic()
+    hit = _PUBLIC_TOOLS_CACHE.get(key)
+    if hit is not None and hit[0] > now:
+        return hit[1]
+    tools = list_public_tools(db=db, category=category, domain=domain, ecosystem=ecosystem)
+    payload = [ToolPublicResponse.model_validate(t).model_dump(mode="json") for t in tools]
+    _PUBLIC_TOOLS_CACHE[key] = (now + PUBLIC_TOOLS_CACHE_TTL_SECONDS, payload)
+    return payload
 
 
 def validate_tool_for_verification(tool: Tool, pending_data: dict[str, Any] | None = None) -> list[str]:

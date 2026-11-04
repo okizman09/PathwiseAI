@@ -77,7 +77,7 @@ class Settings(BaseSettings):
     # Step runs (T9)
     RUN_STEPS_PER_DAY: int = 10
     RUN_MAX_PROMPT_CHARS: int = 6000
-    RUN_MAX_OUTPUT_TOKENS: int = 2048
+    RUN_MAX_OUTPUT_TOKENS: int = 8192
     RUN_TIMEOUT_SECONDS: int = 60
 
     # ─────────────────────────────────────────────────────────────────────

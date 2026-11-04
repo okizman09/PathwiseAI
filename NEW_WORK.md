@@ -36,6 +36,17 @@ event" was built during the hackathon window.
 - Batch follow-up 17: corrected Gretel (synthetic training-data generation, was "analyze data") + MOSTLY AI (privacy-safe synthetic tabular data, verified via web); left jobs=analyze_data (no synthesis slug, taxonomy frozen); K2view/Julius checked, no change; live audit re-run, standing gaps unchanged (commit pending: data-only, no code change)
 
 - Security fix: enabled RLS on all 11 public tables (migration a7b8c9d0e1f2, Postgres-guarded); verified frontend is auth-only and backend bypasses RLS, backend reads confirmed post-fix (commit pending)
+- Batch follow-up 18: free-only budget hint (shows when budget is free_only and zero steps runnable; cites 10 runs/day limit); tsc + build green, no frontend test harness (commit pending)
+- Batch follow-up 19: step-count pluralization ("1 Sequenced Action Step"); tsc + build green (commit pending)
+- Perf batch: auth last_seen throttled to 15 min + refresh dropped; hydrate tool batching (1 query vs N); /tools 60 s response cache + invalidation on 9 admin mutations; async-to-def on pure-DB endpoints; directory staleTime 5 min; suite 181 green, ruff clean (commit pending)
+- Refresh batch: workspace snapshots goal/answers/question/brief/workflowId to localStorage, restores on refresh, syncs ?load= on generate, reset clears both, getMe failure stays on page with Retry unless logged out; tsc + build green (commit pending)
+- LLM latency batch (speed only): SDK max_retries 1→0, app layer keeps its single retry (worst case 4→2 attempts); verified prompts already minimal (shortlist top-4, ~7 KB synthesis input, no parallelizable calls); reasoning-effort probe written for user run; suite 181 green, ruff clean (commit pending)
+- Reasoning effort (speed only): probe proved effort=low honored (4.4→2.9 s, identical output); opt-in reasoning_effort mechanism in generate_structured + 2 passthrough tests, default sends nothing; call-site wiring pending schema-combo probe; suite 183 green, ruff clean (commit pending)
+- Reasoning effort wiring (speed only): schema-combo probe OK; effort=low on interview + job-plan + synthesis calls; fakes updated + wiring assertions (plan 2-call, interview); runs/extractors stay default; suite 184 green, ruff clean (commit pending)
+- Empty-run fix: RUN_MAX_OUTPUT_TOKENS 2048→8192 (reasoning ate the budget, run #1 returned 0 chars); empty output now fails with empty_response + quota refund (shared persist helper); refunded run #1's quota; 1 new test; suite 185 green, ruff clean (commit pending)
+- Run button moved from bottom action row to prompt card header (same behavior); tsc + build green (commit pending)
+- Live output pretty-print: JSON auto-detected, indented + highlighted (theme hues, no new libs); plain text unchanged; copy/.md still use raw text; tsc + build green (commit pending)
+- T10: README rewrite (Meta provider/directory/planner, run instructions, env, tests, limitations, adapted roadmap); deploy files fixed for Meta (render.yaml keys, DEPLOY.md steps, .env.example run budget); SUBMISSION.md drafted with form answers; NEW_WORK finalized (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

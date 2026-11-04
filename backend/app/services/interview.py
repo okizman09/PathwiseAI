@@ -91,6 +91,7 @@ async def conduct_interview(
         user=prompt,
         schema=InterviewLLMDecision,
         temperature=0.3,
+        reasoning_effort="low",
     )
 
     if decision.is_ready and decision.brief:

@@ -10,7 +10,7 @@ This guide provides step-by-step instructions to deploy Pathwise AI from a clean
 - **Backend API**: [Render](https://render.com/) Web Service (FastAPI, Python 3.11+, Uvicorn).
 - **Database**: [Supabase Postgres](https://supabase.com/) with Alembic migrations.
 - **Authentication**: [Supabase Auth](https://supabase.com/docs/guides/auth) (Google OAuth 2.0 & Email/Password with verification).
-- **LLM**: [Google Gemini 2.5 Flash](https://aistudio.google.com/) via the official Google GenAI SDK.
+- **LLM**: [Meta Model API](https://dev.meta.ai/) (`muse-spark-1.3`) via an OpenAI-compatible client.
 
 ---
 
@@ -75,12 +75,12 @@ To enable "Continue with Google" sign-in:
 
 ---
 
-## Step 3: Google Gemini API Key
+## Step 3: Meta Model API Key
 
-1. Go to [Google AI Studio](https://aistudio.google.com/).
-2. Create an API key.
-3. This is `GEMINI_API_KEY`.
-4. (Recommended) Set budget and rate alerts in Google Cloud console.
+1. Go to [dev.meta.ai](https://dev.meta.ai/).
+2. Create an API key and claim credits (card on file).
+3. This is `MODEL_API_KEY` (server-only; never in frontend code or the repo).
+4. (Recommended) Set budget and rate alerts in the Meta dashboard.
 
 ---
 
@@ -116,8 +116,10 @@ The repository includes a ready-to-use `render.yaml` Blueprint definition at the
 |---|---|
 | `ENVIRONMENT` | `production` |
 | `DATABASE_URL` | Supabase Postgres URI (`postgresql://...`) |
-| `GEMINI_API_KEY` | Your Google AI Studio key |
-| `GEMINI_MODEL` | `gemini-2.5-flash` |
+| `MODEL_API_KEY` | Your Meta Model API key (server-only) |
+| `META_MODEL` | `muse-spark-1.3` |
+| `META_BASE_URL` | `https://api.meta.ai/v1` |
+| `RUN_STEPS_PER_DAY` | `10` |
 | `SUPABASE_URL` | `https://<project-ref>.supabase.co` |
 | `SUPABASE_JWT_SECRET` | Supabase JWT Secret (optional if `SUPABASE_URL` is configured for JWKS asymmetric validation) |
 | `SUPABASE_JWT_AUDIENCE` | `authenticated` |

@@ -63,6 +63,36 @@ def resolve_run_prompt(db_step: DBWorkflowStep, prompt_override: str | None) -> 
     return prompt
 
 
+def _persist_failed_run(
+    db: Session,
+    *,
+    step_id: int,
+    user_id: str,
+    model_id: str,
+    prompt: str,
+    error_code: str,
+    input_tokens: int = 0,
+    output_tokens: int = 0,
+    latency_ms: int = 0,
+) -> StepRun:
+    run = StepRun(
+        step_id=step_id,
+        user_id=user_id,
+        model_id=model_id,
+        prompt=prompt,
+        output_text=None,
+        status="failed",
+        error_code=error_code,
+        input_tokens=input_tokens,
+        output_tokens=output_tokens,
+        latency_ms=latency_ms,
+    )
+    db.add(run)
+    db.commit()
+    db.refresh(run)
+    return run
+
+
 async def run_text_step(
     db: Session,
     user_id: str,
@@ -73,7 +103,8 @@ async def run_text_step(
     """Execute the step prompt on the tool's catalog model and persist the run.
 
     Raises ValueError for ineligible steps/prompts and UserFacingError (after
-    persisting a failed run) for provider failures.
+    persisting a failed run) for provider failures. Empty model output also
+    fails (reasoning can consume the whole output budget) so quota is refunded.
     """
     if not is_text_runnable(tool):
         raise ValueError("Step tool cannot be run live.")
@@ -94,24 +125,35 @@ async def run_text_step(
         )
     except UserFacingError as exc:
         latency_ms = int((time.perf_counter() - started) * 1000)
-        run = StepRun(
+        _persist_failed_run(
+            db,
             step_id=db_step.id,
             user_id=user_id,
             model_id=model_id,
             prompt=prompt,
-            output_text=None,
-            status="failed",
             error_code=exc.code,
-            input_tokens=0,
-            output_tokens=0,
             latency_ms=latency_ms,
         )
-        db.add(run)
-        db.commit()
-        db.refresh(run)
         raise
 
     latency_ms = int((time.perf_counter() - started) * 1000)
+    if not (result.text or "").strip():
+        _persist_failed_run(
+            db,
+            step_id=db_step.id,
+            user_id=user_id,
+            model_id=model_id,
+            prompt=prompt,
+            error_code="empty_response",
+            input_tokens=result.input_tokens,
+            output_tokens=result.output_tokens,
+            latency_ms=latency_ms,
+        )
+        raise UserFacingError(
+            "The model returned an empty response. Please try again.",
+            status_code=502,
+            code="empty_response",
+        )
     run = StepRun(
         step_id=db_step.id,
         user_id=user_id,

@@ -376,6 +376,7 @@ async def generate_workflow_plan(
         user=jobs_prompt,
         schema=LLMJobsPlan,
         temperature=0.2,
+        reasoning_effort="low",
     )
 
     # Sanitize and ensure job slugs match taxonomy
@@ -444,6 +445,7 @@ async def generate_workflow_plan(
         temperature=0.2,
         # action_steps payloads outgrew the 4096 default; reasoning shares this budget.
         max_output_tokens=8192,
+        reasoning_effort="low",
     )
 
     # T6 post-check: strip invented Meta model IDs from synthesized step text.

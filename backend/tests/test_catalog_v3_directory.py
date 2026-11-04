@@ -7,6 +7,7 @@ Tests verify:
 4. Response conforms to ToolPublicResponse (includes go_path, verified_badge, is_pick, free_tier_summary, never leaks affiliate_url).
 5. GET /api/v1/taxonomy returns 9 domains with job definitions and human-readable labels.
 """
+import time
 from datetime import UTC, datetime
 
 import pytest
@@ -14,6 +15,7 @@ import pytest
 from app.db import SessionLocal
 from app.models.tool import Tool
 from app.schemas.tool import ToolStatus
+from app.services import catalog as catalog_service
 
 
 @pytest.fixture
@@ -185,3 +187,46 @@ def test_taxonomy_endpoint_returns_nine_domains(client):
     found_domains = {d["slug"] for d in data["domains"]}
     assert expected_domains.issubset(found_domains)
     assert len(data["jobs"]) == 55
+
+
+def _c4_names(payload):
+    return [t["name"] for t in payload if t["name"].startswith("C4_Test_")]
+
+
+def test_public_tools_cache_serves_and_invalidates(client, directory_test_tools):
+    """Second GET is served from cache; invalidate restores fresh reads (perf)."""
+    first = client.get("/api/v1/tools?domain=software")
+    assert first.status_code == 200
+    assert "C4_Test_Beta_Tool" in _c4_names(first.json())
+
+    # Hide the tool behind the cache's back: cached read stays stale.
+    db = SessionLocal()
+    db.query(Tool).filter(Tool.name == "C4_Test_Beta_Tool").update({"status": ToolStatus.HIDDEN.value})
+    db.commit()
+    db.close()
+    cached = client.get("/api/v1/tools?domain=software")
+    assert cached.status_code == 200
+    assert "C4_Test_Beta_Tool" in _c4_names(cached.json())
+
+    catalog_service.invalidate_public_tools_cache()
+    fresh = client.get("/api/v1/tools?domain=software")
+    assert fresh.status_code == 200
+    assert "C4_Test_Beta_Tool" not in _c4_names(fresh.json())
+
+
+def test_public_tools_cache_expires(client, directory_test_tools):
+    """Expired cache entries trigger a fresh database read."""
+    first = client.get("/api/v1/tools?domain=software")
+    assert first.status_code == 200
+    assert "C4_Test_Beta_Tool" in _c4_names(first.json())
+
+    db = SessionLocal()
+    db.query(Tool).filter(Tool.name == "C4_Test_Beta_Tool").update({"status": ToolStatus.HIDDEN.value})
+    db.commit()
+    db.close()
+
+    for key, (_expires, payload) in list(catalog_service._PUBLIC_TOOLS_CACHE.items()):
+        catalog_service._PUBLIC_TOOLS_CACHE[key] = (time.monotonic() - 1, payload)
+    refetched = client.get("/api/v1/tools?domain=software")
+    assert refetched.status_code == 200
+    assert "C4_Test_Beta_Tool" not in _c4_names(refetched.json())

@@ -51,3 +51,22 @@ async def test_interview_strips_control_chars_and_uses_quota(client, monkeypatch
     )
 
     assert last_goal[0] == "Build an appwith AI"
+
+
+@pytest.mark.asyncio
+async def test_conduct_interview_requests_low_reasoning_effort(monkeypatch):
+    """Interview turns ask for low reasoning effort (latency)."""
+    from app.services import interview as interview_service
+    from app.services.interview import InterviewLLMDecision
+
+    seen = {}
+
+    async def fake_generate_structured(**kwargs):
+        seen.update(kwargs)
+        return InterviewLLMDecision(is_ready=False, question="Q?", options=["a", "b"])
+
+    monkeypatch.setattr(interview_service, "generate_structured", fake_generate_structured)
+    res = await interview_service.conduct_interview(goal="Build a thing", answers=[])
+
+    assert res.type == "question"
+    assert seen["reasoning_effort"] == "low"

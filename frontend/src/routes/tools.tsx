@@ -242,6 +242,7 @@ function ToolsPage() {
   } = useQuery({
     queryKey: ["public-tools", onlyMeta ? "meta" : "all"],
     queryFn: () => api.getTools(onlyMeta ? { ecosystem: "meta" } : undefined),
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
   // Domains list for tabs

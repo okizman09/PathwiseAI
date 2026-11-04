@@ -89,7 +89,9 @@ async def test_checks_pass_on_good_fake_plan(seeded_db, monkeypatch):
     """End-to-end with a fake LLM: a good plan passes all checks incl. extras."""
     meta_id = seeded_db.query(Tool).filter(Tool.name == META_NAME).one().id
 
-    async def fake_generate_structured(*, system, user, schema, temperature=0.2, max_output_tokens=None):
+    async def fake_generate_structured(
+        *, system, user, schema, temperature=0.2, max_output_tokens=None, reasoning_effort=None
+    ):
         if schema.__name__ == "LLMJobsPlan":
             return LLMJobsPlan(jobs=[JobPlanningItem(
                 step_number=1, job="transcribe_audio", job_tags=[],

@@ -1,219 +1,111 @@
 # Pathwise AI
 
-> **For programmers and freelancers: turn your build idea into a clear step-by-step path with verified tools and paste-ready prompts.**
+> Turn a build idea into a clear step-by-step path: verified tools, paste-ready prompts, and live runs — all powered by Meta's models.
 
-Pathwise AI interviews you about your project, locks down a concrete product brief, picks verified tools from a curated database, and generates tailored prompts for each stage — one prompt per tool, ready to paste.
+Pathwise AI interviews you about your project, locks a concrete product brief, picks verified tools from a curated catalog, and generates a sequenced plan. Prompt steps on Meta's text models can run live inside the app.
 
----
-
-## Architecture
-
-```
-Pathwise AI/
-├── backend/                        # FastAPI · SQLAlchemy 2 · Alembic · Gemini
-│   ├── app/
-│   │   ├── main.py                 # App entry-point, middleware, router mounts
-│   │   ├── core/
-│   │   │   ├── config.py           # Pydantic settings (production guard, JWKS, secrets)
-│   │   │   ├── errors.py           # Sanitized error handling (ERR-xxx)
-│   │   │   ├── rate_limit.py       # Persistent database-backed rate limiter
-│   │   │   └── signing.py          # Cryptographically signed link tracking tokens
-│   │   ├── db.py                   # SQLAlchemy engine, Base, session
-│   │   ├── models/                 # SQLAlchemy ORM models (Tool, Workflow, RateLimitBucket, etc.)
-│   │   ├── schemas/                # Pydantic schemas (public vs admin schemas)
-│   │   ├── routers/                # Route handlers (/health, /go, /api/v1/...)
-│   │   ├── api/
-│   │   │   └── deps.py             # Dependencies (Supabase auth, email verification, beta allowlist)
-│   │   ├── services/
-│   │   │   ├── catalog.py          # Tool verification, catalog queries
-│   │   │   ├── interview.py        # Interview turns, brief finalization
-│   │   │   ├── plan.py             # Workflow generation, job planning
-│   │   │   ├── prompts.py          # Tool-specific prompt engineering
-│   │   │   └── research/           # Hardened tool research & doc scraping pipeline
-│   │   └── scripts/
-│   │       ├── check_connections.py# Non-interactive connection diagnostics
-│   │       ├── make_admin.py       # CLI admin promotion tool
-│   │       └── seed_candidates.py  # Idempotent tool catalog seeding (--research support)
-│   ├── tests/                      # Comprehensive pytest test suite (47+ tests)
-│   ├── requirements.txt            # Production dependencies
-│   ├── requirements-dev.txt        # Dev/test: pytest, httpx, ruff, freezegun
-│   └── .env.example                # Backend vars template (copy → backend/.env)
-│
-├── frontend/                       # TanStack Start · Vite · React 19 · TypeScript
-│   ├── src/
-│   │   ├── content/                # Markdown legal documents (privacy.md, terms.md)
-│   │   ├── routes/
-│   │   │   ├── index.tsx           # Public landing page
-│   │   │   ├── login.tsx           # Sign in / Sign up (Supabase Auth)
-│   │   │   ├── app.tsx             # Creator workspace (/app)
-│   │   │   ├── app_.history.tsx    # Saved workflow paths (/app/history)
-│   │   │   ├── tools.tsx           # Public tool directory (/tools)
-│   │   │   ├── admin.tsx           # Admin catalog console (/admin)
-│   │   │   ├── privacy.tsx         # Privacy policy (/privacy)
-│   │   │   └── terms.tsx           # Terms of service (/terms)
-│   │   ├── components/             # Reusable UI & layout components (AppHeader, MarkdownViewer)
-│   │   └── lib/
-│   │       ├── api.ts              # Typed backend API client (/api/v1 prefix, error types)
-│   │       └── supabase.ts         # Supabase browser client
-│   └── .env.example                # Frontend vars template — public VITE_* vars
-│
-└── docs/
-    ├── PRD.md                      # Product requirements document
-    ├── PLAN.md                     # Engineering slice plans
-    └── DEPLOY.md                   # Production deployment guide
-```
+Demo goal: *"I want a tool that turns my voice notes into structured orders."*
 
 ---
 
-## Hosting & Deployment
+## What is new for the hackathon
 
-| Layer | Service | Deployment Guide |
-|---|---|---|
-| Frontend | Cloudflare Pages / Workers | [docs/DEPLOY.md](docs/DEPLOY.md#step-5-cloudflare-frontend-deployment) |
-| Backend | Render | [docs/DEPLOY.md](docs/DEPLOY.md#step-4-render-backend-deployment) (`render.yaml`) |
-| Database + Auth | Supabase (Postgres + Auth) | [docs/DEPLOY.md](docs/DEPLOY.md#step-1-supabase-setup-database--auth) |
+Built during the event window (see `NEW_WORK.md` for the per-task log):
 
-For complete step-by-step production deployment instructions, see **[docs/DEPLOY.md](docs/DEPLOY.md)**.
+- **Meta-only provider.** All LLM calls (interview, planner, step actions, live runs) go through the Meta Model API at `https://api.meta.ai/v1` on `muse-spark-1.3`, using strict `json_schema` structured output. The previous provider code is deleted.
+- **Meta directory.** 9 verified Meta cards (models, tools, and platforms) with live-checked facts, call snippets, and a Meta-only browse view plus a Models view.
+- **Meta-aware planner.** 1–6 step plans that prefer Meta models for matching jobs, ask for the product name, skip redundant hosting/database steps when the builder covers them natively, and emit setup steps (not prompts) for deploy/database/auth jobs.
+- **Live Run (stretch, shipped).** Prompt steps on runnable Meta text models execute in-app with persisted runs, copy/`.md` export, and a 10/day quota.
+- **Hardening.** Row-Level Security on all tables, per-request performance fixes (auth write throttle, batched hydration, cached directory), and low-latency reasoning on the creation path.
 
----
+## Quickstart (local)
 
-## Local Development
-
-### Prerequisites
-
-- **Python** 3.11+
-- **Node.js** 20+
-- **Gemini API key** — [Google AI Studio](https://aistudio.google.com/)
-
----
-
-### 1. Backend
+Prerequisites: Python 3.11+, Node.js 20 LTS or newer.
 
 ```bash
+# Backend (http://localhost:8000)
 cd backend
-
-# Create and activate a virtual environment
-python -m venv venv
-# Windows (PowerShell):
-.\venv\Scripts\Activate.ps1
-# macOS / Linux:
-source venv/bin/activate
-
-# Install dependencies
-pip install -r requirements.txt -r requirements-dev.txt
-
-# Configure environment
-cp .env.example .env
-# Edit backend/.env — set GEMINI_API_KEY, SUPABASE_URL, etc.
-```
-
-Run database migrations:
-
-```bash
-alembic upgrade head
-```
-
-Start the development server:
-
-```bash
+python -m venv .venv
+.venv\Scripts\activate        # Windows; use source .venv/bin/activate on macOS/Linux
+pip install -r requirements.txt
+copy .env.example .env        # then fill in MODEL_API_KEY and the Supabase values
+python -m alembic upgrade head
 python -m uvicorn app.main:app --reload --port 8000
-```
 
-- API Root & Health: `http://localhost:8000/health`
-- API v1 Base: `http://localhost:8000/api/v1`
-- Swagger UI (development only): `http://localhost:8000/docs`
-
-Run diagnostic connection checks:
-
-```bash
-python -m app.scripts.check_connections
-```
-
----
-
-### 2. Frontend
-
-```bash
+# Frontend (Vite default port, usually http://localhost:5173)
 cd frontend
-
 npm install
-
-# Configure environment
-cp .env.example .env
-# Edit frontend/.env — set VITE_API_URL=http://localhost:8000
-```
-
-Start the development server:
-
-```bash
 npm run dev
 ```
 
-Open `http://localhost:5173`.
+Deploying to production (Render + Cloudflare + Supabase) is covered in `docs/DEPLOY.md`.
 
----
+## Environment variables
 
-## Routes
+Backend (`backend/.env`, see `backend/.env.example`). Never commit real values.
 
-| Route | Description | Access |
-|---|---|---|
-| `/` | Public landing page | Public |
-| `/tools` | Verified tool directory (server-routed links) | Public |
-| `/privacy` | Privacy policy document | Public |
-| `/terms` | Terms of service document | Public |
-| `/login` | Sign in / Sign up / Forgot password | Public |
-| `/app` | Creator workspace — interview → workflow path | Authenticated (Verified email) |
-| `/app/history` | Saved workflow paths history | Authenticated |
-| `/admin` | Tool catalog review & verification dashboard | Admin role only |
+| Key | Purpose |
+|---|---|
+| `MODEL_API_KEY` | Meta Model API key (server-only; never in frontend code) |
+| `META_BASE_URL` | `https://api.meta.ai/v1` |
+| `META_MODEL` | `muse-spark-1.3` |
+| `LLM_TIMEOUT_SECONDS` | Per-call model timeout (`90`) |
+| `DATABASE_URL` | SQLite locally; Supabase Postgres URI in production |
+| `CORS_ORIGINS` | Allowed frontend origins |
+| `SUPABASE_URL` / `SUPABASE_JWT_SECRET` / `SUPABASE_JWT_AUDIENCE` | Auth + JWT verification |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only: account deletion, logo uploads |
+| `WORKFLOWS_PER_DAY` / `INTERVIEW_TURNS_PER_DAY` / `STEP_ACTIONS_PER_DAY` / `RUN_STEPS_PER_DAY` | Daily quotas (`2` / `25` / `20` / `10`) |
+| `RUN_MAX_PROMPT_CHARS` / `RUN_MAX_OUTPUT_TOKENS` / `RUN_TIMEOUT_SECONDS` | Live-run caps (`6000` / `8192` / `60`) |
 
----
+Frontend (`frontend/.env`, see `frontend/.env.example`). `VITE_*` values ship in the client bundle and are public by design: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`.
 
-## Running Tests & Linting
+## Tests
 
 ```bash
 cd backend
-python -m pytest
+python -m pytest          # 185 tests (SQLite, mocked LLM)
 python -m ruff check .
+
+cd ../frontend
+npx tsc --noEmit
+npm run build
 ```
 
-All 47+ backend tests run against an in-memory SQLite database and execute in ~8 seconds.
+Live checks that need a key (run yourself, never commit output with secrets):
 
----
+```bash
+cd backend
+$env:MODEL_API_KEY="<your-key>"   # export MODEL_API_KEY=<your-key> on macOS/Linux
+python scripts/meta_hello.py      # T1 gate: models, text, json_schema, streaming
+python scripts/smoke_plan.py      # 8-goal end-to-end smoke (saves under user 'smoke-t7')
+python scripts/audit_tools.py     # catalog issue report (read-only)
+```
 
-## Environment Variables
+## Project structure
 
-### Backend (`backend/.env`)
+```text
+backend/        # FastAPI + SQLAlchemy + Alembic; Meta client in app/services/llm.py
+backend/scripts # meta_hello.py, smoke_plan.py, audit_tools.py, backfill/rewrite helpers
+backend/data    # meta_cards.json (9 Meta cards), manus_card.json
+frontend/       # TanStack Start app (routes: landing, workspace, directory, history, admin)
+files/          # Hackathon pack: playbook, PRD, spec
+docs/           # Deploy guide, catalog notes, PRD/spec copies
+mockups/        # Landing/app redesign mockups (reference only)
+NEW_WORK.md     # Per-task build log for the event window
+```
 
-| Variable | Required | Description |
-|---|---|---|
-| `ENVIRONMENT` | Yes | `development` or `production` |
-| `DATABASE_URL` | Yes | SQLite (local) or Supabase Postgres URI |
-| `GEMINI_API_KEY` | Yes | Google AI Studio API key |
-| `GEMINI_MODEL` | No | Default `gemini-2.5-flash` |
-| `SUPABASE_URL` | Yes | Supabase Project URL (`https://<ref>.supabase.co`) |
-| `SUPABASE_JWT_SECRET` | No | Legacy secret (optional when using asymmetric JWKS via `SUPABASE_URL`) |
-| `SUPABASE_JWT_AUDIENCE`| No | Default `authenticated` |
-| `SUPABASE_SERVICE_ROLE_KEY` | No | **Server-only!** Enables server-side account deletion (`DELETE /api/v1/me`) |
-| `APP_SIGNING_SECRET` | Yes | Secret used for signing link tracking tokens |
-| `CORS_ORIGINS` | Yes | Allowed origins (e.g. `http://localhost:5173` or production Cloudflare URL) |
-| `BETA_ALLOWLIST_ENABLED` | No | Default `false`. If `true`, restricts paths to allowlisted emails |
-| `BETA_ALLOWED_EMAILS` | No | Comma-separated list of invited creator emails |
-| `SENTRY_DSN` | No | Optional backend Sentry monitoring (sensitive data scrubbed) |
-| `WORKFLOWS_PER_DAY` | No | Free tier workflow paths cap (default `2`) |
-| `INTERVIEW_TURNS_PER_DAY` | No | Free tier interview turns cap (default `25`) |
-| `STEP_ACTIONS_PER_DAY` | No | Free tier step actions cap (default `20`) |
+## Honest limitations
 
-### Frontend (`frontend/.env`)
+- Live Run is text-only: only verified `runnable` text models with a `model_id` (Muse Spark, Muse Wonder) can run. Image, voice, and transcription steps always paste out.
+- Meta API models are paid with no free tier, so `free_only` budgets exclude them — and therefore exclude live runs. The UI says so when a plan has zero runnable steps.
+- Catalog pricing coverage is incomplete (~100 tools still unchecked); unknown pricing is labeled, never guessed.
+- Reasoning-model latency: interview turns and generation take roughly 10–60 s per model call even after the low-effort tuning.
+- First request after idle is slow (cold database connections measured at several seconds); steady-state page loads are sub-second on warm connections.
+- RLS is enabled with zero permissive policies: all data flows through the backend; nothing reads tables directly from the client.
 
-| Variable | Required | Description |
-|---|---|---|
-| `VITE_API_URL` | Yes | Backend URL, e.g. `http://localhost:8000` |
-| `VITE_SUPABASE_URL` | Yes | Public Supabase project URL |
-| `VITE_SUPABASE_ANON_KEY` | Yes | Public Supabase anon key (safe in browser) |
-| `VITE_FEEDBACK_URL` | No | Optional feedback or issues link shown in the app header |
+## Roadmap
 
----
-
-## License
-
-MIT License. Created for Pathwise AI.
+- Live Run for more models (image output, then audio/transcription).
+- An agent loop with verification (run a step, check the result, retry or advance).
+- A skills system (reusable prompt/artifact packs per domain).
+- Wider catalog pricing coverage and automated rechecks.

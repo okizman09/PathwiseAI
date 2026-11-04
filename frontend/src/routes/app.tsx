@@ -1,5 +1,10 @@
 import { useQuery } from "@tanstack/react-query";
-import { createFileRoute, redirect, Link } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  redirect,
+  Link,
+  useNavigate,
+} from "@tanstack/react-router";
 import {
   AlertCircle,
   AlertTriangle,
@@ -23,7 +28,14 @@ import {
   Wand2,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState, type FormEvent } from "react";
+import {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+} from "react";
 import { toast } from "sonner";
 
 import { AppHeader } from "@/components/AppHeader";
@@ -78,6 +90,77 @@ export const Route = createFileRoute("/app")({
 
 const errMsg = (e: unknown) => (e instanceof Error ? e.message : "Something went wrong.");
 
+const APP_STATE_KEY = "pathwise:app-state:v1";
+
+type AppSnapshot = {
+  goal: string;
+  answers: InterviewAnswer[];
+  question: InterviewQuestionResponse | null;
+  custom: string;
+  brief: ProductBrief | null;
+  workflowId: number | null;
+};
+
+function readSnapshot(): AppSnapshot | null {
+  try {
+    const raw = localStorage.getItem(APP_STATE_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as Partial<AppSnapshot>;
+    if (typeof parsed !== "object" || parsed === null) return null;
+    return {
+      goal: typeof parsed.goal === "string" ? parsed.goal : "",
+      answers: Array.isArray(parsed.answers) ? parsed.answers : [],
+      question: parsed.question ?? null,
+      custom: typeof parsed.custom === "string" ? parsed.custom : "",
+      brief: parsed.brief ?? null,
+      workflowId: typeof parsed.workflowId === "number" ? parsed.workflowId : null,
+    };
+  } catch {
+    return null;
+  }
+}
+
+function writeSnapshot(snap: AppSnapshot) {
+  try {
+    localStorage.setItem(APP_STATE_KEY, JSON.stringify(snap));
+  } catch {
+    // Storage full or unavailable: the workspace still works, a refresh just won't restore.
+  }
+}
+
+function clearSnapshot() {
+  try {
+    localStorage.removeItem(APP_STATE_KEY);
+  } catch {
+    // ignore
+  }
+}
+
+function highlightJson(json: string): ReactNode[] {
+  const parts: ReactNode[] = [];
+  const re = /("(?:[^"\\]|\\.)*")(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d+)?(?:[eE][+-]?\d+)?/g;
+  let last = 0;
+  let k = 0;
+  let m: RegExpExecArray | null;
+  while ((m = re.exec(json)) !== null) {
+    if (m.index > last) parts.push(<span key={k++}>{json.slice(last, m.index)}</span>);
+    const tok = m[0];
+    const cls = m[1]
+      ? m[2]
+        ? "text-sky-700 dark:text-sky-300 font-medium"
+        : "text-emerald-700 dark:text-emerald-300"
+      : "text-amber-600 dark:text-amber-400";
+    parts.push(
+      <span key={k++} className={cls}>
+        {tok}
+      </span>,
+    );
+    last = m.index + tok.length;
+  }
+  if (last < json.length) parts.push(<span key={k++}>{json.slice(last)}</span>);
+  return parts;
+}
+
 function AppPage() {
   const [sessionUser, setSessionUser] = useState<AuthUserResponse | null>(null);
   const [resendingEmail, setResendingEmail] = useState(false);
@@ -90,33 +173,84 @@ function AppPage() {
   const [busy, setBusy] = useState<string | null>(null);
   const [error, setError] = useState("");
   const [quotaLimitMessage, setQuotaLimitMessage] = useState<string | null>(null);
+  const [meFailed, setMeFailed] = useState(false);
+  const [meAttempt, setMeAttempt] = useState(0);
+  const navigate = useNavigate({ from: Route.id });
+  const loadedRef = useRef<number | null>(null);
+  const restoredRef = useRef(false);
 
   useEffect(() => {
-    api.getMe().then((me) => {
-      setSessionUser(me);
-    }).catch((e) => {
-      console.error(e);
-      window.location.href = "/login";
-    });
-  }, []);
+    setMeFailed(false);
+    api
+      .getMe()
+      .then((me) => {
+        setSessionUser(me);
+      })
+      .catch(async (e) => {
+        console.error(e);
+        // Stay on the page for transient failures; only leave when truly logged out.
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        if (!session) {
+          window.location.href = "/login";
+          return;
+        }
+        setMeFailed(true);
+      });
+  }, [meAttempt]);
 
   const { load } = Route.useSearch();
 
+  // Explicit ?load= (history links, shared URLs, back/forward): fetch it.
   useEffect(() => {
-    if (load) {
-      api.getWorkflow(load).then((wf) => {
-        setGoal(wf.title || wf.brief.what_being_made || "");
-        setBrief(wf.brief);
+    if (!load || loadedRef.current === load) return;
+    loadedRef.current = load;
+    api.getWorkflow(load).then((wf) => {
+      setGoal(wf.title || wf.brief.what_being_made || "");
+      setBrief(wf.brief);
+      setWorkflow(wf);
+      setQuestion(null);
+      setAnswers([]);
+      toast.success(`Loaded path: "${wf.title || 'Untitled'}"`);
+    }).catch((e) => {
+      toast.error("Failed to load workflow");
+      console.error(e);
+    });
+  }, [load]);
+
+  // Plain refresh with no ?load=: restore the last snapshot once.
+  useEffect(() => {
+    if (restoredRef.current || load) return;
+    restoredRef.current = true;
+    const snap = readSnapshot();
+    if (!snap) return;
+    setGoal(snap.goal);
+    setAnswers(snap.answers);
+    setQuestion(snap.question);
+    setCustom(snap.custom);
+    setBrief(snap.brief);
+    if (snap.workflowId) {
+      loadedRef.current = snap.workflowId;
+      api.getWorkflow(snap.workflowId).then((wf) => {
         setWorkflow(wf);
-        setQuestion(null);
-        setAnswers([]);
-        toast.success(`Loaded path: "${wf.title || 'Untitled'}"`);
       }).catch((e) => {
-        toast.error("Failed to load workflow");
         console.error(e);
       });
     }
   }, [load]);
+
+  // Capture every state change so a refresh restores exactly this view.
+  useEffect(() => {
+    writeSnapshot({
+      goal,
+      answers,
+      question,
+      custom,
+      brief,
+      workflowId: workflow?.id ?? readSnapshot()?.workflowId ?? null,
+    });
+  }, [goal, answers, question, custom, brief, workflow]);
 
   const { data: usageData } = useQuery({
     queryKey: ["usage"],
@@ -180,6 +314,8 @@ function AppPage() {
     try {
       const result = await api.generateWorkflow(brief);
       setWorkflow(result);
+      loadedRef.current = result.id;
+      navigate({ search: { load: result.id }, replace: true });
       toast.success("Creation path generated successfully!");
     } catch (e: any) {
       if (e instanceof DailyLimitError) {
@@ -250,14 +386,34 @@ function AppPage() {
     setGoal("");
     setAnswers([]);
     setQuestion(null);
+    setCustom("");
     setBrief(null);
     setWorkflow(null);
     setError("");
+    loadedRef.current = null;
+    clearSnapshot();
+    navigate({ search: {}, replace: true });
   }
 
   const started = question || brief || answers.length > 0;
 
-  if (!sessionUser)
+  if (!sessionUser) {
+    if (meFailed) {
+      return (
+        <div className="grid min-h-screen place-items-center bg-background px-5">
+          <div className="max-w-sm text-center">
+            <p className="text-sm font-semibold">Couldn&apos;t load your workspace</p>
+            <p className="mt-2 text-sm text-muted-foreground">
+              Check your connection and try again — your work is saved on this
+              device.
+            </p>
+            <Button className="mt-4" onClick={() => setMeAttempt((n) => n + 1)}>
+              Retry
+            </Button>
+          </div>
+        </div>
+      );
+    }
     return (
       <div
         role="status"
@@ -267,6 +423,7 @@ function AppPage() {
         <Loader2 className="size-8 animate-spin text-primary" />
       </div>
     );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -513,7 +670,9 @@ function AppPage() {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div>
                 <p className="eyebrow">Verified Workflow Path</p>
-                <h2 className="mt-1 text-2xl font-bold">{workflow.steps.length} Sequenced Action Steps</h2>
+                <h2 className="mt-1 text-2xl font-bold">
+                  {`${workflow.steps.length} Sequenced Action Step${workflow.steps.length === 1 ? "" : "s"}`}
+                </h2>
               </div>
             </div>
 
@@ -557,7 +716,8 @@ function AppPage() {
             {workflow.brief.budget_preference === "free_only" &&
             workflow.steps.every((step) => !step.can_run) ? (
               <p className="text-xs text-muted-foreground">
-                Tip: this free-only budget excludes the models that power live runs. A flexible budget unlocks them (10 runs/day).
+                Tip: this free-only budget excludes the models that power live
+                runs. A flexible budget unlocks them (10 runs/day).
               </p>
             ) : null}
 
@@ -619,6 +779,15 @@ function StepCard({
   const [running, setRunning] = useState(false);
   const [runResult, setRunResult] = useState<StepRunResponse | null>(null);
   const [runError, setRunError] = useState<string | null>(null);
+  const outputPretty = useMemo(() => {
+    if (!runResult?.output_text) return null;
+    try {
+      const parsed = JSON.parse(runResult.output_text) as unknown;
+      return { kind: "json" as const, text: JSON.stringify(parsed, null, 2) };
+    } catch {
+      return { kind: "text" as const, text: runResult.output_text };
+    }
+  }, [runResult]);
   const b = (a: string) => busy === `${step.step_id}:${a}`;
 
   async function handleOpenTool() {
@@ -846,17 +1015,35 @@ function StepCard({
             <span className="text-xs font-semibold text-primary uppercase tracking-wider flex items-center gap-1.5">
               <Sparkles className="size-3.5" /> Paste-Ready Prompt {step.technique ? `(${step.technique})` : ""}
             </span>
-            <Button
-              size="sm"
-              variant="secondary"
-              className="h-7 px-2.5 text-xs gap-1.5 font-medium"
-              onClick={() => {
-                navigator.clipboard.writeText(step.prompt || "");
-                toast.success("Prompt copied to clipboard!");
-              }}
-            >
-              <Copy className="size-3.5" /> Copy
-            </Button>
+            <div className="flex items-center gap-2">
+              {step.can_run ? (
+                <Button
+                  size="sm"
+                  variant="default"
+                  className="h-7 px-2.5 text-xs gap-1.5 font-medium"
+                  disabled={busy !== null || running}
+                  onClick={handleRunStep}
+                >
+                  {running ? (
+                    <Loader2 className="size-3.5 animate-spin" />
+                  ) : (
+                    <Play className="size-3.5" />
+                  )}
+                  {running ? "Running..." : "Run"}
+                </Button>
+              ) : null}
+              <Button
+                size="sm"
+                variant="secondary"
+                className="h-7 px-2.5 text-xs gap-1.5 font-medium"
+                onClick={() => {
+                  navigator.clipboard.writeText(step.prompt || "");
+                  toast.success("Prompt copied to clipboard!");
+                }}
+              >
+                <Copy className="size-3.5" /> Copy
+              </Button>
+            </div>
           </div>
           <pre className="mt-3 whitespace-pre-wrap font-sans text-sm leading-relaxed text-foreground/90 bg-muted/20 p-3 rounded-lg border border-border/50 select-all">
             {step.prompt}
@@ -920,22 +1107,6 @@ function StepCard({
           {b("regenerate") ? <Loader2 className="size-3.5 animate-spin" /> : <RefreshCw className="size-3.5" />}
           {step.content_type === "steps" ? "Regenerate Steps" : "Regenerate Prompt"}
         </Button>
-        {step.can_run ? (
-          <Button
-            size="sm"
-            variant="default"
-            className="text-xs h-8 gap-1.5"
-            disabled={busy !== null || running}
-            onClick={handleRunStep}
-          >
-            {running ? (
-              <Loader2 className="size-3.5 animate-spin" />
-            ) : (
-              <Play className="size-3.5" />
-            )}
-            {running ? "Running..." : "Run"}
-          </Button>
-        ) : null}
         {step.alternatives?.map((alt) => (
           <Button
             key={alt.id}
@@ -979,9 +1150,15 @@ function StepCard({
               </Button>
             </div>
           </div>
-          <p className="mt-3 max-h-96 overflow-y-auto whitespace-pre-wrap text-sm leading-6">
-            {runResult.output_text}
-          </p>
+          {outputPretty?.kind === "json" ? (
+            <pre className="mt-3 max-h-96 overflow-auto whitespace-pre rounded-md border border-border/50 bg-background/60 p-3 font-mono text-xs leading-5">
+              {highlightJson(outputPretty.text)}
+            </pre>
+          ) : (
+            <p className="mt-3 max-h-96 overflow-y-auto whitespace-pre-wrap text-sm leading-6">
+              {runResult.output_text}
+            </p>
+          )}
           <p className="mt-2 font-mono text-[10px] text-muted-foreground">
             {runResult.input_tokens + runResult.output_tokens} tokens ·{" "}
             {runResult.latency_ms} ms

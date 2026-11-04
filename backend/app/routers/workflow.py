@@ -50,13 +50,23 @@ class WorkflowListResponse(BaseModel):
     title: str
     created_at: str
 
-def hydrate_db_step(db: Session, s: DBWorkflowStep, brief: ProductBrief | None = None) -> WorkflowStep:
+def hydrate_db_step(
+    db: Session,
+    s: DBWorkflowStep,
+    brief: ProductBrief | None = None,
+    tool_map: dict | None = None,
+) -> WorkflowStep:
+    def _lookup(tool_id: int):
+        if tool_map is not None:
+            return tool_map.get(tool_id)
+        return catalog_service.get_public_tool(db, tool_id)
+
     primary_tool = None
     primary_db_tool = None
     free_note = None
     step_warnings = []
     if s.primary_tool_id:
-        primary_db_tool = catalog_service.get_public_tool(db, s.primary_tool_id)
+        primary_db_tool = _lookup(s.primary_tool_id)
         if primary_db_tool:
             primary_tool = plan_service.build_short_card(primary_db_tool)
             if brief:
@@ -64,7 +74,7 @@ def hydrate_db_step(db: Session, s: DBWorkflowStep, brief: ProductBrief | None =
 
     alts = []
     for alt_id in (s.alternative_tool_ids or []):
-        t = catalog_service.get_public_tool(db, alt_id)
+        t = _lookup(alt_id)
         if t:
             alts.append(plan_service.build_short_card(t))
 
@@ -231,7 +241,11 @@ def get_workflow(
     )
 
     brief = ProductBrief.model_validate(workflow.brief)
-    schema_steps = [hydrate_db_step(db, s, brief) for s in steps]
+    wanted_ids = {s.primary_tool_id for s in steps if s.primary_tool_id}
+    for s in steps:
+        wanted_ids.update(s.alternative_tool_ids or [])
+    tool_map = catalog_service.get_public_tools_map(db, wanted_ids)
+    schema_steps = [hydrate_db_step(db, s, brief, tool_map) for s in steps]
     cost_summary = plan_service.compute_cost_summary(schema_steps, brief)
 
     return WorkflowResponse(

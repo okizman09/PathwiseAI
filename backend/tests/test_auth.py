@@ -189,3 +189,37 @@ def test_require_admin_forbidden(client):
     response = client.get("/api/v1/admin/tools", headers={"Authorization": f"Bearer {token}"})
     assert response.status_code == 403
     assert "Forbidden" in response.json()["detail"]
+
+
+def test_last_seen_throttled_to_15_minutes(client):
+    """last_seen_at stamps on first sight and when stale, but not on every request (perf)."""
+    token = generate_token(subject="lastseen_user_1", email="lastseen1@test.com")
+
+    res = client.get("/api/v1/me", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 200
+    db = SessionLocal()
+    first = db.query(Profile).filter(Profile.id == "lastseen_user_1").one().last_seen_at
+    db.close()
+    assert first is not None
+
+    # Immediate second request leaves the stamp untouched (no write).
+    res = client.get("/api/v1/me", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 200
+    db = SessionLocal()
+    second = db.query(Profile).filter(Profile.id == "lastseen_user_1").one().last_seen_at
+    db.close()
+    assert second == first
+
+    # A stale stamp gets refreshed.
+    db = SessionLocal()
+    db.query(Profile).filter(Profile.id == "lastseen_user_1").update(
+        {"last_seen_at": datetime.now(UTC) - timedelta(hours=2)}
+    )
+    db.commit()
+    db.close()
+    res = client.get("/api/v1/me", headers={"Authorization": f"Bearer {token}"})
+    assert res.status_code == 200
+    db = SessionLocal()
+    third = db.query(Profile).filter(Profile.id == "lastseen_user_1").one().last_seen_at
+    db.close()
+    assert third > second

@@ -42,11 +42,13 @@ async def import_tool_cards(
     db: Session = Depends(get_db),
 ):
     """Import researched Catalog v3 tool cards from JSON (Admin only)."""
-    return await CardImporterService.import_batch(
+    result = await CardImporterService.import_batch(
         db=db,
         cards=batch.cards,
         expected_tool_names=batch.expected,
     )
+    catalog_service.invalidate_public_tools_cache()
+    return result
 
 @router.post(
     "/admin/tools",
@@ -60,7 +62,9 @@ async def create_admin_tool(
 ):
     """Step 4: Create tool. If docs_url is provided, fetch page and extract card with Meta (draft)."""
     try:
-        return await catalog_service.create_admin_tool_from_request(db=db, req=req)
+        result = await catalog_service.create_admin_tool_from_request(db=db, req=req)
+        catalog_service.invalidate_public_tools_cache()
+        return result
     except ValueError as ve:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -131,12 +135,14 @@ async def update_admin_tool(
             detail=f"Tool with ID {tool_id} not found",
         )
     try:
-        return await catalog_service.update_tool(
+        result = await catalog_service.update_tool(
             db=db,
             db_tool=tool,
             tool_update=tool_update,
             verified_by_user=getattr(admin_user, "email", "admin"),
         )
+        catalog_service.invalidate_public_tools_cache()
+        return result
     except ValueError as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -161,6 +167,7 @@ async def delete_admin_tool(
             detail=f"Tool with ID {tool_id} not found",
         )
     catalog_service.delete_tool(db=db, db_tool=tool)
+    catalog_service.invalidate_public_tools_cache()
     return None
 
 
@@ -176,17 +183,20 @@ async def recheck_admin_tool(
     """Re-run research or diff a freshly pasted card JSON before applying."""
     try:
         if body and "card" in body and isinstance(body["card"], dict):
-            return await catalog_service.diff_tool_card(
+            result = await catalog_service.diff_tool_card(
                 db=db,
                 tool_id=tool_id,
                 fresh_card_data=body["card"],
                 apply=bool(body.get("apply", False)),
             )
-        return await catalog_service.recheck_tool(db=db, tool_id=tool_id)
+        else:
+            result = await catalog_service.recheck_tool(db=db, tool_id=tool_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Recheck failed: {str(e)}")
+    catalog_service.invalidate_public_tools_cache()
+    return result
 
 
 @router.post(
@@ -222,6 +232,7 @@ async def fetch_tool_logo(
             tool.og_image_url = og_image_url
         db.commit()
         db.refresh(tool)
+        catalog_service.invalidate_public_tools_cache()
         return tool
     except Exception as e:
         db.rollback()
@@ -256,6 +267,7 @@ async def paste_tool_logo_url(
         tool.logo_source = "manual"
         db.commit()
         db.refresh(tool)
+        catalog_service.invalidate_public_tools_cache()
         return tool
     except ValueError as ve:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=str(ve))
@@ -309,6 +321,7 @@ async def upload_tool_logo(
         tool.logo_source = "manual"
         db.commit()
         db.refresh(tool)
+        catalog_service.invalidate_public_tools_cache()
         return tool
     except HTTPException:
         db.rollback()
@@ -358,7 +371,9 @@ async def check_all_admin_links(
 ):
     """Check all verified tool URLs; dead links set link_status=dead and hide the tool."""
     try:
-        return await catalog_service.check_all_links(db=db)
+        result = await catalog_service.check_all_links(db=db)
+        catalog_service.invalidate_public_tools_cache()
+        return result
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Link check failed: {str(e)}")
 
@@ -371,12 +386,12 @@ async def check_all_admin_links(
     "/tools",
     response_model=list[ToolPublicResponse],
 )
-async def list_public_tools(
+def list_public_tools(
     category: str | None = Query(None, description="Filter by category"),
     domain: str | None = Query(None, description="Filter by domain"),
     ecosystem: str | None = Query(None, description="Filter by ecosystem (e.g. meta)"),
     db: Session = Depends(get_db),
 ):
-    """Public catalog: returns VERIFIED tools only."""
-    return catalog_service.list_public_tools(db=db, category=category, domain=domain, ecosystem=ecosystem)
+    """Public catalog: returns VERIFIED tools only (cached 60 s)."""
+    return catalog_service.list_public_tools_cached(db=db, category=category, domain=domain, ecosystem=ecosystem)
 

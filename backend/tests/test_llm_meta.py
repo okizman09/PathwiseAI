@@ -192,3 +192,31 @@ async def test_generate_structured_sends_strict_shape_schema(fake_meta_client):
     item_def = next(iter(defs.values()))
     assert item_def["additionalProperties"] is False
     assert set(item_def["required"]) == set(item_def["properties"])
+
+
+@pytest.mark.asyncio
+async def test_generate_structured_reasoning_effort_passthrough(fake_meta_client):
+    from app.services.llm import generate_structured
+
+    fake_meta_client.responses.create.return_value = _fake_response(
+        '{"customer": "Ada", "items": [], "priority": 0}'
+    )
+
+    await generate_structured(system="s", user="u", schema=_StrictOrder, reasoning_effort="low")
+
+    _, kwargs = fake_meta_client.responses.create.await_args
+    assert kwargs["reasoning"] == {"effort": "low"}
+
+
+@pytest.mark.asyncio
+async def test_generate_structured_reasoning_omitted_by_default(fake_meta_client):
+    from app.services.llm import generate_structured
+
+    fake_meta_client.responses.create.return_value = _fake_response(
+        '{"customer": "Ada", "items": [], "priority": 0}'
+    )
+
+    await generate_structured(system="s", user="u", schema=_StrictOrder)
+
+    _, kwargs = fake_meta_client.responses.create.await_args
+    assert "reasoning" not in kwargs

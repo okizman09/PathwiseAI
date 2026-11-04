@@ -188,3 +188,31 @@ async def test_provider_failure_persists_failed_and_refunds(client, mock_run_set
     monkeypatch.setattr("app.services.run.generate_text", _fake_ok({}))
     retry = client.post("/api/v1/workflows/11/steps/step-1/run", json={}, headers=headers)
     assert retry.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_empty_response_persists_failed_and_refunds(client, mock_run_setup, monkeypatch):
+    headers = {"Authorization": f"Bearer {mock_run_setup['token_a']}"}
+    _reset_step_run_usage()
+    monkeypatch.setattr(settings, "RUN_STEPS_PER_DAY", 1)
+    # Reasoning plus long answers need room; the 2048 budget once returned
+    # zero text with all tokens spent on reasoning.
+    assert settings.RUN_MAX_OUTPUT_TOKENS >= 8192
+
+    async def _empty(*, system, user, model, max_output_tokens, timeout):
+        return TextResult(text="  ", model=model, input_tokens=197, output_tokens=2048)
+
+    monkeypatch.setattr("app.services.run.generate_text", _empty)
+    res = client.post("/api/v1/workflows/11/steps/step-1/run", json={}, headers=headers)
+    assert res.status_code == 502
+
+    db = SessionLocal()
+    row = db.query(StepRun).order_by(StepRun.id.desc()).first()
+    assert row.status == "failed"
+    assert row.error_code == "empty_response"
+    assert (row.input_tokens, row.output_tokens) == (197, 2048)
+    db.close()
+
+    monkeypatch.setattr("app.services.run.generate_text", _fake_ok({}))
+    retry = client.post("/api/v1/workflows/11/steps/step-1/run", json={}, headers=headers)
+    assert retry.status_code == 200

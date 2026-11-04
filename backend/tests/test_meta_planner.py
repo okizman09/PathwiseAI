@@ -96,8 +96,12 @@ def seeded_db(client):
 
 
 def _fake_llm(calls, meta_tool_id, synthesis_prompt):
-    async def fake_generate_structured(*, system, user, schema, temperature=0.2, max_output_tokens=None):
-        calls.append({"system": system, "user": user, "schema": schema.__name__})
+    async def fake_generate_structured(
+        *, system, user, schema, temperature=0.2, max_output_tokens=None, reasoning_effort=None
+    ):
+        calls.append(
+            {"system": system, "user": user, "schema": schema.__name__, "reasoning_effort": reasoning_effort}
+        )
         if schema.__name__ == "LLMJobsPlan":
             return LLMJobsPlan(jobs=[JobPlanningItem(
                 step_number=1,
@@ -140,6 +144,8 @@ async def test_synthesis_context_carries_meta_fields_and_rules(seeded_db, monkey
     assert synthesis["user"].count('"model_id"') == 1  # plain tool has no such key
     assert "Never invent a model ID" in synthesis["system"]
     assert "with the expected output format" in synthesis["system"]
+    assert len(calls) == 2
+    assert all(c["reasoning_effort"] == "low" for c in calls)
 
 
 @pytest.mark.asyncio
@@ -181,7 +187,9 @@ async def test_plan_persists_steps_content(seeded_db, monkeypatch):
     meta_id = seeded_db.query(Tool).filter(Tool.name == META_NAME).one().id
     calls = []
 
-    async def fake_generate_structured(*, system, user, schema, temperature=0.2, max_output_tokens=None):
+    async def fake_generate_structured(
+        *, system, user, schema, temperature=0.2, max_output_tokens=None, reasoning_effort=None
+    ):
         calls.append({"system": system, "schema": schema.__name__})
         if schema.__name__ == "LLMJobsPlan":
             return LLMJobsPlan(jobs=[JobPlanningItem(

@@ -108,6 +108,16 @@ def mock_storage_upload_in_tests(monkeypatch, request):
     monkeypatch.setattr("app.routers.tools.upload_image_to_storage", _mock_upload)
 
 
+@pytest.fixture(autouse=True)
+def clear_public_tools_cache():
+    """Keep the public-tools response cache from leaking between tests."""
+    from app.services.catalog import invalidate_public_tools_cache
+
+    invalidate_public_tools_cache()
+    yield
+    invalidate_public_tools_cache()
+
+
 @pytest.fixture(scope="session")
 def client():
     """Return a TestClient wired to an in-memory SQLite database."""

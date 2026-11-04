@@ -8,6 +8,10 @@ from app.db import get_db
 from app.models.profile import Profile
 from app.services.auth.supabase_jwt import verify_supabase_token
 
+# Minimum seconds between last_seen_at writes for a user (perf: avoids a
+# write + commit round trip on every authenticated request).
+LAST_SEEN_UPDATE_SECONDS = 900
+
 
 def get_current_user(
     authorization: str | None = Header(None, alias="Authorization"),
@@ -68,11 +72,17 @@ def get_current_user(
             db.rollback()
             profile = db.query(Profile).filter(Profile.id == str(user_id)).first()
 
-    # Update last seen
+    # Update last seen at most once per 15 minutes. Nothing reads this
+    # field except the profile itself, so throttling is invisible.
     if profile:
-        profile.last_seen_at = datetime.now(UTC)
-        db.commit()
-        db.refresh(profile)
+        now = datetime.now(UTC)
+        last_seen = profile.last_seen_at
+        if last_seen is not None and last_seen.tzinfo is None:
+            # SQLite returns naive datetimes; interpret as UTC.
+            last_seen = last_seen.replace(tzinfo=UTC)
+        if last_seen is None or (now - last_seen).total_seconds() > LAST_SEEN_UPDATE_SECONDS:
+            profile.last_seen_at = now
+            db.commit()
 
     # Attach verified email indicator (runtime attribute)
     verified = is_email_verified(payload, token)
