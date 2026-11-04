@@ -9,3 +9,5 @@ __pycache__/
 .wrangler/
 .tanstack/
 **/.tanstack/
+*.mp4
+*.mov

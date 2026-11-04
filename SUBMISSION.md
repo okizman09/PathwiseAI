@@ -56,27 +56,28 @@ health checks.
   blockers: [YOU — your genuine ratings; don't let anyone else fill these]
 - Consent checkbox: [YOU]
 
-## Demo script (3 minutes, T9 shipped)
+## Submitted video (tutoring goal, recorded Nov 5)
 
-- 0:00–0:20 — Problem: people know the goal, not the models/tools/order.
-- 0:20–0:50 — Enter "I want a tool that turns my voice notes into structured
-  orders"; interview + brief run on Meta (say so).
-- 0:50–1:50 — The workflow: transcribe step (Muse Voice Transcribe + model ID),
-  structure step (Muse Spark + prompt + call snippet), build/hosting steps.
-- 1:50–2:20 — Live Run of the structure step; JSON output renders in-app.
-- 2:20–2:40 — Meta directory: filter, a card, sources, verified badge.
-- 2:40–2:55 — What was built this week (point at NEW_WORK.md).
-- 2:55–3:00 — Close: roadmap is Run for more models, verified agent steps.
+- 0:00–0:25 — Problem: goal known, models/tools/order unknown.
+- 0:25–0:50 — What Pathwise is: planner + verified directory, Meta-powered.
+- 0:50–1:15 — Goal "landing page for my home tutoring service in Lagos, with
+  the copy written for me"; follow-ups; 2-step workflow appears.
+- 1:15–2:00 — Live Run of Step 1 (Muse Spark drafts the copy); JSON renders.
+- 2:00–2:20 — Proof cut: finished Lovable page + leads table (steps 2–3
+  completed offline exactly as written).
+- 2:20–2:50 — Why not ChatGPT: verified tools, structured steps, live runs.
+- 2:50–3:00 — Close. (Voice-note/transcribe goal retired: its headline step
+  can't run live; Muse Voice Transcribe stays listed in the directory.)
 
 ## Checks before you submit
 
 Run in PowerShell (git is blocked for the sandbox; these are yours):
 
 ```powershell
-git ls-files | Select-String "\.env$|\.db$"     # must print NOTHING
+git ls-files | Select-String "\.env$|\.db$|\.mp4$|\.mov$"  # must print NOTHING
 git status --short                              # review, then stage by name
-git add README.md NEW_WORK.md SUBMISSION.md render.yaml docs/DEPLOY.md backend/.env.example backend/ frontend/
-git commit -m "T10: submission pack (README, Meta deploy files, Run + hardening)"
+git add .gitignore NEW_WORK.md SUBMISSION.md backend/app/services/plan.py backend/tests/test_plan_checks.py frontend/src/routes/app.tsx frontend/src/lib/api.ts
+git commit -m "Submission hardening: Run reliability, overflow fix, tracker + pack"
 git push origin main                            # then confirm the repo is PUBLIC
 ```
 
