@@ -358,10 +358,10 @@ export const getApiBaseUrl = (): string => {
   }
   if (typeof window !== "undefined") {
     if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
-      return "https://pathwise-ai-qkf1.onrender.com";
+      return "https://pathwiseai-gxo7.onrender.com";
     }
   } else if (typeof process !== "undefined" && process.env?.["NODE_ENV"] === "production") {
-    return "https://pathwise-ai-qkf1.onrender.com";
+    return "https://pathwiseai-gxo7.onrender.com";
   }
   return "http://localhost:8000";
 };
