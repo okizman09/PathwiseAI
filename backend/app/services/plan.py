@@ -466,6 +466,15 @@ async def generate_workflow_plan(
             cleaned_steps.append(cleaned_item)
             stripped.extend(removed)
         step_syn.action_steps = cleaned_steps
+        # Normalize content_type against the populated field: the model sometimes
+        # tags a step "steps" while writing only a prompt (or vice versa), which
+        # would show the wrong block and wrongly withhold the Run button.
+        has_prompt = bool((step_syn.prompt or "").strip())
+        has_actions = any((a or "").strip() for a in (step_syn.action_steps or []))
+        if step_syn.content_type == "steps" and not has_actions and has_prompt:
+            step_syn.content_type = "prompt"
+        elif step_syn.content_type == "prompt" and not has_prompt and has_actions:
+            step_syn.content_type = "steps"
         invented_warnings.append(
             [f"Removed unrecognized model reference(s): {', '.join(sorted(set(stripped)))}"]
             if stripped

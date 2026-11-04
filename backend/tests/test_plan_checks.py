@@ -172,3 +172,59 @@ def test_check_steps_content():
     bad.action_steps = []
     failures = check_plan(_response([bad]), known_model_ids=set(), known_tool_ids={1})
     assert any("action_steps" in f for f in failures)
+
+
+def _fake_plan_with_step(monkeypatch, job, primary_tool_id, prompt, content_type,
+                         action_steps):
+    async def fake_generate_structured(
+        *, system, user, schema, temperature=0.2, max_output_tokens=None, reasoning_effort=None
+    ):
+        if schema.__name__ == "LLMJobsPlan":
+            return LLMJobsPlan(jobs=[JobPlanningItem(
+                step_number=1, job=job, job_tags=[],
+                input_types=["audio"], output_types=["text"], output_expected="Transcript")])
+        return LLMWorkflowSynthesis(title="T7 norm", steps=[LLMStepSynthesis(
+            step_number=1, job=job, why_step="why",
+            primary_tool_id=primary_tool_id, alternative_tool_ids=[],
+            prompt=prompt, content_type=content_type, action_steps=action_steps,
+            output_expected="Transcript")])
+
+    monkeypatch.setattr("app.services.plan.generate_structured", fake_generate_structured)
+
+
+def _known_ids(db):
+    models = {r[0] for r in db.query(Tool.model_id).filter(Tool.model_id.isnot(None)).all()}
+    tools = {r[0] for r in db.query(Tool.id).all()}
+    return models, tools
+
+
+@pytest.mark.asyncio
+async def test_steps_tag_with_only_prompt_coerces_to_prompt(seeded_db, monkeypatch):
+    """Regression: a 'steps'-tagged synthesis holding only a prompt must come
+    back as a prompt step, otherwise a runnable step silently loses Run."""
+    meta_id = seeded_db.query(Tool).filter(Tool.name == META_NAME).one().id
+    _fake_plan_with_step(monkeypatch, "transcribe_audio", meta_id,
+                         f"Transcribe with {META_ID}.", "steps", [])
+    user = seeded_db.query(Profile).filter(Profile.id == USER_ID).one()
+
+    plan = await generate_workflow_plan(seeded_db, user, _brief())
+
+    assert plan.steps[0].content_type == "prompt"
+    models, tools = _known_ids(seeded_db)
+    assert check_plan(plan, known_model_ids=models, known_tool_ids=tools) == []
+
+
+@pytest.mark.asyncio
+async def test_prompt_tag_with_only_actions_coerces_to_steps(seeded_db, monkeypatch):
+    """Symmetric case: a 'prompt'-tagged synthesis holding only setup actions
+    must come back as a steps step instead of an empty prompt block."""
+    meta_id = seeded_db.query(Tool).filter(Tool.name == META_NAME).one().id
+    _fake_plan_with_step(monkeypatch, "transcribe_audio", meta_id,
+                         "  ", "prompt", ["Run the transcription job."])
+    user = seeded_db.query(Profile).filter(Profile.id == USER_ID).one()
+
+    plan = await generate_workflow_plan(seeded_db, user, _brief())
+
+    assert plan.steps[0].content_type == "steps"
+    models, tools = _known_ids(seeded_db)
+    assert check_plan(plan, known_model_ids=models, known_tool_ids=tools) == []
