@@ -48,7 +48,7 @@ health checks.
 - Team Name: [YOU]
 - Track: [YOU]
 - Problem statement: [YOU]
-- Public GitHub repo URL: [YOU] (must be public; see checks below)
+- Public GitHub repo URL: https://github.com/okizman09/PathwiseAI ([confirm it is PUBLIC])
 - 3-minute demo video URL: [YOU] (YouTube; must open logged out)
 - Most Viral X post link: [YOU, only if competing for that track]
 - How likely to build with / recommend Meta Model API, overall opinion,

@@ -156,7 +156,7 @@ The frontend uses TanStack Start, compiled for Cloudflare Workers via Nitro (`cl
 
 ### Live Production Deployment
 - **Frontend URL**: `https://pathwise-ai.okizmanofficial.workers.dev`
-- **Backend URL**: `https://pathwise-ai-qkf1.onrender.com`
+- **Backend URL**: `https://pathwiseai-gxo7.onrender.com`
 
 ### Cloudflare Workers Builds (Git Integration)
 1. Go to [Cloudflare Dashboard](https://dash.cloudflare.com/) → **Compute (Workers & Pages)** → Select worker `pathwise-ai`.
@@ -166,7 +166,7 @@ The frontend uses TanStack Start, compiled for Cloudflare Workers via Nitro (`cl
    - **Deploy command**: `npx wrangler deploy`
 3. [`wrangler.json`](file:///frontend/wrangler.json) automatically hooks into `npm run build` via `"build": { "command": "npm run build" }`.
 4. Environment variables & secrets are configured in `wrangler.json` (or under **Variables and Secrets**):
-   - `VITE_API_URL`: `https://pathwise-ai-qkf1.onrender.com`
+   - `VITE_API_URL`: `https://pathwiseai-gxo7.onrender.com`
    - `VITE_SUPABASE_URL`: `https://igpzvyetvyqxsfftmjzr.supabase.co`
    - `VITE_SUPABASE_ANON_KEY`: `sb_publishable_G2qBkrdjIwhm5w0NydgvYw_GcvD5i5L`
 

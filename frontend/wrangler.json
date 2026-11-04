@@ -13,7 +13,7 @@
     "binding": "ASSETS"
   },
   "vars": {
-    "VITE_API_URL": "https://pathwise-ai-qkf1.onrender.com",
+    "VITE_API_URL": "https://pathwiseai-gxo7.onrender.com",
     "VITE_SUPABASE_URL": "https://igpzvyetvyqxsfftmjzr.supabase.co",
     "VITE_SUPABASE_ANON_KEY": "sb_publishable_G2qBkrdjIwhm5w0NydgvYw_GcvD5i5L"
   }
