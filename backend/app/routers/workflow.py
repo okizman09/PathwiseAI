@@ -373,6 +373,7 @@ async def step_run(
     workflow, db_step = get_workflow_and_step(db, current_user, id, step_id)
 
     try:
+        quota.check_global_cap(db, "step_run")
         quota.reserve(db, current_user, "step_run")
     except HTTPException:
         raise

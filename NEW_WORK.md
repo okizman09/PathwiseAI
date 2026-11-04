@@ -47,6 +47,7 @@ event" was built during the hackathon window.
 - Run button moved from bottom action row to prompt card header (same behavior); tsc + build green (commit pending)
 - Live output pretty-print: JSON auto-detected, indented + highlighted (theme hues, no new libs); plain text unchanged; copy/.md still use raw text; tsc + build green (commit pending)
 - T10: README rewrite (Meta provider/directory/planner, run instructions, env, tests, limitations, adapted roadmap); deploy files fixed for Meta (render.yaml keys, DEPLOY.md steps, .env.example run budget); SUBMISSION.md drafted with form answers; NEW_WORK finalized (commit pending)
+- Review follow-up: repo clutter removed (mockups/, files.zip, screenshot, stray docs txt, dupe data/cards.json); global step-run cap 200/day across users (spend guard) + test; render.yaml/.env.example updated; suite 186 green, ruff clean (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI

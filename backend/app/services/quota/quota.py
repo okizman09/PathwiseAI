@@ -2,6 +2,7 @@ from datetime import UTC, datetime, timedelta
 from typing import TypedDict
 
 from fastapi import HTTPException
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
@@ -144,3 +145,31 @@ def refund(db: Session, user: Profile, kind: str) -> None:
         UsageDaily.count > 0
     ).update({"count": UsageDaily.count - 1})
     db.commit()
+
+def _get_global_limit(kind: str) -> int:
+    if kind == "step_run":
+        return settings.GLOBAL_STEP_RUNS_PER_DAY
+    return 0
+
+def get_global_usage(db: Session, kind: str) -> int:
+    """Total units consumed by all users today for a quota kind."""
+    day = _get_today_utc()
+    total = (
+        db.query(func.coalesce(func.sum(UsageDaily.count), 0))
+        .filter(UsageDaily.day == day, UsageDaily.kind == kind)
+        .scalar()
+    )
+    return int(total or 0)
+
+def check_global_cap(db: Session, kind: str) -> None:
+    """Raise 429 when all users combined hit the daily cap (spend guard).
+
+    A non-positive limit disables the cap. Derived from the same usage rows
+    as per-user quota, so refunds stay consistent automatically.
+    """
+    limit = _get_global_limit(kind)
+    if limit <= 0:
+        return
+    used = get_global_usage(db, kind)
+    if used >= limit:
+        raise QuotaExceededException(kind=kind, limit=limit, used=used, resets_at=_get_resets_at())

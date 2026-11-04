@@ -191,6 +191,21 @@ async def test_provider_failure_persists_failed_and_refunds(client, mock_run_set
 
 
 @pytest.mark.asyncio
+async def test_global_step_run_cap_returns_429(client, mock_run_setup, monkeypatch):
+    headers = {"Authorization": f"Bearer {mock_run_setup['token_a']}"}
+    _reset_step_run_usage()
+    monkeypatch.setattr(settings, "RUN_STEPS_PER_DAY", 10)
+    monkeypatch.setattr(settings, "GLOBAL_STEP_RUNS_PER_DAY", 1)
+    monkeypatch.setattr("app.services.run.generate_text", _fake_ok({}))
+
+    first = client.post("/api/v1/workflows/11/steps/step-1/run", json={}, headers=headers)
+    assert first.status_code == 200
+    # Per-user quota would allow 10; the 429 proves the global cap fired.
+    capped = client.post("/api/v1/workflows/11/steps/step-1/run", json={}, headers=headers)
+    assert capped.status_code == 429
+
+
+@pytest.mark.asyncio
 async def test_empty_response_persists_failed_and_refunds(client, mock_run_setup, monkeypatch):
     headers = {"Authorization": f"Bearer {mock_run_setup['token_a']}"}
     _reset_step_run_usage()

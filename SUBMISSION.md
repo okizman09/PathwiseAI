@@ -80,7 +80,9 @@ git commit -m "T10: submission pack (README, Meta deploy files, Run + hardening)
 git push origin main                            # then confirm the repo is PUBLIC
 ```
 
-- [ ] Demo goal produces a good plan 3 times in a row (freshrun each time)
+- [ ] Demo goal produces a good plan 3 times in a row (fresh run each time)
+- [ ] Judge demo account created (verified email); credentials go in the submission notes, never in the repo; sign-up works without an invite
+- [ ] Billing alert set in the Meta dashboard (global run cap is 200/day in code)
 - [ ] Live Run returns real output (not empty) on the structure step
 - [ ] Video recorded, uploaded, opens in an incognito window
 - [ ] All members listed; track + problem statement selected
