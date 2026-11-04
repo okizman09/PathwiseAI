@@ -1123,7 +1123,7 @@ function StepCard({
 
       {/* LIVE RUN OUTPUT (T9) */}
       {runResult ? (
-        <div className="mt-4 rounded-lg border border-border bg-muted/30 p-4">
+        <div className="mt-4 min-w-0 max-w-full rounded-lg border border-border bg-muted/30 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs font-semibold">
               Live output{" "}
@@ -1151,7 +1151,7 @@ function StepCard({
             </div>
           </div>
           {outputPretty?.kind === "json" ? (
-            <pre className="mt-3 max-h-96 overflow-auto whitespace-pre rounded-md border border-border/50 bg-background/60 p-3 font-mono text-xs leading-5">
+            <pre className="mt-3 min-w-0 max-w-full overflow-auto whitespace-pre rounded-md border border-border/50 bg-background/60 p-3 font-mono text-xs leading-5">
               {highlightJson(outputPretty.text)}
             </pre>
           ) : (

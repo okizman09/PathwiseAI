@@ -50,7 +50,8 @@ event" was built during the hackathon window.
 - Review follow-up: repo clutter removed (mockups/, files.zip, screenshot, stray docs txt, dupe data/cards.json); global step-run cap 200/day across users (spend guard) + test; render.yaml/.env.example updated; suite 186 green, ruff clean (96febbe)
 - Deploy fix: pinned openai>=1.66.0,<2 (Render resolved untested v3.45; local suite runs v1); backend live at pathwiseai-gxo7.onrender.com; frontend VITE_API_URL repointed qkf1->gxo7 (8ae9b1c)
 - Prod API fallback fix: frontend getApiBaseUrl hardcoded fallback still pointed at deleted qkf1 backend (no build-time VITE_API_URL set); repointed both fallbacks to gxo7 (commit pending)
-- Run-button fix: planner wrote synthesis content_type straight to DB; a 'steps'-tagged step holding only a prompt lost can_run (tutoring goal, no Run on Spark step); post-check now coerces content_type against the populated field both directions + 2 e2e fake-LLM tests (commit pending)
+- Run-button fix: planner wrote synthesis content_type straight to DB; a 'steps'-tagged step holding only a prompt lost can_run (tutoring goal, no Run on Spark step); post-check now coerces content_type against the populated field both directions + 2 e2e fake-LLM tests; suite 188 green, ruff clean (commit pending)
+- Live-output overflow fix: long JSON lines (whitespace-pre) forced the step card wider; panel + pre now min-w-0/max-w-full so the box scrolls internally (commit pending)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI
