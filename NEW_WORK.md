@@ -48,7 +48,7 @@ event" was built during the hackathon window.
 - Live output pretty-print: JSON auto-detected, indented + highlighted (theme hues, no new libs); plain text unchanged; copy/.md still use raw text; tsc + build green (3a8b6d5)
 - T10: README rewrite (Meta provider/directory/planner, run instructions, env, tests, limitations, adapted roadmap); deploy files fixed for Meta (render.yaml keys, DEPLOY.md steps, .env.example run budget); SUBMISSION.md drafted with form answers; NEW_WORK finalized (3a8b6d5 + 96febbe)
 - Review follow-up: repo clutter removed (mockups/, files.zip, screenshot, stray docs txt, dupe data/cards.json); global step-run cap 200/day across users (spend guard) + test; render.yaml/.env.example updated; suite 186 green, ruff clean (96febbe)
-- Deploy fix: pinned openai>=1.66.0,<2 (Render resolved untested v3.45; local suite runs v1); backend live at pathwiseai-gxo7.onrender.com; frontend VITE_API_URL repointed qkf1->gxo7 (commit pending)
+- Deploy fix: pinned openai>=1.66.0,<2 (Render resolved untested v3.45; local suite runs v1); backend live at pathwiseai-gxo7.onrender.com; frontend VITE_API_URL repointed qkf1->gxo7 (8ae9b1c)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI
