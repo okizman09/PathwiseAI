@@ -49,10 +49,10 @@ event" was built during the hackathon window.
 - T10: README rewrite (Meta provider/directory/planner, run instructions, env, tests, limitations, adapted roadmap); deploy files fixed for Meta (render.yaml keys, DEPLOY.md steps, .env.example run budget); SUBMISSION.md drafted with form answers; NEW_WORK finalized (3a8b6d5 + 96febbe)
 - Review follow-up: repo clutter removed (mockups/, files.zip, screenshot, stray docs txt, dupe data/cards.json); global step-run cap 200/day across users (spend guard) + test; render.yaml/.env.example updated; suite 186 green, ruff clean (96febbe)
 - Deploy fix: pinned openai>=1.66.0,<2 (Render resolved untested v3.45; local suite runs v1); backend live at pathwiseai-gxo7.onrender.com; frontend VITE_API_URL repointed qkf1->gxo7 (8ae9b1c)
-- Prod API fallback fix: frontend getApiBaseUrl hardcoded fallback still pointed at deleted qkf1 backend (no build-time VITE_API_URL set); repointed both fallbacks to gxo7 (commit pending)
-- Run-button fix: planner wrote synthesis content_type straight to DB; a 'steps'-tagged step holding only a prompt lost can_run (tutoring goal, no Run on Spark step); post-check now coerces content_type against the populated field both directions + 2 e2e fake-LLM tests; suite 188 green, ruff clean (commit pending)
-- Live-output overflow fix: long JSON lines (whitespace-pre) forced the step card wider; panel + pre now min-w-0/max-w-full so the box scrolls internally (commit pending)
-- POST can_run fix (real Run-button root cause): POST /workflows returned the planner response directly, which never set can_run, so Run only appeared after refresh; planner now computes can_run at generation (same rule as GET) + 1 e2e regression test; suite 189 green, ruff clean (commit pending)
+- Prod API fallback fix: frontend getApiBaseUrl hardcoded fallback still pointed at deleted qkf1 backend (no build-time VITE_API_URL set); repointed both fallbacks to gxo7 (52fa038)
+- Run-button fix: planner wrote synthesis content_type straight to DB; a 'steps'-tagged step holding only a prompt lost can_run (tutoring goal, no Run on Spark step); post-check now coerces content_type against the populated field both directions + 2 e2e fake-LLM tests; suite 188 green, ruff clean (52fa038)
+- Live-output overflow fix: long JSON lines (whitespace-pre) forced the step card wider; panel + pre now min-w-0/max-w-full so the box scrolls internally (d3445e2)
+- POST can_run fix (real Run-button root cause): POST /workflows returned the planner response directly, which never set can_run, so Run only appeared after refresh; planner now computes can_run at generation (same rule as GET) + 1 e2e regression test; suite 189 green, ruff clean (d3445e2)
 
 ## Reused from before the event
 - Auth, quotas, catalog and importer, planner scoring, existing UI
