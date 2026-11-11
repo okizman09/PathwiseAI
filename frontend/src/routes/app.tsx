@@ -64,6 +64,7 @@ import {
   type WorkflowStep,
 } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
+import { FEATURE_LIVE_RUN, FEATURE_META_SHOWCASE } from "@/lib/features";
 
 export const Route = createFileRoute("/app")({
   ssr: false,
@@ -713,7 +714,8 @@ function AppPage() {
               </div>
             ) : null}
 
-            {workflow.brief.budget_preference === "free_only" &&
+            {FEATURE_LIVE_RUN &&
+            workflow.brief.budget_preference === "free_only" &&
             workflow.steps.every((step) => !step.can_run) ? (
               <p className="text-xs text-muted-foreground">
                 Tip: this free-only budget excludes the models that power live
@@ -916,12 +918,12 @@ function StepCard({
           <span className="text-xs rounded bg-muted px-2 py-0.5 text-muted-foreground font-medium capitalize">
             {step.primary_tool.pricing_model || step.primary_tool.pricing}
           </span>
-          {step.primary_tool.ecosystem === "meta" && (
+          {FEATURE_META_SHOWCASE && step.primary_tool.ecosystem === "meta" && (
             <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] py-0.5">
               <span>Meta</span>
             </Badge>
           )}
-          {step.primary_tool.model_id && (
+          {FEATURE_META_SHOWCASE && step.primary_tool.model_id && (
             <span className="text-[11px] font-mono rounded bg-muted px-2 py-0.5 text-muted-foreground">
               {step.primary_tool.model_id}
             </span>
@@ -1016,7 +1018,7 @@ function StepCard({
               <Sparkles className="size-3.5" /> Paste-Ready Prompt {step.technique ? `(${step.technique})` : ""}
             </span>
             <div className="flex items-center gap-2">
-              {step.can_run ? (
+              {FEATURE_LIVE_RUN && step.can_run ? (
                 <Button
                   size="sm"
                   variant="default"
@@ -1052,7 +1054,7 @@ function StepCard({
       ) : null}
 
       {/* META API SNIPPET */}
-      {step.primary_tool.api_snippet ? (
+      {FEATURE_META_SHOWCASE && step.primary_tool.api_snippet ? (
         <Collapsible className="mt-4 rounded-xl border border-border bg-background">
           <CollapsibleTrigger className="group flex w-full items-center justify-between gap-2 p-4 text-xs font-semibold text-primary uppercase tracking-wider">
             <span className="flex items-center gap-1.5">
@@ -1122,7 +1124,7 @@ function StepCard({
       </div>
 
       {/* LIVE RUN OUTPUT (T9) */}
-      {runResult ? (
+      {FEATURE_LIVE_RUN && runResult ? (
         <div className="mt-4 min-w-0 max-w-full rounded-lg border border-border bg-muted/30 p-4">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <p className="text-xs font-semibold">
@@ -1165,7 +1167,7 @@ function StepCard({
           </p>
         </div>
       ) : null}
-      {runError && !runResult ? (
+      {FEATURE_LIVE_RUN && runError && !runResult ? (
         <p className="mt-3 text-xs text-destructive">{runError}</p>
       ) : null}
 

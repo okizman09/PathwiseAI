@@ -35,7 +35,14 @@ NON_TEXT_RUN_JOBS = frozenset(
 
 
 def is_text_runnable(tool: Any) -> bool:
-    """True when a catalog tool (DB row) can back a live text run."""
+    """True when a catalog tool (DB row) can back a live text run.
+
+    Single choke point for can_run: both the generation path and the GET
+    path compute can_run through this function, so gating here hides the
+    Run affordance everywhere when FEATURE_LIVE_RUN is off.
+    """
+    if not settings.FEATURE_LIVE_RUN:
+        return False
     if tool is None:
         return False
     if getattr(tool, "status", None) != "verified":

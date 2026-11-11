@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_user, require_beta_access, require_verified_user
+from app.core.config import settings
 from app.core.errors import UserFacingError, log_internal_error
 from app.core.rate_limit import rate_limit_dependency
 from app.core.signing import create_click_ref
@@ -370,6 +371,8 @@ async def step_run(
     db: Session = Depends(get_db),
     current_user: Profile = Depends(require_verified_user),
 ):
+    if not settings.FEATURE_LIVE_RUN:
+        raise HTTPException(status_code=404, detail="Not found")
     workflow, db_step = get_workflow_and_step(db, current_user, id, step_id)
 
     try:

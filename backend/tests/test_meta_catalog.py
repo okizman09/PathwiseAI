@@ -5,6 +5,7 @@ importer, and the public tools endpoint filters by ecosystem.
 """
 import pytest
 
+from app.core.config import settings
 from app.db import SessionLocal
 from app.models.tool import Tool
 from app.schemas.card_import import CardImport
@@ -74,10 +75,11 @@ async def test_importer_round_trips_meta_fields_on_create_and_update(client):
 
 
 @pytest.mark.asyncio
-async def test_ecosystem_filter_returns_only_meta_tools(client):
+async def test_ecosystem_filter_returns_only_meta_tools(client, monkeypatch):
     """GET /api/v1/tools?ecosystem=meta returns only Meta tools, with new fields."""
     from app.services.plan import build_short_card
 
+    monkeypatch.setattr(settings, "FEATURE_META_SHOWCASE", True)
     db = SessionLocal()
     meta_name = "MetaCat Filter Meta"
     plain_name = "MetaCat Filter Plain"

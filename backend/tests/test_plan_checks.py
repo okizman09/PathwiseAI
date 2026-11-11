@@ -5,6 +5,7 @@ unit cases, so CI stays offline.
 """
 import pytest
 
+from app.core.config import settings
 from app.db import SessionLocal
 from app.models.profile import Profile
 from app.models.tool import Tool
@@ -238,6 +239,8 @@ TEXT_MODEL_ID = "t7-text-1"
 async def test_fresh_plan_marks_runnable_prompt_step_can_run(seeded_db, monkeypatch):
     """Regression: the POST /workflows response must set can_run at generation
     time (it never re-hydrates), or the Run button only appears after refresh."""
+    monkeypatch.setattr(settings, "FEATURE_LIVE_RUN", True)
+    monkeypatch.setattr(settings, "FEATURE_META_SHOWCASE", True)
     seeded_db.add(Tool(
         name=TEXT_TOOL_NAME, url="https://t7-text.example.com", status="verified",
         link_status="unknown", domain="audio", category="audio",

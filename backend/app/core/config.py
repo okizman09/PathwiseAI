@@ -81,6 +81,12 @@ class Settings(BaseSettings):
     RUN_MAX_OUTPUT_TOKENS: int = 8192
     RUN_TIMEOUT_SECONDS: int = 60
 
+    # ── Feature flags (F0) ───────────────────────────────────────────────
+    # Both default OFF: live Run and the Meta showcase stay in the codebase
+    # but are hidden until explicitly enabled.
+    FEATURE_LIVE_RUN: bool = False
+    FEATURE_META_SHOWCASE: bool = False
+
     # ─────────────────────────────────────────────────────────────────────
 
     @property

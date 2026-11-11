@@ -42,6 +42,7 @@ import {
 } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase";
+import { FEATURE_META_SHOWCASE } from "@/lib/features";
 
 export const Route = createFileRoute("/tools")({
   head: () => ({
@@ -66,7 +67,7 @@ export const Route = createFileRoute("/tools")({
 const FALLBACK_DOMAINS = [
   { slug: "all", label: "All Domains" },
   { slug: "models", label: "Models" },
-  { slug: "meta", label: "Meta" },
+  ...(FEATURE_META_SHOWCASE ? [{ slug: "meta", label: "Meta" }] : []),
   { slug: "software", label: "Software engineering" },
   { slug: "builders", label: "No-code & app builders" },
   { slug: "design", label: "Design & visual arts" },
@@ -208,7 +209,7 @@ function ToolsPage() {
   const [onlyHasFreeTier, setOnlyHasFreeTier] = useState(false);
   const [onlyNoCreditCard, setOnlyNoCreditCard] = useState(false);
   const [onlyCommercialFree, setOnlyCommercialFree] = useState(false);
-  const onlyMeta = selectedDomain === "meta";
+  const onlyMeta = FEATURE_META_SHOWCASE && selectedDomain === "meta";
 
   // Selected tool modal
   const [activeModalTool, setActiveModalTool] = useState<ToolResponse | null>(null);
@@ -251,7 +252,7 @@ function ToolsPage() {
       return [
         { slug: "all", label: "All Domains" },
         { slug: "models", label: "Models" },
-        { slug: "meta", label: "Meta" },
+        ...(FEATURE_META_SHOWCASE ? [{ slug: "meta", label: "Meta" }] : []),
         ...taxonomy.domains.map((d) => ({ slug: d.slug, label: d.label })),
       ];
     }
@@ -533,19 +534,21 @@ function ToolsPage() {
 
           {/* Quick Toggles */}
           <div className="flex flex-wrap items-center gap-4 sm:gap-6 border-t md:border-t-0 pt-3 md:pt-0 border-border/60">
-            <button
-              type="button"
-              onClick={() => handleDomainSelect(onlyMeta ? "all" : "meta")}
-              aria-pressed={onlyMeta}
-              className={cn(
-                "text-xs px-3 py-1.5 rounded-full transition-colors border",
-                onlyMeta
-                  ? "bg-primary text-primary-foreground border-primary font-semibold"
-                  : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground",
-              )}
-            >
-              Meta only
-            </button>
+            {FEATURE_META_SHOWCASE && (
+              <button
+                type="button"
+                onClick={() => handleDomainSelect(onlyMeta ? "all" : "meta")}
+                aria-pressed={onlyMeta}
+                className={cn(
+                  "text-xs px-3 py-1.5 rounded-full transition-colors border",
+                  onlyMeta
+                    ? "bg-primary text-primary-foreground border-primary font-semibold"
+                    : "bg-background text-muted-foreground border-border hover:border-primary/50 hover:text-foreground",
+                )}
+              >
+                Meta only
+              </button>
+            )}
             <label className="flex items-center gap-2 cursor-pointer text-xs font-medium text-foreground select-none">
               <Switch
                 checked={onlyHasFreeTier}
@@ -744,12 +747,12 @@ function ToolCatalogCard({
                 <span>Used in {tool.used_in_workflows_count} workflows</span>
               </Badge>
             )}
-            {tool.ecosystem === "meta" && (
+            {FEATURE_META_SHOWCASE && tool.ecosystem === "meta" && (
               <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] font-semibold py-0.5">
                 <span>Meta</span>
               </Badge>
             )}
-            {tool.ecosystem === "meta" && formatKindLabel(tool.kind) && (
+            {FEATURE_META_SHOWCASE && tool.ecosystem === "meta" && formatKindLabel(tool.kind) && (
               <Badge
                 variant="outline"
                 className="text-[10px] font-medium text-muted-foreground border-border gap-1 py-0.5"
@@ -985,12 +988,12 @@ function ToolDetailsDialog({
                       <span>{verifiedBadgeText}</span>
                     </Badge>
                   )}
-                  {tool.ecosystem === "meta" && (
+                  {FEATURE_META_SHOWCASE && tool.ecosystem === "meta" && (
                     <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] font-semibold">
                       <span>Meta</span>
                     </Badge>
                   )}
-                  {tool.ecosystem === "meta" && formatKindLabel(tool.kind) && (
+                  {FEATURE_META_SHOWCASE && tool.ecosystem === "meta" && formatKindLabel(tool.kind) && (
                     <Badge
                       variant="outline"
                       className="text-[10px] font-medium text-muted-foreground border-border gap-1"
@@ -1063,7 +1066,7 @@ function ToolDetailsDialog({
           )}
 
           {/* Meta model details */}
-          {tool.ecosystem === "meta" && (
+          {FEATURE_META_SHOWCASE && tool.ecosystem === "meta" && (
             <div className="rounded-2xl border border-sky-500/25 bg-sky-500/5 p-5 space-y-4">
               <div className="flex items-center justify-between flex-wrap gap-2">
                 <div className="flex items-center gap-2 text-sky-700 dark:text-sky-300 font-bold text-sm">

@@ -74,6 +74,7 @@ def mock_run_setup(client, monkeypatch):
     db.close()
 
     monkeypatch.setattr(settings, "RUN_STEPS_PER_DAY", 10)
+    monkeypatch.setattr(settings, "FEATURE_LIVE_RUN", True)
     settings.SUPABASE_JWT_SECRET = "testsecretthatisatleast32characterslong"
     token_a = generate_token(subject="user_A", email="a@test.com", email_verified=True)
     token_b = generate_token(subject="user_B", email="b@test.com", email_verified=True)

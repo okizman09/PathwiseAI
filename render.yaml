@@ -53,3 +53,7 @@ services:
         value: "false"
       - key: BETA_ALLOWED_EMAILS
         sync: false
+      - key: FEATURE_LIVE_RUN
+        value: "false"
+      - key: FEATURE_META_SHOWCASE
+        value: "false"

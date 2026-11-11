@@ -44,6 +44,12 @@ def _make_brief():
     )
 
 
+@pytest.fixture(autouse=True)
+def _enable_meta_showcase(monkeypatch):
+    """These tests cover Meta planner behavior, which needs the showcase on."""
+    monkeypatch.setattr("app.core.config.settings.FEATURE_META_SHOWCASE", True)
+
+
 @pytest.fixture
 def seeded_db(client):
     """DB with one Meta and one plain verified tool plus a user; cleans up after."""

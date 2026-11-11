@@ -18,6 +18,7 @@ import { cn } from "@/lib/utils";
 import { BrandMark } from "@/components/BrandMark";
 import { ToolsDirectoryModal } from "@/components/ToolsDirectoryModal";
 import { supabase } from "@/lib/supabase";
+import { FEATURE_LIVE_RUN, FEATURE_META_SHOWCASE } from "@/lib/features";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -325,7 +326,7 @@ function WorkflowPreview({ compact = false }: { compact?: boolean }) {
                 <Layers3 className="size-4 text-primary" /> Recommended tool
               </div>
               <p className="mt-3 text-sm font-semibold">{current.tool}</p>
-              {current.model && (
+              {FEATURE_META_SHOWCASE && current.model && (
                 <p className="mt-1 font-mono text-[11px] text-muted-foreground">
                   {current.model}
                 </p>
@@ -352,7 +353,7 @@ function WorkflowPreview({ compact = false }: { compact?: boolean }) {
                   {current.prompt}
                 </p>
               )}
-              {current.runnable ? (
+              {FEATURE_LIVE_RUN && current.runnable ? (
                 <p className="mt-3 flex items-center gap-1.5 text-xs font-medium text-muted-foreground">
                   <Play className="size-3.5 text-primary" /> Runs live in the
                   workspace
@@ -462,8 +463,10 @@ function Index() {
             </div>
             <p className="max-w-md text-sm leading-6 text-muted-foreground md:justify-self-end">
               This example turns spoken restaurant notes into structured,
-              trackable orders — prompts you can run live, plus setup steps, in
-              one view.
+              trackable orders — {FEATURE_LIVE_RUN
+                ? "prompts you can run live, plus setup steps,"
+                : "paste-ready prompts plus setup steps,"}{" "}
+              in one view.
             </p>
           </div>
           <div className="mt-12 md:mt-16">

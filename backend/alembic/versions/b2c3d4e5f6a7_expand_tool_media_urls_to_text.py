@@ -19,34 +19,33 @@ depends_on: Union[str, Sequence[str], None] = None
 
 def upgrade() -> None:
     # Expand logo_url and og_image_url to TEXT to support data URIs and long asset URLs
-    op.alter_column(
-        'tools',
-        'logo_url',
-        existing_type=sa.String(length=1024),
-        type_=sa.Text(),
-        existing_nullable=True,
-    )
-    op.alter_column(
-        'tools',
-        'og_image_url',
-        existing_type=sa.String(length=1024),
-        type_=sa.Text(),
-        existing_nullable=True,
-    )
+    # batch_alter_table keeps this working on SQLite (local dev) as well as Postgres.
+    with op.batch_alter_table('tools') as batch_op:
+        batch_op.alter_column(
+            'logo_url',
+            existing_type=sa.String(length=1024),
+            type_=sa.Text(),
+            existing_nullable=True,
+        )
+        batch_op.alter_column(
+            'og_image_url',
+            existing_type=sa.String(length=1024),
+            type_=sa.Text(),
+            existing_nullable=True,
+        )
 
 
 def downgrade() -> None:
-    op.alter_column(
-        'tools',
-        'og_image_url',
-        existing_type=sa.Text(),
-        type_=sa.String(length=1024),
-        existing_nullable=True,
-    )
-    op.alter_column(
-        'tools',
-        'logo_url',
-        existing_type=sa.Text(),
-        type_=sa.String(length=1024),
-        existing_nullable=True,
-    )
+    with op.batch_alter_table('tools') as batch_op:
+        batch_op.alter_column(
+            'og_image_url',
+            existing_type=sa.Text(),
+            type_=sa.String(length=1024),
+            existing_nullable=True,
+        )
+        batch_op.alter_column(
+            'logo_url',
+            existing_type=sa.Text(),
+            type_=sa.String(length=1024),
+            existing_nullable=True,
+        )

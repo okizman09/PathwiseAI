@@ -22,11 +22,12 @@ import {
 } from "@/components/ui/dialog";
 import { api, getApiBaseUrl, ToolResponse, TaxonomyPayload } from "@/lib/api";
 import { cn } from "@/lib/utils";
+import { FEATURE_META_SHOWCASE } from "@/lib/features";
 
 const FALLBACK_DOMAINS = [
   { id: "all", label: "All Domains" },
   { id: "models", label: "Models" },
-  { id: "meta", label: "Meta" },
+  ...(FEATURE_META_SHOWCASE ? [{ id: "meta", label: "Meta" }] : []),
   { id: "software", label: "Software" },
   { id: "builders", label: "Builders" },
   { id: "design", label: "Design" },
@@ -73,7 +74,7 @@ export function ToolsDirectoryModal() {
       return [
         { id: "all", label: "All Domains" },
         { id: "models", label: "Models" },
-        { id: "meta", label: "Meta" },
+        ...(FEATURE_META_SHOWCASE ? [{ id: "meta", label: "Meta" }] : []),
         ...taxonomy.domains.map((d) => ({ id: d.slug, label: d.label })),
       ];
     }
@@ -226,7 +227,7 @@ export function ToolsDirectoryModal() {
                               <span>{verifiedBadge}</span>
                             </Badge>
                           )}
-                          {tool.ecosystem === "meta" && (
+                          {FEATURE_META_SHOWCASE && tool.ecosystem === "meta" && (
                             <Badge className="bg-sky-500/15 text-sky-700 dark:text-sky-300 border-sky-500/30 gap-1 text-[10px] font-semibold py-0.5">
                               <span>Meta</span>
                             </Badge>

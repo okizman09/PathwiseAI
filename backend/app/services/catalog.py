@@ -5,8 +5,10 @@ from datetime import UTC, datetime, timedelta
 from typing import Any
 from urllib.parse import urlparse
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.models.tool import Tool
 from app.schemas.card_import import CardImport
 from app.schemas.tool import (
@@ -273,11 +275,21 @@ def list_public_tools(
     domain: str | None = None,
     ecosystem: str | None = None,
 ) -> list[Tool]:
-    """List only verified tools for public catalog, sorted picks first then name."""
+    """List only verified tools for public catalog, sorted picks first then name.
+
+    When FEATURE_META_SHOWCASE is off, Meta-ecosystem tools are hidden here.
+    This is the single choke point: the public directory, the ecosystem
+    filter, and the planner (which shortlists from this list) all go through it.
+    """
+    if not settings.FEATURE_META_SHOWCASE and ecosystem == "meta":
+        return []
     query = db.query(Tool).filter(
         Tool.status == ToolStatus.VERIFIED.value,
         Tool.link_status != "dead",
     )
+    if not settings.FEATURE_META_SHOWCASE:
+        # or_ keeps NULL-ecosystem tools: plain != would drop them in SQL.
+        query = query.filter(or_(Tool.ecosystem.is_(None), Tool.ecosystem != "meta"))
     if domain:
         query = query.filter((Tool.domain == domain) | (Tool.category == domain))
     elif category:
