@@ -14,6 +14,7 @@ from app.db import get_db
 from app.models.event import Event
 from app.models.profile import Profile
 from app.models.step_feedback import StepFeedback
+from app.models.step_run import StepRun as DBStepRun
 from app.models.workflow import Workflow as DBWorkflow
 from app.models.workflow import WorkflowStep as DBWorkflowStep
 from app.schemas.brief import ProductBrief
@@ -304,6 +305,19 @@ def delete_workflow(
     )
     if not workflow:
         raise HTTPException(status_code=404, detail="Workflow not found")
+
+    # step_runs.step_id has no ON DELETE CASCADE, so Postgres rejects the
+    # workflow delete while runs reference its steps. Remove them first.
+    step_ids = [
+        row[0]
+        for row in db.query(DBWorkflowStep.id)
+        .filter(DBWorkflowStep.workflow_id == id)
+        .all()
+    ]
+    if step_ids:
+        db.query(DBStepRun).filter(DBStepRun.step_id.in_(step_ids)).delete(
+            synchronize_session=False
+        )
 
     db.delete(workflow)
     db.commit()

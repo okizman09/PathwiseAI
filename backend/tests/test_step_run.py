@@ -232,3 +232,54 @@ async def test_empty_response_persists_failed_and_refunds(client, mock_run_setup
     monkeypatch.setattr("app.services.run.generate_text", _fake_ok({}))
     retry = client.post("/api/v1/workflows/11/steps/step-1/run", json={}, headers=headers)
     assert retry.status_code == 200
+
+
+@pytest.mark.asyncio
+async def test_delete_workflow_removes_its_step_runs(client, mock_run_setup):
+    """Deleting a workflow must remove its step runs first.
+
+    step_runs.step_id has no ON DELETE CASCADE, so on Postgres the delete
+    fails with a ForeignKeyViolation unless runs are removed explicitly.
+    """
+    db = SessionLocal()
+    db.merge(Workflow(id=99, user_id="user_A", title="Delete me", brief={}))
+    db.merge(
+        WorkflowStep(
+            id=999,
+            workflow_id=99,
+            position=1,
+            job="draft",
+            why_step="r",
+            primary_tool_id=11,
+            alternative_tool_ids=[],
+            job_tags=[],
+            input_types=[],
+            output_types=[],
+            prompt="Summarize: hello",
+            content_type="prompt",
+        )
+    )
+    db.commit()
+    db.add(
+        StepRun(
+            step_id=999,
+            user_id="user_A",
+            model_id="muse-spark-1.3",
+            prompt="Summarize: hello",
+            output_text="hi",
+            status="completed",
+        )
+    )
+    db.commit()
+    db.close()
+
+    headers = {"Authorization": f"Bearer {mock_run_setup['token_a']}"}
+    res = client.delete("/api/v1/workflows/99", headers=headers)
+    assert res.status_code == 204
+
+    db = SessionLocal()
+    try:
+        assert db.query(Workflow).filter_by(id=99).count() == 0
+        assert db.query(StepRun).filter_by(step_id=999).count() == 0
+    finally:
+        db.close()
