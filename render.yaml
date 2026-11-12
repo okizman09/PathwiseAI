@@ -57,3 +57,7 @@ services:
         value: "false"
       - key: FEATURE_META_SHOWCASE
         value: "false"
+      - key: RESEND_API_KEY
+        sync: false
+      - key: FEEDBACK_NOTIFY_TO
+        sync: false

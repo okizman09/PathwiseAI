@@ -55,7 +55,7 @@ Backend (`backend/.env`, see `backend/.env.example`). Never commit real values.
 | `SUPABASE_SERVICE_ROLE_KEY` | Server-only: account deletion, logo uploads |
 | `WORKFLOWS_PER_DAY` / `INTERVIEW_TURNS_PER_DAY` / `STEP_ACTIONS_PER_DAY` / `RUN_STEPS_PER_DAY` | Daily quotas (`2` / `25` / `20` / `10`) |
 | `RUN_MAX_PROMPT_CHARS` / `RUN_MAX_OUTPUT_TOKENS` / `RUN_TIMEOUT_SECONDS` | Live-run caps (`6000` / `8192` / `60`) |
-| `SMTP_HOST` / `SMTP_PORT` / `SMTP_USERNAME` / `SMTP_PASSWORD` / `FEEDBACK_NOTIFY_TO` | Email notification for landing-page feedback (Gmail SMTP + App Password; empty disables) |
+| `RESEND_API_KEY` / `FEEDBACK_NOTIFY_TO` / `FEEDBACK_NOTIFY_FROM` | Email notification for landing-page feedback (Resend HTTP API; empty disables) |
 
 Frontend (`frontend/.env`, see `frontend/.env.example`). `VITE_*` values ship in the client bundle and are public by design: `VITE_API_URL`, `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`.
 

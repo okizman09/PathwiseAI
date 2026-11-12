@@ -115,61 +115,50 @@ def test_admin_site_feedback_list(client: TestClient):
 
 
 def test_submit_sends_email_when_configured(client: TestClient, monkeypatch):
-    import smtplib
+    import httpx
 
     from app.core.config import settings
 
-    monkeypatch.setattr(settings, "SMTP_USERNAME", "sender@example.com")
-    monkeypatch.setattr(settings, "SMTP_PASSWORD", "secret")
+    monkeypatch.setattr(settings, "RESEND_API_KEY", "re_test_key")
     monkeypatch.setattr(settings, "FEEDBACK_NOTIFY_TO", "owner@example.com")
 
-    sent = []
+    calls = []
 
-    class FakeSMTP:
-        def __init__(self, *args, **kwargs):
+    class FakeResponse:
+        def raise_for_status(self):
             pass
 
-        def __enter__(self):
-            return self
+    def fake_post(url, headers=None, json=None, timeout=None):
+        calls.append({"url": url, "headers": headers, "json": json})
+        return FakeResponse()
 
-        def __exit__(self, *args):
-            return False
-
-        def starttls(self):
-            pass
-
-        def login(self, username, password):
-            pass
-
-        def send_message(self, message):
-            sent.append(message)
-
-    monkeypatch.setattr(smtplib, "SMTP", FakeSMTP)
+    monkeypatch.setattr(httpx, "post", fake_post)
     res = client.post(
         "/api/v1/feedback/site",
         json={"message": "Email me", "contact": "visitor@example.com", "page": "/"},
     )
     assert res.status_code == 201
-    assert len(sent) == 1
-    assert sent[0]["To"] == "owner@example.com"
-    assert sent[0]["Reply-To"] == "visitor@example.com"
-    assert "New site feedback" in sent[0]["Subject"]
-    assert "Email me" in sent[0].get_content()
+    assert len(calls) == 1
+    assert calls[0]["url"] == "https://api.resend.com/emails"
+    assert calls[0]["headers"] == {"Authorization": "Bearer re_test_key"}
+    assert calls[0]["json"]["to"] == ["owner@example.com"]
+    assert calls[0]["json"]["reply_to"] == "visitor@example.com"
+    assert "New site feedback" in calls[0]["json"]["subject"]
+    assert "Email me" in calls[0]["json"]["text"]
 
 
 def test_submit_skips_email_when_unconfigured(client: TestClient, monkeypatch):
-    import smtplib
+    import httpx
 
     from app.core.config import settings
 
-    monkeypatch.setattr(settings, "SMTP_USERNAME", "")
-    monkeypatch.setattr(settings, "SMTP_PASSWORD", "")
+    monkeypatch.setattr(settings, "RESEND_API_KEY", "")
     monkeypatch.setattr(settings, "FEEDBACK_NOTIFY_TO", "")
 
     def _boom(*args, **kwargs):
-        raise AssertionError("SMTP must not be used when unconfigured")
+        raise AssertionError("Email API must not be called when unconfigured")
 
-    monkeypatch.setattr(smtplib, "SMTP", _boom)
+    monkeypatch.setattr(httpx, "post", _boom)
     res = client.post("/api/v1/feedback/site", json={"message": "No email"})
     assert res.status_code == 201
 

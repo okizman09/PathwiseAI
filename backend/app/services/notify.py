@@ -1,18 +1,18 @@
-"""Transactional email notifications (stdlib SMTP; Gmail-compatible)."""
+"""Transactional email notifications (Resend HTTP API)."""
 
 import logging
-import smtplib
-from email.message import EmailMessage
+
+import httpx
 
 from app.core.config import settings
 
 log = logging.getLogger("pathwise.notify")
 
+RESEND_API_URL = "https://api.resend.com/emails"
+
 
 def notifications_configured() -> bool:
-    return bool(
-        settings.SMTP_USERNAME and settings.SMTP_PASSWORD and settings.FEEDBACK_NOTIFY_TO
-    )
+    return bool(settings.RESEND_API_KEY and settings.FEEDBACK_NOTIFY_TO)
 
 
 def send_site_feedback_email(
@@ -22,14 +22,11 @@ def send_site_feedback_email(
     if not notifications_configured():
         return False
     try:
-        msg = EmailMessage()
-        msg["Subject"] = f"[Pathwise] New site feedback #{feedback_id}"
-        msg["From"] = settings.SMTP_USERNAME
-        msg["To"] = settings.FEEDBACK_NOTIFY_TO
-        if contact:
-            msg["Reply-To"] = contact
-        msg.set_content(
-            "\n".join(
+        payload: dict[str, object] = {
+            "from": settings.FEEDBACK_NOTIFY_FROM,
+            "to": [settings.FEEDBACK_NOTIFY_TO],
+            "subject": f"[Pathwise] New site feedback #{feedback_id}",
+            "text": "\n".join(
                 [
                     message,
                     "",
@@ -37,12 +34,17 @@ def send_site_feedback_email(
                     f"Contact: {contact or '-'}",
                     f"Feedback ID: {feedback_id}",
                 ]
-            )
+            ),
+        }
+        if contact:
+            payload["reply_to"] = contact
+        resp = httpx.post(
+            RESEND_API_URL,
+            headers={"Authorization": f"Bearer {settings.RESEND_API_KEY}"},
+            json=payload,
+            timeout=20,
         )
-        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT, timeout=20) as client:
-            client.starttls()
-            client.login(settings.SMTP_USERNAME, settings.SMTP_PASSWORD)
-            client.send_message(msg)
+        resp.raise_for_status()
         return True
     except Exception:
         log.exception("site-feedback notification failed")

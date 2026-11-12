@@ -84,15 +84,14 @@ class Settings(BaseSettings):
     SENTRY_DSN: str = ""
     CRON_SECRET: str = ""
 
-    # ── Email notifications (stdlib SMTP; Gmail-compatible) ──────────────
-    # Fill SMTP_USERNAME + SMTP_PASSWORD + FEEDBACK_NOTIFY_TO to receive an
-    # email for each site-feedback submit. For Gmail, SMTP_PASSWORD is a
-    # Google App Password, not the account password. Empty = disabled.
-    SMTP_HOST: str = "smtp.gmail.com"
-    SMTP_PORT: int = 587
-    SMTP_USERNAME: str = ""
-    SMTP_PASSWORD: str = ""
+    # ── Email notifications (Resend HTTP API) ────────────────────────────
+    # Fill RESEND_API_KEY + FEEDBACK_NOTIFY_TO to receive an email for each
+    # site-feedback submit. Sign up with your own Gmail at https://resend.com
+    # and the default onboarding sender works with no domain setup.
+    # Empty = disabled. (Direct SMTP is blocked on Render, hence HTTP API.)
+    RESEND_API_KEY: str = ""
     FEEDBACK_NOTIFY_TO: str = ""
+    FEEDBACK_NOTIFY_FROM: str = "Pathwise <onboarding@resend.dev>"
     # Number of reverse proxies in front of the app that append to X-Forwarded-For (Render = 1).
     # 0 = ignore X-Forwarded-For and use the direct peer address.
     TRUSTED_PROXY_COUNT: int = 1
