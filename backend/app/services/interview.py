@@ -9,6 +9,46 @@ from app.schemas.brief import (
 )
 from app.services.llm import generate_structured
 
+# Options that only restate the custom-answer text box (which the UI always shows
+# next to the chips). Matched case-insensitively after normalizing whitespace.
+_CUSTOM_OPTION_EXACT = {"other", "others", "custom", "none of the above"}
+_CUSTOM_OPTION_SUBSTRINGS = (
+    "type my own",
+    "type your own",
+    "type a custom",
+    "type your custom",
+    "write my own",
+    "write your own",
+    "enter my own",
+    "enter your own",
+    "i'll type",
+    "i will type",
+    "custom answer",
+    "custom name",
+)
+
+
+def _normalize_option(option: str) -> str:
+    return " ".join(option.replace("’", "'").lower().split())
+
+
+def sanitize_options(options: list[str]) -> list[str]:
+    """Drop chip options that duplicate the custom-answer text box.
+
+    Keeps the original list if everything matches, so a question never ends
+    up with zero chips.
+    """
+    kept = [
+        option
+        for option in options
+        if _normalize_option(option) not in _CUSTOM_OPTION_EXACT
+        and not any(
+            fragment in _normalize_option(option)
+            for fragment in _CUSTOM_OPTION_SUBSTRINGS
+        )
+    ]
+    return kept or list(options)
+
 
 class InterviewLLMDecision(BaseModel):
     is_ready: bool = Field(
@@ -53,7 +93,7 @@ def build_interview_instruction(force_ready: bool) -> str:
         "4. PRODUCT NAME: If the goal doesn't already name the product, project, business, or brand being created, and the deliverable is something with a name (app, site, product, business, newsletter, brand), ask for its name early. Store it verbatim in brief.product_name. If the user declines or has no name, leave product_name null. NEVER invent a name.\n"
         "5. 0-5 QUESTION RULE: If the user's initial goal answers enough of these to proceed, skip redundant questions and return is_ready=True immediately. Maximum 5 total questions.\n"
         "6. Ask at most ONE question per turn. Keep questions concise and focused.\n"
-        "7. Provide 3-4 quick-select chip options with each question.\n"
+        "7. Provide 3-4 quick-select chip options with each question. Every option must be a concrete answer the user could pick as-is. NEVER include meta-options such as 'Other', 'Custom', or 'I'll type my own' — the UI already shows a text box for custom answers.\n"
         "8. NEVER invent features. Use only what the user states or reasonable default assumptions based on the context.\n"
         + (
             "9. IMPORTANT: 5 questions have already been completed. You MUST set is_ready=True and produce the final Product Brief now."
@@ -101,7 +141,7 @@ async def conduct_interview(
         return InterviewQuestionResponse(
             type="question",
             question=decision.question,
-            options=decision.options or [],
+            options=sanitize_options(decision.options or []),
             allow_custom_text=True,
         )
 

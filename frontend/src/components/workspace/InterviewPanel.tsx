@@ -79,27 +79,35 @@ export function InterviewPanel({
           </div>
 
           {question.allow_custom_text ? (
-            <form
-              className="mt-4 flex gap-2"
-              onSubmit={(e) => {
-                e.preventDefault();
-                if (custom.trim())
-                  onAnswer([
-                    ...answers,
-                    { question: question.question, answer: custom.trim() },
-                  ]);
-              }}
-            >
-              <Input
-                value={custom}
-                onChange={(e) => onCustomChange(e.target.value)}
-                placeholder="Or write your own specific answer..."
-                className="bg-background"
-              />
-              <Button type="submit" disabled={!custom.trim() || busy !== null}>
-                Send
-              </Button>
-            </form>
+            <div className="mt-4">
+              <p className="mb-2 text-xs text-muted-foreground">
+                Or write your own specific answer:
+              </p>
+              <form
+                className="flex gap-2"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  if (custom.trim())
+                    onAnswer([
+                      ...answers,
+                      { question: question.question, answer: custom.trim() },
+                    ]);
+                }}
+              >
+                <Input
+                  value={custom}
+                  onChange={(e) => onCustomChange(e.target.value)}
+                  placeholder="Type your answer..."
+                  className="bg-background"
+                />
+                <Button
+                  type="submit"
+                  disabled={!custom.trim() || busy !== null}
+                >
+                  Send
+                </Button>
+              </form>
+            </div>
           ) : null}
 
           {busy === "interview" ? (

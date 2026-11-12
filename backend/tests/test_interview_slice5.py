@@ -53,6 +53,63 @@ async def test_interview_strips_control_chars_and_uses_quota(client, monkeypatch
     assert last_goal[0] == "Build an appwith AI"
 
 
+def test_sanitize_options_drops_custom_type_options():
+    from app.services.interview import sanitize_options
+
+    options = [
+        "No name yet",
+        "I'll type a custom name",
+        "I’ll type my own",
+        "or write your own",
+        "Skip for now",
+        "Other",
+        "Custom",
+    ]
+    assert sanitize_options(options) == ["No name yet", "Skip for now"]
+
+
+def test_sanitize_options_keeps_concrete_options_mentioning_custom():
+    from app.services.interview import sanitize_options
+
+    assert sanitize_options(["Custom domain", "Subdomain"]) == [
+        "Custom domain",
+        "Subdomain",
+    ]
+
+
+def test_sanitize_options_keeps_original_when_everything_matches():
+    from app.services.interview import sanitize_options
+
+    options = ["Other", "Custom"]
+    assert sanitize_options(options) == options
+
+
+def test_interview_instruction_bans_custom_type_options():
+    from app.services.interview import build_interview_instruction
+
+    instruction = build_interview_instruction(force_ready=False)
+    assert "already shows a text box" in instruction
+
+
+@pytest.mark.asyncio
+async def test_conduct_interview_drops_custom_type_options(monkeypatch):
+    from app.services import interview as interview_service
+    from app.services.interview import InterviewLLMDecision
+
+    async def fake_generate_structured(**kwargs):
+        return InterviewLLMDecision(
+            is_ready=False,
+            question="What is the project name?",
+            options=["No name yet", "I'll type a custom name", "Skip for now"],
+        )
+
+    monkeypatch.setattr(interview_service, "generate_structured", fake_generate_structured)
+    res = await interview_service.conduct_interview(goal="Build a thing", answers=[])
+
+    assert res.type == "question"
+    assert res.options == ["No name yet", "Skip for now"]
+
+
 @pytest.mark.asyncio
 async def test_conduct_interview_requests_low_reasoning_effort(monkeypatch):
     """Interview turns ask for low reasoning effort (latency)."""
