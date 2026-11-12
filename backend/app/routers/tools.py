@@ -2,6 +2,7 @@ from typing import Any
 
 import httpx
 from fastapi import APIRouter, Depends, File, Header, HTTPException, Query, UploadFile, status
+from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
 from app.api.deps import get_current_admin_user
@@ -90,6 +91,25 @@ async def create_admin_tool(
 async def list_admin_tool_metrics(db: Session = Depends(get_db)):
     """List per-tool usage signals and success rates (Admin only)."""
     return catalog_service.get_tool_metrics(db=db)
+
+
+@router.get(
+    "/admin/feedback/export",
+    dependencies=[Depends(get_current_admin_user)],
+)
+async def export_feedback_csv(db: Session = Depends(get_db)):
+    """Download all step feedback as CSV (Admin only)."""
+    from datetime import UTC, datetime
+
+    csv_text = catalog_service.build_feedback_csv(db=db)
+    stamp = datetime.now(UTC).strftime("%Y%m%d-%H%M")
+    return Response(
+        content=csv_text,
+        media_type="text/csv",
+        headers={
+            "Content-Disposition": f'attachment; filename="feedback-export-{stamp}.csv"'
+        },
+    )
 
 
 @router.get(

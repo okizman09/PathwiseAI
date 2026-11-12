@@ -157,6 +157,15 @@ export interface ToolMetricResponse {
   used_in_workflows: number;
 }
 
+export interface AdminToolRecheckDiff {
+  current: unknown;
+  new: unknown;
+}
+
+export interface AdminToolRecheckResponse {
+  diff?: Record<string, AdminToolRecheckDiff>;
+}
+
 export interface CardImportResult {
   name: string;
   status: "created" | "updated" | "rejected" | "error";
@@ -205,7 +214,8 @@ export interface InterviewReadyResponse {
   brief: ProductBrief;
 }
 
-export type InterviewResponse = InterviewQuestionResponse | InterviewReadyResponse;
+export type InterviewResponse =
+  InterviewQuestionResponse | InterviewReadyResponse;
 
 export interface CostSummary {
   mode: "free" | "may_cost";
@@ -328,14 +338,18 @@ export interface DailyLimitDetails {
 export class DailyLimitError extends Error {
   details: DailyLimitDetails;
   constructor(details: DailyLimitDetails) {
-    super(`Daily limit reached for ${details.kind}. Resets at ${details.resets_at}`);
+    super(
+      `Daily limit reached for ${details.kind}. Resets at ${details.resets_at}`,
+    );
     this.name = "DailyLimitError";
     this.details = details;
   }
 }
 
 export class NotInBetaError extends Error {
-  constructor(message: string = "Pathwise is currently in invite-only private beta.") {
+  constructor(
+    message: string = "Pathwise is currently in invite-only private beta.",
+  ) {
     super(message);
     this.name = "NotInBetaError";
   }
@@ -348,7 +362,8 @@ export interface ToolListFilter {
 }
 
 export const getApiBaseUrl = (): string => {
-  const envUrl = (import.meta as any).env?.VITE_API_URL;
+  const envUrl = (import.meta as unknown as { env?: Record<string, unknown> })
+    .env?.["VITE_API_URL"];
   if (envUrl && typeof envUrl === "string" && envUrl.trim().length > 0) {
     let clean = envUrl.trim().replace(/\/+$/, "");
     if (clean.endsWith("/api/v1")) {
@@ -357,10 +372,16 @@ export const getApiBaseUrl = (): string => {
     return clean;
   }
   if (typeof window !== "undefined") {
-    if (window.location.hostname !== "localhost" && window.location.hostname !== "127.0.0.1") {
+    if (
+      window.location.hostname !== "localhost" &&
+      window.location.hostname !== "127.0.0.1"
+    ) {
       return "https://pathwiseai-gxo7.onrender.com";
     }
-  } else if (typeof process !== "undefined" && process.env?.["NODE_ENV"] === "production") {
+  } else if (
+    typeof process !== "undefined" &&
+    process.env?.["NODE_ENV"] === "production"
+  ) {
     return "https://pathwiseai-gxo7.onrender.com";
   }
   return "http://localhost:8000";
@@ -378,18 +399,29 @@ async function getAccessToken(): Promise<string | null> {
   }
 }
 
-async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+async function apiFetch<T>(
+  endpoint: string,
+  options: RequestInit = {},
+): Promise<T> {
   let path = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   if (path.startsWith("/api/v1/api/v1")) {
     path = path.replace(/^\/api\/v1/, "");
   }
   const isRootRoute = path === "/health" || path.startsWith("/go");
-  const fullPath = isRootRoute ? path : (path.startsWith("/api/v1") ? path : `/api/v1${path}`);
+  const fullPath = isRootRoute
+    ? path
+    : path.startsWith("/api/v1")
+      ? path
+      : `/api/v1${path}`;
   const baseUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
   const url = `${baseUrl}${fullPath}`;
 
   const headers = new Headers(options.headers || {});
-  if (!headers.has("Content-Type") && options.body && typeof options.body === "string") {
+  if (
+    !headers.has("Content-Type") &&
+    options.body &&
+    typeof options.body === "string"
+  ) {
     headers.set("Content-Type", "application/json");
   }
   headers.set("Accept", "application/json");
@@ -415,17 +447,23 @@ async function apiFetch<T>(endpoint: string, options: RequestInit = {}): Promise
       if (errJson?.detail?.code === "daily_limit") {
         throw new DailyLimitError(errJson.detail);
       }
-      if (errJson?.code === "not_in_beta" || errJson?.detail?.code === "not_in_beta") {
+      if (
+        errJson?.code === "not_in_beta" ||
+        errJson?.detail?.code === "not_in_beta"
+      ) {
         throw new NotInBetaError(
           errJson?.message ||
             errJson?.detail?.message ||
-            "Pathwise is currently in private beta. Your account has not been granted access yet."
+            "Pathwise is currently in private beta. Your account has not been granted access yet.",
         );
       }
       if (errJson?.message) {
         errorDetail = errJson.message;
       } else if (errJson?.detail) {
-        errorDetail = typeof errJson.detail === "string" ? errJson.detail : JSON.stringify(errJson.detail);
+        errorDetail =
+          typeof errJson.detail === "string"
+            ? errJson.detail
+            : JSON.stringify(errJson.detail);
       }
     } catch (e) {
       if (e instanceof DailyLimitError) throw e;
@@ -472,13 +510,19 @@ export const api = {
    */
   async getTools(filter?: ToolListFilter | string): Promise<ToolResponse[]> {
     if (typeof filter === "string") {
-      const query = filter && filter !== "all" ? `?category=${encodeURIComponent(filter)}` : "";
+      const query =
+        filter && filter !== "all"
+          ? `?category=${encodeURIComponent(filter)}`
+          : "";
       return apiFetch<ToolResponse[]>(`/tools${query}`);
     }
     const params = new URLSearchParams();
-    if (filter?.category && filter.category !== "all") params.append("category", filter.category);
-    if (filter?.domain && filter.domain !== "all") params.append("domain", filter.domain);
-    if (filter?.ecosystem && filter.ecosystem !== "all") params.append("ecosystem", filter.ecosystem);
+    if (filter?.category && filter.category !== "all")
+      params.append("category", filter.category);
+    if (filter?.domain && filter.domain !== "all")
+      params.append("domain", filter.domain);
+    if (filter?.ecosystem && filter.ecosystem !== "all")
+      params.append("ecosystem", filter.ecosystem);
     const qs = params.toString() ? `?${params.toString()}` : "";
     return apiFetch<ToolResponse[]>(`/tools${qs}`);
   },
@@ -486,7 +530,10 @@ export const api = {
   /**
    * Interview turn: provides user goal + prior answers, returns next question or ready brief
    */
-  async submitInterview(goal: string, answers: InterviewAnswer[] = []): Promise<InterviewResponse> {
+  async submitInterview(
+    goal: string,
+    answers: InterviewAnswer[] = [],
+  ): Promise<InterviewResponse> {
     return apiFetch<InterviewResponse>("/interview", {
       method: "POST",
       body: JSON.stringify({ goal, answers }),
@@ -506,20 +553,33 @@ export const api = {
   /**
    * Obtain signed click tracking URL for a step tool
    */
-  async openLink(workflowId: number | string, stepId: string, toolId?: number): Promise<{ go_url: string }> {
-    return apiFetch<{ go_url: string }>(`/workflows/${workflowId}/steps/${stepId}/open-link`, {
-      method: "POST",
-      body: JSON.stringify(toolId ? { tool_id: toolId } : {}),
-    });
+  async openLink(
+    workflowId: number | string,
+    stepId: string,
+    toolId?: number,
+  ): Promise<{ go_url: string }> {
+    return apiFetch<{ go_url: string }>(
+      `/workflows/${workflowId}/steps/${stepId}/open-link`,
+      {
+        method: "POST",
+        body: JSON.stringify(toolId ? { tool_id: toolId } : {}),
+      },
+    );
   },
 
   /**
    * Recheck step for newly added tools
    */
-  async recheckStep(workflowId: number | string, stepId: string): Promise<StepActionResponse> {
-    return apiFetch<StepActionResponse>(`/workflows/${workflowId}/steps/${stepId}/recheck`, {
-      method: "POST",
-    });
+  async recheckStep(
+    workflowId: number | string,
+    stepId: string,
+  ): Promise<StepActionResponse> {
+    return apiFetch<StepActionResponse>(
+      `/workflows/${workflowId}/steps/${stepId}/recheck`,
+      {
+        method: "POST",
+      },
+    );
   },
 
   /**
@@ -534,10 +594,12 @@ export const api = {
     else if (action === "switch_tool") url += "/switch-tool";
     else if (action === "finished") url += "/finish";
 
-    let body: any = {};
+    let body: Record<string, unknown> = {};
     if (action === "regenerate") body = { feedback: req.payload };
-    else if (action === "switch_tool") body = { tool_id: parseInt(req.payload || "0", 10) };
-    else if (action === "finished") body = { note: req.payload || "", feedback_result: req.feedback_result };
+    else if (action === "switch_tool")
+      body = { tool_id: parseInt(req.payload || "0", 10) };
+    else if (action === "finished")
+      body = { note: req.payload || "", feedback_result: req.feedback_result };
 
     return apiFetch<StepActionResponse>(url, {
       method: "POST",
@@ -568,19 +630,24 @@ export const api = {
   async submitStepFeedback(
     workflowId: number | string,
     stepId: string,
-    data: { result: "worked" | "partly" | "didnt"; note?: string }
-  ): Promise<any> {
-    return apiFetch<any>(`/workflows/${workflowId}/steps/${stepId}/feedback`, {
-      method: "POST",
-      body: JSON.stringify(data),
-    });
+    data: { result: "worked" | "partly" | "didnt"; note?: string },
+  ): Promise<unknown> {
+    return apiFetch<unknown>(
+      `/workflows/${workflowId}/steps/${stepId}/feedback`,
+      {
+        method: "POST",
+        body: JSON.stringify(data),
+      },
+    );
   },
 
   /**
    * History: list workflows
    */
   async getWorkflows(skip = 0, limit = 50): Promise<WorkflowListResponse[]> {
-    return apiFetch<WorkflowListResponse[]>(`/workflows?skip=${skip}&limit=${limit}`);
+    return apiFetch<WorkflowListResponse[]>(
+      `/workflows?skip=${skip}&limit=${limit}`,
+    );
   },
 
   /**
@@ -612,7 +679,10 @@ export const api = {
   /**
    * Admin: List all tools
    */
-  async getAdminTools(status?: string, category?: string): Promise<ToolResponse[]> {
+  async getAdminTools(
+    status?: string,
+    category?: string,
+  ): Promise<ToolResponse[]> {
     const params = new URLSearchParams();
     if (status) params.append("status", status);
     if (category && category !== "all") params.append("category", category);
@@ -624,7 +694,10 @@ export const api = {
   /**
    * Admin: Import cards batch (Catalog v3)
    */
-  async importCards(cards: any[], expected?: string[]): Promise<CardImportResponse> {
+  async importCards(
+    cards: Record<string, unknown>[],
+    expected?: string[],
+  ): Promise<CardImportResponse> {
     return apiFetch<CardImportResponse>("/admin/tools/import-cards", {
       method: "POST",
       body: JSON.stringify({ cards, expected }),
@@ -646,7 +719,7 @@ export const api = {
    */
   async updateAdminTool(
     toolId: number,
-    toolUpdate: Partial<ToolResponse>
+    toolUpdate: Partial<ToolResponse>,
   ): Promise<ToolResponse> {
     return apiFetch<ToolResponse>(`/admin/tools/${toolId}`, {
       method: "PATCH",
@@ -673,18 +746,35 @@ export const api = {
   /**
    * Admin: Recheck tool via fresh card JSON showing diff, or automated extraction
    */
-  async recheckAdminTool(toolId: number, card?: any, apply: boolean = false): Promise<any> {
-    return apiFetch<any>(`/admin/tools/${toolId}/recheck`, {
-      method: "POST",
-      body: JSON.stringify({ card, apply }),
-    });
+  async recheckAdminTool(
+    toolId: number,
+    card?: unknown,
+    apply: boolean = false,
+  ): Promise<AdminToolRecheckResponse> {
+    return apiFetch<AdminToolRecheckResponse>(
+      `/admin/tools/${toolId}/recheck`,
+      {
+        method: "POST",
+        body: JSON.stringify({ card, apply }),
+      },
+    );
   },
 
   /**
    * Admin: Run background/manual link reachability health check
    */
-  async checkAllAdminLinks(): Promise<{ checked: number; dead: number; hidden: number; ok: number }> {
-    return apiFetch<{ checked: number; dead: number; hidden: number; ok: number }>("/admin/jobs/check-links", {
+  async checkAllAdminLinks(): Promise<{
+    checked: number;
+    dead: number;
+    hidden: number;
+    ok: number;
+  }> {
+    return apiFetch<{
+      checked: number;
+      dead: number;
+      hidden: number;
+      ok: number;
+    }>("/admin/jobs/check-links", {
       method: "POST",
     });
   },
@@ -694,6 +784,30 @@ export const api = {
    */
   async getAdminToolMetrics(): Promise<ToolMetricResponse[]> {
     return apiFetch<ToolMetricResponse[]>("/admin/tools/metrics");
+  },
+
+  /**
+   * Admin: Download all step feedback as CSV (returns blob + server filename).
+   */
+  async downloadStepFeedbackCsv(): Promise<{ blob: Blob; filename: string }> {
+    const baseUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
+    const url = `${baseUrl}/api/v1/admin/feedback/export`;
+    const headers = new Headers();
+    headers.set("Accept", "text/csv");
+    const token = await getAccessToken();
+    if (token) {
+      headers.set("Authorization", `Bearer ${token}`);
+    }
+    const response = await fetch(url, { headers });
+    if (!response.ok) {
+      throw new Error(`Export failed with status ${response.status}`);
+    }
+    const disposition = response.headers.get("Content-Disposition") || "";
+    const match = /filename="([^"]+)"/.exec(disposition);
+    return {
+      blob: await response.blob(),
+      filename: match?.[1] ?? "feedback-export.csv",
+    };
   },
 
   /**

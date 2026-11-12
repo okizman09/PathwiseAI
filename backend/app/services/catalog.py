@@ -1,3 +1,5 @@
+import csv
+import io
 import logging
 import time
 from collections.abc import Collection
@@ -267,6 +269,57 @@ def get_tool_metrics(db: Session):
         )
     metrics.sort(key=lambda m: (m.total_feedbacks, m.success_rate_percent or 0), reverse=True)
     return metrics
+
+
+FEEDBACK_EXPORT_COLUMNS = (
+    "feedback_id",
+    "created_at",
+    "result",
+    "note",
+    "tool_id",
+    "tool_name",
+    "workflow_id",
+    "workflow_title",
+    "step_id",
+    "step_job",
+    "user_id",
+)
+
+
+def build_feedback_csv(db: Session) -> str:
+    """Build the admin step-feedback CSV export (all rows, newest first)."""
+    from app.models.step_feedback import StepFeedback
+    from app.models.workflow import Workflow, WorkflowStep
+
+    rows = (
+        db.query(StepFeedback, Tool.name, Workflow.title, WorkflowStep.job)
+        .outerjoin(Tool, Tool.id == StepFeedback.tool_id)
+        .outerjoin(Workflow, Workflow.id == StepFeedback.workflow_id)
+        .outerjoin(WorkflowStep, WorkflowStep.id == StepFeedback.step_id)
+        .order_by(StepFeedback.created_at.desc(), StepFeedback.id.desc())
+        .all()
+    )
+    buf = io.StringIO(newline="")
+    writer = csv.writer(buf)
+    writer.writerow(FEEDBACK_EXPORT_COLUMNS)
+    for fb, tool_name, workflow_title, step_job in rows:
+        writer.writerow(
+            [
+                fb.id,
+                fb.created_at.isoformat() if fb.created_at else "",
+                fb.result,
+                fb.note or "",
+                fb.tool_id or "",
+                tool_name or "",
+                fb.workflow_id,
+                workflow_title or "",
+                fb.step_id,
+                step_job or "",
+                fb.user_id,
+            ]
+        )
+    # BOM so Excel opens the UTF-8 notes correctly.
+    return "\ufeff" + buf.getvalue()
 
 
 def list_public_tools(

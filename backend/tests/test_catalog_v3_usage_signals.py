@@ -300,3 +300,61 @@ def test_admin_metrics_endpoint(client: TestClient, c7_test_data):
     # success_rate = 4 / 5 * 100 = 80.0%
     assert m_b["success_rate_percent"] == 80.0
 
+
+def test_admin_feedback_export_csv(client: TestClient, c7_test_data):
+    """Admin feedback CSV export is gated and returns all rows with context."""
+    import csv
+    import io
+
+    # 1. Unauthenticated fails with 401
+    assert client.get("/api/v1/admin/feedback/export").status_code == 401
+
+    # 2. Non-admin fails with 403
+    user_token = generate_token(subject="c7-user-1", email="c7user@example.com")
+    res_user = client.get(
+        "/api/v1/admin/feedback/export",
+        headers={"Authorization": f"Bearer {user_token}"},
+    )
+    assert res_user.status_code == 403
+
+    # 3. Admin succeeds with a CSV attachment
+    admin_token = generate_token(subject="c7-admin-1", email="c7admin@example.com")
+    res = client.get(
+        "/api/v1/admin/feedback/export",
+        headers={"Authorization": f"Bearer {admin_token}"},
+    )
+    assert res.status_code == 200
+    assert res.headers["content-type"].startswith("text/csv")
+    assert "attachment" in res.headers["content-disposition"]
+    assert "feedback-export-" in res.headers["content-disposition"]
+
+    rows = list(csv.DictReader(io.StringIO(res.text.lstrip("\ufeff"))))
+    assert len(rows) == 17
+    assert list(rows[0].keys()) == [
+        "feedback_id",
+        "created_at",
+        "result",
+        "note",
+        "tool_id",
+        "tool_name",
+        "workflow_id",
+        "workflow_title",
+        "step_id",
+        "step_job",
+        "user_id",
+    ]
+    by_result: dict[str, int] = {}
+    for row in rows:
+        by_result[row["result"]] = by_result.get(row["result"], 0) + 1
+    assert by_result == {"worked": 14, "partly": 2, "didnt": 1}
+    assert any(
+        row["tool_name"] == "C7_Test_Popular_Tool"
+        and row["note"] == "Secret private user note 0"
+        for row in rows
+    )
+    assert all(
+        row["step_job"] == "Write core app code"
+        and row["workflow_title"] == "C7 Test Workflow"
+        for row in rows
+    )
+
