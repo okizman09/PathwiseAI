@@ -10,7 +10,18 @@ from fastapi.responses import JSONResponse
 from app.core.config import settings
 from app.core.errors import UserFacingError, log_internal_error
 from app.core.rate_limit import get_client_ip
-from app.routers import events, go, health, interview, quota, taxonomy, tools, users, workflow
+from app.routers import (
+    events,
+    feedback,
+    go,
+    health,
+    interview,
+    quota,
+    taxonomy,
+    tools,
+    users,
+    workflow,
+)
 
 
 class JSONLogFormatter(logging.Formatter):
@@ -204,3 +215,4 @@ app.include_router(workflow.router, prefix="/api/v1")
 app.include_router(users.router, prefix="/api/v1")
 app.include_router(quota.router, prefix="/api/v1")
 app.include_router(events.router, prefix="/api/v1")
+app.include_router(feedback.router, prefix="/api/v1")

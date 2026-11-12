@@ -6,6 +6,7 @@ Do NOT import Pydantic schemas here; those live in app.schemas.
 from app.models.event import Event
 from app.models.profile import Profile
 from app.models.rate_limit import RateLimitBucket
+from app.models.site_feedback import SiteFeedback
 from app.models.step_feedback import StepFeedback
 from app.models.step_run import StepRun
 from app.models.tool import Tool
@@ -18,6 +19,7 @@ __all__ = [
     "Profile",
     "Workflow",
     "WorkflowStep",
+    "SiteFeedback",
     "StepFeedback",
     "StepRun",
     "UsageDaily",

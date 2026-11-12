@@ -361,6 +361,21 @@ export interface ToolListFilter {
   ecosystem?: string;
 }
 
+export interface SiteFeedbackCreate {
+  message: string;
+  contact?: string | undefined;
+  page?: string | undefined;
+}
+
+export interface SiteFeedbackResponse {
+  id: number;
+  message: string;
+  contact: string | null;
+  page: string | null;
+  user_id: string | null;
+  created_at: string | null;
+}
+
 export const getApiBaseUrl = (): string => {
   const envUrl = (import.meta as unknown as { env?: Record<string, unknown> })
     .env?.["VITE_API_URL"];
@@ -478,6 +493,30 @@ async function apiFetch<T>(
   }
 
   return response.json() as Promise<T>;
+}
+
+async function downloadCsv(
+  path: string,
+  fallbackFilename: string,
+): Promise<{ blob: Blob; filename: string }> {
+  const baseUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
+  const url = `${baseUrl}${path}`;
+  const headers = new Headers();
+  headers.set("Accept", "text/csv");
+  const token = await getAccessToken();
+  if (token) {
+    headers.set("Authorization", `Bearer ${token}`);
+  }
+  const response = await fetch(url, { headers });
+  if (!response.ok) {
+    throw new Error(`Export failed with status ${response.status}`);
+  }
+  const disposition = response.headers.get("Content-Disposition") || "";
+  const match = /filename="([^"]+)"/.exec(disposition);
+  return {
+    blob: await response.blob(),
+    filename: match?.[1] ?? fallbackFilename,
+  };
 }
 
 export const api = {
@@ -790,24 +829,38 @@ export const api = {
    * Admin: Download all step feedback as CSV (returns blob + server filename).
    */
   async downloadStepFeedbackCsv(): Promise<{ blob: Blob; filename: string }> {
-    const baseUrl = API_BASE_URL.replace(/\/api\/v1\/?$/, "");
-    const url = `${baseUrl}/api/v1/admin/feedback/export`;
-    const headers = new Headers();
-    headers.set("Accept", "text/csv");
-    const token = await getAccessToken();
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
-    }
-    const response = await fetch(url, { headers });
-    if (!response.ok) {
-      throw new Error(`Export failed with status ${response.status}`);
-    }
-    const disposition = response.headers.get("Content-Disposition") || "";
-    const match = /filename="([^"]+)"/.exec(disposition);
-    return {
-      blob: await response.blob(),
-      filename: match?.[1] ?? "feedback-export.csv",
-    };
+    return downloadCsv("/api/v1/admin/feedback/export", "feedback-export.csv");
+  },
+
+  /**
+   * Submit landing-page UX feedback (public; anonymous allowed).
+   */
+  async submitSiteFeedback(
+    data: SiteFeedbackCreate,
+  ): Promise<SiteFeedbackResponse> {
+    return apiFetch<SiteFeedbackResponse>("/feedback/site", {
+      method: "POST",
+      body: JSON.stringify(data),
+    });
+  },
+
+  /**
+   * Admin: List landing-page feedback, newest first.
+   */
+  async getAdminSiteFeedback(limit = 100): Promise<SiteFeedbackResponse[]> {
+    return apiFetch<SiteFeedbackResponse[]>(
+      `/admin/feedback/site?limit=${limit}`,
+    );
+  },
+
+  /**
+   * Admin: Download all landing-page feedback as CSV.
+   */
+  async downloadSiteFeedbackCsv(): Promise<{ blob: Blob; filename: string }> {
+    return downloadCsv(
+      "/api/v1/admin/feedback/site/export",
+      "site-feedback.csv",
+    );
   },
 
   /**

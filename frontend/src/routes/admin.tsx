@@ -24,6 +24,7 @@ import {
   Activity,
   Layers,
   BarChart3,
+  MessageSquare,
 } from "lucide-react";
 import { useEffect, useState, useRef, type FormEvent } from "react";
 
@@ -47,6 +48,7 @@ import {
   type ToolPromptStyle,
   type ToolEvidenceItem,
   type CardImportResponse,
+  type SiteFeedbackResponse,
   type ToolMetricResponse,
 } from "@/lib/api";
 import { supabase } from "@/lib/supabase";
@@ -165,9 +167,9 @@ function AdminPage() {
   const [success, setSuccess] = useState("");
 
   // Tab & import state
-  const [adminTab, setAdminTab] = useState<"catalog" | "import" | "metrics">(
-    "catalog",
-  );
+  const [adminTab, setAdminTab] = useState<
+    "catalog" | "import" | "metrics" | "feedback"
+  >("catalog");
   const [importJson, setImportJson] = useState("");
   const [importing, setImporting] = useState(false);
   const [importResponse, setImportResponse] =
@@ -206,6 +208,39 @@ function AdminPage() {
       setError(errMsg(e));
     } finally {
       setExportingFeedback(false);
+    }
+  }
+
+  const [siteFeedback, setSiteFeedback] = useState<SiteFeedbackResponse[]>([]);
+  const [loadingSiteFeedback, setLoadingSiteFeedback] = useState(false);
+  const [exportingSiteFeedback, setExportingSiteFeedback] = useState(false);
+
+  async function loadSiteFeedback() {
+    setLoadingSiteFeedback(true);
+    try {
+      const data = await api.getAdminSiteFeedback();
+      setSiteFeedback(data);
+    } catch (e) {
+      setError(errMsg(e));
+    } finally {
+      setLoadingSiteFeedback(false);
+    }
+  }
+
+  async function handleExportSiteFeedback() {
+    setExportingSiteFeedback(true);
+    try {
+      const { blob, filename } = await api.downloadSiteFeedbackCsv();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(url);
+    } catch (e) {
+      setError(errMsg(e));
+    } finally {
+      setExportingSiteFeedback(false);
     }
   }
 
@@ -931,6 +966,17 @@ function AdminPage() {
           >
             <BarChart3 className="size-4" /> Tool Usage Metrics
           </Button>
+          <Button
+            variant={adminTab === "feedback" ? "default" : "outline"}
+            size="sm"
+            onClick={() => {
+              setAdminTab("feedback");
+              loadSiteFeedback();
+            }}
+            className="gap-2"
+          >
+            <MessageSquare className="size-4" /> Site Feedback
+          </Button>
         </div>
 
         {adminTab === "import" ? (
@@ -1350,6 +1396,86 @@ function AdminPage() {
                     )}
                   </tbody>
                 </table>
+              </div>
+            </div>
+          </div>
+        ) : adminTab === "feedback" ? (
+          <div className="mt-6 space-y-6">
+            <div className="rounded-xl border border-border bg-card p-6 shadow-sm">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                <div>
+                  <h2 className="text-lg font-semibold flex items-center gap-2">
+                    <MessageSquare className="size-5 text-primary" /> Site
+                    Feedback
+                  </h2>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    General experience notes from site visitors, newest first.
+                    Entries may be anonymous.
+                  </p>
+                </div>
+                <div className="flex gap-2 self-start sm:self-auto">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={loadSiteFeedback}
+                    disabled={loadingSiteFeedback}
+                    className="gap-2 text-xs"
+                  >
+                    <RefreshCw
+                      className={
+                        loadingSiteFeedback
+                          ? "size-3.5 animate-spin"
+                          : "size-3.5"
+                      }
+                    />
+                    Refresh
+                  </Button>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={handleExportSiteFeedback}
+                    disabled={exportingSiteFeedback}
+                    className="gap-2 text-xs"
+                  >
+                    {exportingSiteFeedback ? (
+                      <Loader2 className="size-3.5 animate-spin" />
+                    ) : (
+                      <Download className="size-3.5" />
+                    )}
+                    Export CSV
+                  </Button>
+                </div>
+              </div>
+
+              <div className="mt-6 grid gap-3">
+                {loadingSiteFeedback && siteFeedback.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    Loading feedback…
+                  </p>
+                ) : siteFeedback.length === 0 ? (
+                  <p className="text-sm text-muted-foreground">
+                    No site feedback yet.
+                  </p>
+                ) : (
+                  siteFeedback.map((fb) => (
+                    <div
+                      key={fb.id}
+                      className="rounded-lg border border-border/70 bg-muted/20 p-4"
+                    >
+                      <p className="whitespace-pre-wrap text-sm text-foreground">
+                        {fb.message}
+                      </p>
+                      <p className="mt-2 text-[11px] text-muted-foreground">
+                        {fb.created_at
+                          ? new Date(fb.created_at).toLocaleString()
+                          : ""}
+                        {fb.page ? ` · ${fb.page}` : ""}
+                        {fb.contact ? ` · ${fb.contact}` : ""}
+                        {fb.user_id ? ` · signed in` : " · anonymous"}
+                      </p>
+                    </div>
+                  ))
+                )}
               </div>
             </div>
           </div>
