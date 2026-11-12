@@ -26,10 +26,18 @@ export function AuthLayout({
       </header>
       <div className="flex flex-1 items-center justify-center px-5 py-12 sm:py-16">
         <div className="w-full max-w-[420px] rounded-2xl border border-border bg-card p-6 sm:p-8 shadow-sm">
-          <h1 className="text-3xl font-semibold tracking-tight text-foreground">{title}</h1>
-          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{subtitle}</p>
+          <h1 className="text-3xl font-semibold tracking-tight text-foreground">
+            {title}
+          </h1>
+          <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+            {subtitle}
+          </p>
           <div className="mt-6">{children}</div>
-          {footer ? <p className="mt-6 text-xs text-muted-foreground text-center">{footer}</p> : null}
+          {footer ? (
+            <p className="mt-6 text-xs text-muted-foreground text-center">
+              {footer}
+            </p>
+          ) : null}
         </div>
       </div>
     </main>
@@ -51,7 +59,9 @@ export function Field({
   const [show, setShow] = useState(false);
   return (
     <div className="grid gap-2">
-      <Label htmlFor={id} className="text-xs font-medium">{label}</Label>
+      <Label htmlFor={id} className="text-xs font-medium">
+        {label}
+      </Label>
       <div className="relative">
         <Input
           id={id}
@@ -82,9 +92,21 @@ export function Field({
   );
 }
 
-export function SubmitButton({ loading, children }: { loading: boolean; children: ReactNode }) {
+export function SubmitButton({
+  loading,
+  disabled,
+  children,
+}: {
+  loading: boolean;
+  disabled?: boolean;
+  children: ReactNode;
+}) {
   return (
-    <Button type="submit" disabled={loading} className="h-10 w-full rounded-lg text-sm font-semibold shadow-[var(--shadow-button)]">
+    <Button
+      type="submit"
+      disabled={loading || disabled}
+      className="h-10 w-full rounded-lg text-sm font-semibold shadow-[var(--shadow-button)]"
+    >
       {loading ? <Loader2 className="size-4 animate-spin mr-2" /> : null}
       {children}
     </Button>

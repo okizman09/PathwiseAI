@@ -111,3 +111,16 @@ def test_assemble_database_url():
     s_sqlite = Settings(DATABASE_URL="sqlite:///test.db")
     assert s_sqlite.DATABASE_URL == "sqlite:///test.db"
 
+
+def test_assemble_cors_origins_adds_loopback_aliases():
+    from app.core.config import Settings
+
+    s = Settings(CORS_ORIGINS="http://localhost:8080, https://app.pathwise.ai")
+    assert "http://localhost:8080" in s.CORS_ORIGINS
+    assert "http://127.0.0.1:8080" in s.CORS_ORIGINS
+    assert "https://app.pathwise.ai" in s.CORS_ORIGINS
+    assert len(s.CORS_ORIGINS) == 3
+
+    s2 = Settings(CORS_ORIGINS=["http://127.0.0.1:3000"])
+    assert "http://localhost:3000" in s2.CORS_ORIGINS
+

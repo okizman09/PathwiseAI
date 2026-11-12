@@ -50,9 +50,6 @@ export function InterviewPanel({
             <span className="text-xs font-semibold uppercase tracking-wider text-primary">
               Question {answers.length + 1} of 5 max
             </span>
-            <span className="text-xs text-muted-foreground">
-              Step {answers.length + 1}
-            </span>
           </div>
           <h2 className="mt-3 text-xl sm:text-2xl font-semibold leading-snug">
             {question.question}

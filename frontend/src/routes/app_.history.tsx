@@ -6,10 +6,25 @@ import { toast } from "sonner";
 
 import { AppHeader } from "@/components/AppHeader";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+} from "@/components/ui/card";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
-import { api, type WorkflowListResponse } from "@/lib/api";
+import {
+  api,
+  type AuthUserResponse,
+  type WorkflowListResponse,
+} from "@/lib/api";
 import { supabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/app_/history")({
@@ -19,18 +34,27 @@ export const Route = createFileRoute("/app_/history")({
 function HistoryPage() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<
+    (AuthUserResponse & { access_token: string }) | null
+  >(null);
 
   useEffect(() => {
-    api.getMe().then((me) => {
-      setSession({ ...me, access_token: "" });
-    }).catch((e) => {
-      console.error(e);
-      window.location.href = "/login";
-    });
+    api
+      .getMe()
+      .then((me) => {
+        setSession({ ...me, access_token: "" });
+      })
+      .catch((e) => {
+        console.error(e);
+        window.location.href = "/login";
+      });
   }, []);
 
-  const { data: workflows, isLoading, isError } = useQuery({
+  const {
+    data: workflows,
+    isLoading,
+    isError,
+  } = useQuery({
     queryKey: ["workflows"],
     queryFn: () => api.getWorkflows(0, 50),
     enabled: !!session,
@@ -44,38 +68,51 @@ function HistoryPage() {
     },
     onError: () => {
       toast.error("Failed to delete workflow");
-    }
+    },
   });
 
   const updateMutation = useMutation({
-    mutationFn: ({ id, title }: { id: number, title: string }) => api.updateWorkflow(id, { title }),
+    mutationFn: ({ id, title }: { id: number; title: string }) =>
+      api.updateWorkflow(id, { title }),
     onSuccess: () => {
       toast.success("Workflow renamed");
       queryClient.invalidateQueries({ queryKey: ["workflows"] });
     },
     onError: () => {
       toast.error("Failed to rename workflow");
-    }
+    },
   });
 
   const [editingId, setEditingId] = useState<number | null>(null);
   const [editTitle, setEditTitle] = useState("");
 
-  if (!session) return <div className="p-8 text-center text-muted-foreground">Loading session...</div>;
+  if (!session)
+    return (
+      <div className="p-8 text-center text-muted-foreground">
+        Loading session...
+      </div>
+    );
 
   return (
     <div className="min-h-screen bg-background">
-      <AppHeader session={session as any} />
+      <AppHeader session={session} />
       <main className="mx-auto max-w-[960px] px-5 py-12 sm:px-8">
         <div className="mb-8 flex items-center justify-between">
           <div>
-            <Button variant="ghost" size="sm" asChild className="mb-4 text-muted-foreground -ml-2">
+            <Button
+              variant="ghost"
+              size="sm"
+              asChild
+              className="mb-4 text-muted-foreground -ml-2"
+            >
               <Link to="/app" className="gap-2">
                 <ArrowLeft className="size-4" />
                 Back to Workspace
               </Link>
             </Button>
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">History</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground">
+              History
+            </h1>
             <p className="mt-2 text-muted-foreground">
               Your saved creation paths and workflows.
             </p>
@@ -83,16 +120,23 @@ function HistoryPage() {
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center text-muted-foreground">Loading history...</div>
+          <div className="py-12 text-center text-muted-foreground">
+            Loading history...
+          </div>
         ) : isError ? (
-          <div className="py-12 text-center text-destructive">Failed to load history.</div>
+          <div className="py-12 text-center text-destructive">
+            Failed to load history.
+          </div>
         ) : workflows?.length === 0 ? (
           <Card className="border-dashed shadow-none">
             <CardContent className="flex flex-col items-center justify-center py-20 text-center">
               <Clock className="mb-4 size-8 text-muted-foreground/50" />
-              <h3 className="text-lg font-medium text-foreground">No workflows yet</h3>
+              <h3 className="text-lg font-medium text-foreground">
+                No workflows yet
+              </h3>
               <p className="mt-1 text-sm text-muted-foreground max-w-sm">
-                Paths you create in the workspace will automatically be saved here.
+                Paths you create in the workspace will automatically be saved
+                here.
               </p>
               <Button asChild className="mt-6" variant="outline">
                 <Link to="/app">Go to Workspace</Link>
@@ -102,9 +146,12 @@ function HistoryPage() {
         ) : (
           <div className="grid gap-4">
             {workflows?.map((w) => (
-              <Card key={w.id} className="transition-all hover:border-primary/30">
-                <CardContent className="flex items-center justify-between p-4 sm:p-6">
-                  <div className="grid gap-1">
+              <Card
+                key={w.id}
+                className="transition-all hover:border-primary/30"
+              >
+                <CardContent className="flex items-center justify-between gap-3 p-4 sm:p-6">
+                  <div className="grid min-w-0 gap-1">
                     {editingId === w.id ? (
                       <div className="flex items-center gap-2">
                         <Input
@@ -114,7 +161,10 @@ function HistoryPage() {
                           autoFocus
                           onKeyDown={(e) => {
                             if (e.key === "Enter") {
-                              updateMutation.mutate({ id: w.id, title: editTitle });
+                              updateMutation.mutate({
+                                id: w.id,
+                                title: editTitle,
+                              });
                               setEditingId(null);
                             } else if (e.key === "Escape") {
                               setEditingId(null);
@@ -125,7 +175,10 @@ function HistoryPage() {
                           size="sm"
                           variant="ghost"
                           onClick={() => {
-                            updateMutation.mutate({ id: w.id, title: editTitle });
+                            updateMutation.mutate({
+                              id: w.id,
+                              title: editTitle,
+                            });
                             setEditingId(null);
                           }}
                         >
@@ -141,7 +194,11 @@ function HistoryPage() {
                       </div>
                     ) : (
                       <CardTitle className="text-base sm:text-lg">
-                        <Link to={`/app`} search={{ load: w.id }} className="hover:underline">
+                        <Link
+                          to={`/app`}
+                          search={{ load: w.id }}
+                          className="hover:underline"
+                        >
                           {w.title}
                         </Link>
                       </CardTitle>
@@ -150,8 +207,8 @@ function HistoryPage() {
                       {new Date(w.created_at).toLocaleString()}
                     </CardDescription>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <Button variant="secondary" size="sm" asChild className="hidden sm:flex">
+                  <div className="flex shrink-0 items-center gap-2">
+                    <Button variant="secondary" size="sm" asChild>
                       <Link to={`/app`} search={{ load: w.id }}>
                         Open
                       </Link>
@@ -176,7 +233,11 @@ function HistoryPage() {
                         <DropdownMenuItem
                           className="text-destructive focus:text-destructive"
                           onClick={() => {
-                            if (confirm("Are you sure you want to delete this workflow?")) {
+                            if (
+                              confirm(
+                                "Are you sure you want to delete this workflow?",
+                              )
+                            ) {
                               deleteMutation.mutate(w.id);
                             }
                           }}

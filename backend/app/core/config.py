@@ -4,8 +4,26 @@ In production (ENVIRONMENT=production) the app will refuse to start
 if any required secret is still unset or at a default value.
 """
 
+from urllib.parse import urlsplit, urlunsplit
+
 from pydantic import field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+
+
+def _loopback_alias(origin: str) -> str | None:
+    """Return the localhost<->127.0.0.1 twin of a local origin, else None."""
+    try:
+        parts = urlsplit(origin)
+    except ValueError:
+        return None
+    host = parts.hostname
+    if host == "localhost":
+        netloc = parts.netloc.replace("localhost", "127.0.0.1", 1)
+    elif host == "127.0.0.1":
+        netloc = parts.netloc.replace("127.0.0.1", "localhost", 1)
+    else:
+        return None
+    return urlunsplit((parts.scheme, netloc, parts.path, parts.query, parts.fragment))
 
 _REQUIRED_IN_PRODUCTION = (
     "MODEL_API_KEY",
@@ -118,9 +136,16 @@ class Settings(BaseSettings):
     @field_validator("CORS_ORIGINS", mode="before")
     @classmethod
     def assemble_cors_origins(cls, v: str | list[str]) -> list[str]:
-        if isinstance(v, str):
-            return [i.strip() for i in v.split(",") if i.strip()]
-        return v
+        origins = (
+            [i.strip() for i in v.split(",") if i.strip()]
+            if isinstance(v, str)
+            else list(v)
+        )
+        for origin in list(origins):
+            alias = _loopback_alias(origin)
+            if alias and alias not in origins:
+                origins.append(alias)
+        return origins
 
     @model_validator(mode="after")
     def _infer_supabase_url(self) -> "Settings":

@@ -1,4 +1,4 @@
-import { AlertCircle, CheckCircle2, DollarSign } from "lucide-react";
+import { AlertCircle, Check, CheckCircle2, DollarSign } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import type { WorkflowResponse } from "@/lib/api";
@@ -91,6 +91,36 @@ export function WorkflowView({
           />
         ))}
       </ol>
+
+      {workflow.steps.length > 0 &&
+      workflow.steps.every((step) => step.status === "done") ? (
+        <div className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-5 sm:p-6">
+          <div className="flex items-center gap-2">
+            <CheckCircle2 className="size-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+            <h3 className="text-base font-semibold text-foreground">
+              {`You finished all ${workflow.steps.length} step${workflow.steps.length === 1 ? "" : "s"}`}
+            </h3>
+          </div>
+          <ul className="mt-3 space-y-1.5">
+            {workflow.steps.map((step) => (
+              <li key={step.step_id} className="flex items-start gap-2 text-sm">
+                <Check className="size-4 mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400" />
+                <span>
+                  <span className="font-medium text-foreground">
+                    {step.job}
+                  </span>
+                  {step.handoff_note ? (
+                    <span className="text-muted-foreground">
+                      {" "}
+                      — {step.handoff_note}
+                    </span>
+                  ) : null}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ) : null}
     </section>
   );
 }
